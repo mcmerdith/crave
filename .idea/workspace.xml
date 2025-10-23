@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a83d4f0c-fd9b-404e-8985-766c9faa62e8" name="Changes" comment="prettier">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crave-app/config.example.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crave-app/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/trpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/trpc.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mcmerdith&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/edassoulas/crave.git&quot;,
+    &quot;accountId&quot;: &quot;b654d199-e864-4738-b258-ac6406d5e444&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="33T1NdkJAjOUlvIxB4gQHfKoSZy" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "mere-api",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/lordm/WebstormProjects/crave/crave-app",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/lordm/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/22.18.0/node",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.crave-api > dev.executor": "Run",
+    "npm.crave-app > start.executor": "Run",
+    "npm.dev (1).executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.install.executor": "Run",
+    "npm.start.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\lordm\\WebstormProjects\\crave\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\lordm\\WebstormProjects\\crave\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\lordm\WebstormProjects\crave\crave-app" />
+      <recent name="C:\Users\lordm\WebstormProjects\crave\crave-api" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\lordm\WebstormProjects\crave\crave-app" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.crave-app &gt; start">
+    <configuration name="crave-api &gt; dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/crave-api/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="crave-app &gt; start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/crave-app/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.crave-api &gt; dev" />
+      <item itemvalue="npm.crave-app &gt; start" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.crave-api &gt; dev" />
+        <item itemvalue="npm.crave-app &gt; start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-WS-252.23892.411" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a83d4f0c-fd9b-404e-8985-766c9faa62e8" name="Changes" comment="" />
+      <created>1759326209125</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1759326209125</updated>
+      <workItem from="1759326210854" duration="3738000" />
+      <workItem from="1759773143077" duration="7525000" />
+      <workItem from="1760361577601" duration="8127000" />
+      <workItem from="1761139657793" duration="3908000" />
+      <workItem from="1761188037800" duration="3857000" />
+      <workItem from="1761191983054" duration="1318000" />
+      <workItem from="1761193485850" duration="2639000" />
+      <workItem from="1761235380186" duration="296000" />
+      <workItem from="1761235683746" duration="2178000" />
+    </task>
+    <task id="LOCAL-00001" summary="expo init">
+      <option name="closed" value="true" />
+      <created>1759327538178</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759327538178</updated>
+    </task>
+    <task id="LOCAL-00002" summary="initial">
+      <option name="closed" value="true" />
+      <created>1759775279776</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759775279776</updated>
+    </task>
+    <task id="LOCAL-00003" summary="initial">
+      <option name="closed" value="true" />
+      <created>1759775339995</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759775339995</updated>
+    </task>
+    <task id="LOCAL-00004" summary="monorepo">
+      <option name="closed" value="true" />
+      <created>1761139819251</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761139819251</updated>
+    </task>
+    <task id="LOCAL-00005" summary="make my IDE work again">
+      <option name="closed" value="true" />
+      <created>1761188129427</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1761188129427</updated>
+    </task>
+    <task id="LOCAL-00006" summary="make my IDE work again">
+      <option name="closed" value="true" />
+      <created>1761235649578</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1761235649578</updated>
+    </task>
+    <task id="LOCAL-00007" summary="IDE">
+      <option name="closed" value="true" />
+      <created>1761235699449</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761235699449</updated>
+    </task>
+    <task id="LOCAL-00008" summary="prettier">
+      <option name="closed" value="true" />
+      <created>1761235910695</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761235910695</updated>
+    </task>
+    <task id="LOCAL-00009" summary="prettier">
+      <option name="closed" value="true" />
+      <created>1761236089542</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1761236089542</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/crave-api/src/server/api/index.js" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/crave-api" />
+    </ignored-roots>
+    <MESSAGE value="expo init" />
+    <MESSAGE value="initial" />
+    <MESSAGE value="monorepo" />
+    <MESSAGE value="fix monorepo imports" />
+    <MESSAGE value="fix monorepo imports" />
+    <MESSAGE value="IDE" />
+    <MESSAGE value="prettier" />
+    <option name="LAST_COMMIT_MESSAGE" value="prettier" />
+  </component>
+</project>
