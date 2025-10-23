@@ -1,4 +1,4 @@
-import {publicProcedure, router} from "@/server/trpc";
+import { publicProcedure, router } from "../trpc";
 
 export const appRouter = router({
   places: publicProcedure.query(() => {
