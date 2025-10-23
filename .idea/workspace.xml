@@ -4,8 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a83d4f0c-fd9b-404e-8985-766c9faa62e8" name="Changes" comment="make my IDE work again">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="a83d4f0c-fd9b-404e-8985-766c9faa62e8" name="Changes" comment="prettier">
+      <change afterPath="$PROJECT_DIR$/crave-app/.prettierignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/eslint.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/datastore/locations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/datastore/locations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/datastore/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/datastore/users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/firebase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/firebase.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/places.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/places.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,35 +53,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;mere-api&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/lordm/WebstormProjects/crave/crave-api&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;C:/Users/lordm/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/22.18.0/node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.crave-api &gt; dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\lordm\\WebstormProjects\\crave\\crave-app\\node_modules\\prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.Mappings&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "mere-api",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/lordm/WebstormProjects/crave/crave-api",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/lordm/AppData/Roaming/JetBrains/WebStorm2025.2/node/versions/22.18.0/node",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.crave-api > dev.executor": "Run",
+    "npm.dev (1).executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.start.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\lordm\\WebstormProjects\\crave\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\lordm\\WebstormProjects\\crave\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\lordm\WebstormProjects\crave\crave-api" />
@@ -140,6 +151,7 @@
       <workItem from="1761191983054" duration="1318000" />
       <workItem from="1761193485850" duration="2639000" />
       <workItem from="1761235380186" duration="296000" />
+      <workItem from="1761235683746" duration="366000" />
     </task>
     <task id="LOCAL-00001" summary="expo init">
       <option name="closed" value="true" />
@@ -189,7 +201,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761235649578</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="IDE">
+      <option name="closed" value="true" />
+      <created>1761235699449</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761235699449</updated>
+    </task>
+    <task id="LOCAL-00008" summary="prettier">
+      <option name="closed" value="true" />
+      <created>1761235910695</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761235910695</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +248,8 @@
     <MESSAGE value="monorepo" />
     <MESSAGE value="fix monorepo imports" />
     <MESSAGE value="fix monorepo imports" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix monorepo imports" />
+    <MESSAGE value="IDE" />
+    <MESSAGE value="prettier" />
+    <option name="LAST_COMMIT_MESSAGE" value="prettier" />
   </component>
 </project>
