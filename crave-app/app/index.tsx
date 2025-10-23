@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Data: {"unknown"}</Text>
+      <Text>Crave App</Text>
     </View>
   );
 }

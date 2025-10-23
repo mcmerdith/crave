@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a83d4f0c-fd9b-404e-8985-766c9faa62e8" name="Changes" comment="prettier">
-      <change afterPath="$PROJECT_DIR$/crave-app/.prettierignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crave-app/config.example.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/crave-app/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-api/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crave-app/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crave-app/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/app/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/eslint.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/lib/datastore/locations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/datastore/locations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/lib/datastore/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/datastore/users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/lib/firebase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/firebase.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/lib/places.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/places.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crave-app/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crave-app/lib/trpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/crave-app/lib/trpc.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +62,7 @@
     "git-widget-placeholder": "mere-api",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/lordm/WebstormProjects/crave/crave-api",
+    "last_opened_file_path": "C:/Users/lordm/WebstormProjects/crave/crave-app",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -72,8 +71,10 @@
     "nodejs_package_manager_path": "npm",
     "npm.build.executor": "Run",
     "npm.crave-api > dev.executor": "Run",
+    "npm.crave-app > start.executor": "Run",
     "npm.dev (1).executor": "Run",
     "npm.dev.executor": "Run",
+    "npm.install.executor": "Run",
     "npm.start.executor": "Run",
     "prettierjs.PrettierConfiguration.Package": "C:\\Users\\lordm\\WebstormProjects\\crave\\node_modules\\prettier",
     "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
@@ -84,24 +85,15 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\lordm\WebstormProjects\crave\crave-app" />
       <recent name="C:\Users\lordm\WebstormProjects\crave\crave-api" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\lordm\WebstormProjects\crave\crave-app" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/crave-api/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="npm.crave-app &gt; start">
+    <configuration name="crave-api &gt; dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/crave-api/package.json" />
       <command value="run" />
       <scripts>
@@ -111,7 +103,7 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="crave-app &gt; start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/crave-app/package.json" />
       <command value="run" />
       <scripts>
@@ -121,11 +113,14 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="npm.crave-api &gt; dev" />
+      <item itemvalue="npm.crave-app &gt; start" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
-        <item itemvalue="npm.start" />
-        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.crave-api &gt; dev" />
+        <item itemvalue="npm.crave-app &gt; start" />
       </list>
     </recent_temporary>
   </component>
@@ -151,7 +146,7 @@
       <workItem from="1761191983054" duration="1318000" />
       <workItem from="1761193485850" duration="2639000" />
       <workItem from="1761235380186" duration="296000" />
-      <workItem from="1761235683746" duration="366000" />
+      <workItem from="1761235683746" duration="2178000" />
     </task>
     <task id="LOCAL-00001" summary="expo init">
       <option name="closed" value="true" />
@@ -217,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761235910695</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="prettier">
+      <option name="closed" value="true" />
+      <created>1761236089542</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1761236089542</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
