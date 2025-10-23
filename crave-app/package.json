@@ -1,7 +1,8 @@
 {
-  "name": "crave-app",
-  "main": "expo-router/entry",
+  "name": "@crave/app",
   "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -11,6 +12,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@crave/api": "*",
     "@expo/vector-icons": "^15.0.2",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
@@ -49,6 +51,5 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.6.2",
     "typescript": "~5.9.2"
-  },
-  "private": true
+  }
 }

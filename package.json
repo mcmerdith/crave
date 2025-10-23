@@ -1,7 +1,11 @@
 {
-  "name": "crave",
+  "name": "crave-monorepo",
+  "private": true,
   "workspaces": [
-    "crave-app",
-    "crave-api"
-  ]
+    "crave-api",
+    "crave-app"
+  ],
+  "dependencies": {
+    "prettier": "^3.6.2"
+  }
 }
