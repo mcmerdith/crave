@@ -1,10 +1,21 @@
-import { initTRPC } from '@trpc/server';
+import {initTRPC} from '@trpc/server';
+
+type Context = {
+    user: { id: string } | null
+}
+
+export const createContext = async (request: Request): Promise<Context> => {
+
+    return {
+        user: null
+    }
+}
 
 /**
  * Initialization of tRPC backend
  * Should be done only once per backend!
  */
-const t = initTRPC.create();
+const t = initTRPC.context<Context>().create();
 
 /**
  * Export reusable router and procedure helpers

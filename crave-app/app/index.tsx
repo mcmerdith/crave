@@ -1,6 +1,10 @@
 import { Text, View } from "react-native";
+import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Index() {
+  const x = useQuery(trpc.places.queryOptions())
+  const { data } = x;
   return (
     <View
       style={{
@@ -9,7 +13,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text>Data: { data?.id ?? "unknown"}</Text>
     </View>
   );
 }

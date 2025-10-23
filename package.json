@@ -1,0 +1,7 @@
+{
+  "name": "crave",
+  "workspaces": [
+    "crave-app",
+    "crave-api"
+  ]
+}
