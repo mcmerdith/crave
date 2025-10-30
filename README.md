@@ -18,6 +18,6 @@ Create a `config.ts` from `config.example.ts` in `crave-api`.
 
 All commands should be run from the root directory
 
-`npm run dev -w crave-api` Run the API dev server
+`npm run api` Run the API dev server
 
-`npm run start -w crave-app` Run the Expo dev server
+`npm run app` Run the Expo dev server

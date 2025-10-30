@@ -1,6 +1,10 @@
 {
   "name": "crave-monorepo",
   "private": true,
+  "scripts": {
+    "app": "npm run start -w crave-app",
+    "api": "npm run dev -w crave-api"
+  },
   "workspaces": [
     "crave-api",
     "crave-app"
