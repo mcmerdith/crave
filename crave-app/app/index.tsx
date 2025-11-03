@@ -1,23 +1,12 @@
-import { Text, View } from "react-native";
+// index.tsx
 import React from "react";
-import Button from "@/components/button";
+import { SafeAreaView } from "react-native";
+import HomeScreen from "@/components/HomeScreen";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      < Text style={{ fontSize: 24, marginBottom: 20 }}>Crave App</Text>
-      <Button
-        title="Group Mode/Solo Mode"
-        onPress={() => alert("Start swiping")}
-        variant="default"
-        size="medium"
-        />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <HomeScreen />
+    </SafeAreaView>
   );
 }
