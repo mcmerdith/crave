@@ -3,15 +3,14 @@ import { SafeAreaView } from "react-native";
 import HomeScreen from "@/components/HomeScreen";
 import { theme } from "@/theme";
 import { Text } from "react-native";
-import React from "react";
 import Button from "@/components/button";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 
 export default function Index() {
   return (
-    <SafeAreaView style={{ 
-        flex: 1, 
+    <SafeAreaView
+      style={{
+        flex: 1,
         backgroundColor: theme.colors.background,
         justifyContent: "center",
         alignItems: "center",
