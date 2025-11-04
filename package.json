@@ -11,5 +11,8 @@
   ],
   "dependencies": {
     "prettier": "^3.6.2"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^5.0.2"
   }
 }

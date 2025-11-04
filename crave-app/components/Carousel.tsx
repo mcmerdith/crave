@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import Card, { CardProps } from "./card";
+import Card, { CardProps } from "./Card";
 
 interface CarouselProps {
   title: string;

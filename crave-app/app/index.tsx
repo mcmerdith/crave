@@ -2,7 +2,7 @@ import { Text } from "react-native";
 import React from "react";
 import Button from "@/components/button";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Carousel from "@/components/carousel";
+import Carousel from "@/components/Carousel";
 
 export default function Index() {
   return (
