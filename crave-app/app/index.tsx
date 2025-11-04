@@ -1,3 +1,7 @@
+import React from "react";
+import { SafeAreaView } from "react-native";
+import HomeScreen from "@/components/HomeScreen";
+import { theme } from "@/theme";
 import { Text } from "react-native";
 import React from "react";
 import Button from "@/components/button";
@@ -6,13 +10,14 @@ import Carousel from "@/components/carousel";
 
 export default function Index() {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
+    <SafeAreaView style={{ 
+        flex: 1, 
+        backgroundColor: theme.colors.background,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
+      <HomeScreen />
       <Text style={{ fontSize: 24, marginBottom: 20 }}>Crave App</Text>
       <Button
         title="Group Mode/Solo Mode"
