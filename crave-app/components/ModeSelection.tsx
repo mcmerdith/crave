@@ -1,17 +1,16 @@
 import React from "react";
 import {
-  View,
+  StatusBar,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
+  View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { User, Users } from "lucide-react-native";
-import { theme } from "../theme";
+import { theme } from "@/theme";
 
-export default function HomeScreen() {
+export default function ModeSelection() {
   const handleStartSolo = () => {
     console.log("Solo mode started");
   };
@@ -21,13 +20,15 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.wrapper}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Discover</Text>
-          <Text style={styles.headerSubtitle}>Find your next favorite spot</Text>
+          <Text style={styles.headerSubtitle}>
+            Find your next favorite spot
+          </Text>
         </View>
 
         {/* Start Swiping Section */}
@@ -35,7 +36,10 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Start Swiping</Text>
           <View style={styles.buttonRow}>
             {/* SOLO BUTTON */}
-            <TouchableOpacity style={styles.buttonWrapper} onPress={handleStartSolo}>
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={handleStartSolo}
+            >
               <LinearGradient
                 colors={[theme.colors.purpleStart, theme.colors.purpleEnd]}
                 start={{ x: 0, y: 0 }}
@@ -57,7 +61,10 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             {/* GROUP BUTTON */}
-            <TouchableOpacity style={styles.buttonWrapper} onPress={handleStartGroup}>
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={handleStartGroup}
+            >
               <LinearGradient
                 colors={[theme.colors.orangeStart, theme.colors.orangeEnd]}
                 start={{ x: 0, y: 0 }}
@@ -79,17 +86,20 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
+  wrapper: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
     backgroundColor: theme.colors.background,
   },
   container: {
-    flex: 1,
+    display: "flex",
+    flexDirection: "column",
     paddingHorizontal: 20,
     paddingTop: 20,
   },

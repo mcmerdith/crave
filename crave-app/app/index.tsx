@@ -4,6 +4,10 @@ import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 import NavBar from "@/components/navBar";
+import { ScrollView } from "react-native";
+import Carousel from "@/components/Carousel";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
 
 export default function Index() {
   return (
@@ -11,20 +15,17 @@ export default function Index() {
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
-        justifyContent: "center",
-        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
       }}
     >
-      <ModeSelection />
-      <Carousel
-        title="Recent Cravings"
-        data={RecentsData}
-        onViewAll={() => console.log("View All pressed")}
-      />
-      <Carousel
-        title="Discover New"
-        data={DiscoverData}
-        onViewAll={() => console.log("View All pressed")}
+      <Stack.Screen
+        options={{
+          title: "CRAVE",
+        }}
       />
       <NavBar />
     </SafeAreaView>
