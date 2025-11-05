@@ -24,10 +24,10 @@ export const theme = {
     ring: "#b4b4b8",
 
     // Gradients
-    purpleStart: "#7c3aed",
-    purpleEnd: "#9333ea",
-    orangeStart: "#f97316",
-    orangeEnd: "#fb923c",
+    purpleStart: "#7339d6ff",
+    purpleEnd: "#3c1362ff",
+    orangeStart: "#f91671ff",
+    orangeEnd: "#e97415ff",
 
     // Chart / accent colors
     chart1: "#f4a261",
