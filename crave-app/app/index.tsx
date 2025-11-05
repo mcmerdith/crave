@@ -1,31 +1,41 @@
 import React from "react";
 import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
-import { Text } from "react-native";
-import Button from "@/components/button";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native";
 import Carousel from "@/components/Carousel";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
 
 export default function Index() {
   return (
-    <SafeAreaView style={{ 
-        flex: 1, 
+    <SafeAreaView
+      style={{
         backgroundColor: theme.colors.background,
-        justifyContent: "center",
-        alignItems: "center",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
       }}
     >
+      <Stack.Screen
+        options={{
+          title: "CRAVE",
+        }}
+      />
       <ModeSelection />
-      <Carousel
-        title="Recent Cravings"
-        data={RecentsData}
-        onViewAll={() => console.log("View All pressed")}
-      />
-      <Carousel
-        title="Discover New"
-        data={DiscoverData}
-        onViewAll={() => console.log("View All pressed")}
-      />
+      <ScrollView>
+        <Carousel
+          title="Recent Cravings"
+          data={RecentsData}
+          onViewAll={() => console.log("View All pressed")}
+        />
+        <Carousel
+          title="Discover New"
+          data={DiscoverData}
+          onViewAll={() => console.log("View All pressed")}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
