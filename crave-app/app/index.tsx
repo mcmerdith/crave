@@ -1,29 +1,21 @@
 import React from "react";
-import { SafeAreaView } from "react-native";
-import HomeScreen from "@/components/HomeScreen";
+import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
 import { Text } from "react-native";
 import Button from "@/components/button";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 
 export default function Index() {
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
+    <SafeAreaView style={{ 
+        flex: 1, 
         backgroundColor: theme.colors.background,
         justifyContent: "center",
         alignItems: "center",
       }}
     >
-      <HomeScreen />
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Crave App</Text>
-      <Button
-        title="Group Mode/Solo Mode"
-        onPress={() => alert("Start swiping")}
-        variant="default"
-        size="medium"
-      />
+      <ModeSelection />
       <Carousel
         title="Recent Cravings"
         data={RecentsData}
