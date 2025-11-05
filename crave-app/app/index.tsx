@@ -1,15 +1,15 @@
 import React from "react";
 import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
-import { Text } from "react-native";
-import Button from "@/components/button";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
+import NavBar from "@/components/navBar";
 
 export default function Index() {
   return (
-    <SafeAreaView style={{ 
-        flex: 1, 
+    <SafeAreaView
+      style={{
+        flex: 1,
         backgroundColor: theme.colors.background,
         justifyContent: "center",
         alignItems: "center",
@@ -26,6 +26,7 @@ export default function Index() {
         data={DiscoverData}
         onViewAll={() => console.log("View All pressed")}
       />
+      <NavBar />
     </SafeAreaView>
   );
 }
