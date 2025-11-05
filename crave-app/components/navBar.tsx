@@ -11,12 +11,10 @@ const NavBar = ({ onHomePress, onSearchPress, onProfilePress }: any) => {
         <AntDesign name="compass" size={24} color="black" />{" "}
         <Text style={styles.label}>Discover</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.button} onPress={onSearchPress}>
         <Feather name="heart" size={24} color="black" />{" "}
         <Text style={styles.label}>Matches</Text>
       </TouchableOpacity>
-
       <TouchableOpacity style={styles.button} onPress={onProfilePress}>
         <Octicons name="sliders" size={24} color="black" />{" "}
         <Text style={styles.label}>Filters</Text>
