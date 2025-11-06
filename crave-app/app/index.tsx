@@ -3,7 +3,6 @@ import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
-import NavBar from "@/components/navBar";
 import { ScrollView } from "react-native";
 import { Stack } from "expo-router";
 
@@ -37,7 +36,6 @@ export default function Index() {
           onViewAll={() => console.log("View All pressed")}
         />
       </ScrollView>
-      <NavBar />
     </SafeAreaView>
   );
 }
