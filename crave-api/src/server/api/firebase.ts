@@ -11,7 +11,7 @@ const firebaseConfig = {
   measurementId: "G-5D450Y46M8"
 };
 
-console.log("Initializing Firebase")
+console.debug("Initializing Firebase")
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth = getAuth();
