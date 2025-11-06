@@ -13,6 +13,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="index"
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="compass" size={24} color="color" />
             ),
@@ -21,6 +22,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="matches"
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <Feather name="heart" size={24} color="color" />
             ),
@@ -29,6 +31,7 @@ export default function RootLayout() {
         <Tabs.Screen
           name="filters"
           options={{
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <Octicons name="sliders" size={24} color="color" />
             ),

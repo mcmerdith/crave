@@ -1,68 +1,68 @@
-// FiltersScreen.tsx
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const FiltersScreen = () => {
+const Filters = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
   const [distance, setDistance] = useState(10); // miles
 
   const priceLabels = ["$", "$$", "$$$", "$$$$"];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Filters</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
+      <View style={styles.container}>
+        <Text style={styles.header}>Filters</Text>
+        <Text style={styles.label}>Price Range</Text>
+        <View style={styles.priceLabels}>
+          {priceLabels.map((label, index) => (
+            <Text
+              key={index}
+              style={[
+                styles.priceLabel,
+                index === priceRange - 1 && styles.priceLabelActive,
+              ]}
+            >
+              {label}
+            </Text>
+          ))}
+        </View>
+        <Slider
+          style={{ width: "100%", height: 40 }}
+          minimumValue={1}
+          maximumValue={4}
+          step={1}
+          minimumTrackTintColor="#4CAF50"
+          maximumTrackTintColor="#ddd"
+          thumbTintColor="#4CAF50"
+          value={priceRange}
+          onValueChange={setPriceRange}
+        />
 
-      {/* Price Slider */}
-      <Text style={styles.label}>Price Range</Text>
-      <View style={styles.priceLabels}>
-        {priceLabels.map((label, index) => (
-          <Text
-            key={index}
-            style={[
-              styles.priceLabel,
-              index === priceRange - 1 && styles.priceLabelActive,
-            ]}
-          >
-            {label}
-          </Text>
-        ))}
+        {/* Distance Slider */}
+        <Text style={styles.label}>Distance ({distance} mi)</Text>
+        <Slider
+          style={{ width: "100%", height: 40 }}
+          minimumValue={1}
+          maximumValue={50}
+          step={1}
+          minimumTrackTintColor="#2196F3"
+          maximumTrackTintColor="#ddd"
+          thumbTintColor="#2196F3"
+          value={distance}
+          onValueChange={setDistance}
+        />
+
+        {/* Apply Button */}
+        <TouchableOpacity style={styles.applyButton}>
+          <Text style={styles.applyText}>Apply Filters</Text>
+        </TouchableOpacity>
       </View>
-      <Slider
-        style={{ width: "100%", height: 40 }}
-        minimumValue={1}
-        maximumValue={4}
-        step={1}
-        minimumTrackTintColor="#4CAF50"
-        maximumTrackTintColor="#ddd"
-        thumbTintColor="#4CAF50"
-        value={priceRange}
-        onValueChange={setPriceRange}
-      />
-
-      {/* Distance Slider */}
-      <Text style={styles.label}>Distance ({distance} mi)</Text>
-      <Slider
-        style={{ width: "100%", height: 40 }}
-        minimumValue={1}
-        maximumValue={50}
-        step={1}
-        minimumTrackTintColor="#2196F3"
-        maximumTrackTintColor="#ddd"
-        thumbTintColor="#2196F3"
-        value={distance}
-        onValueChange={setDistance}
-      />
-
-      {/* Apply Button */}
-      <TouchableOpacity style={styles.applyButton}>
-        <Text style={styles.applyText}>Apply Filters</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default FiltersScreen;
+export default Filters;
 
 const styles = StyleSheet.create({
   container: {
