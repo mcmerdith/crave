@@ -18,11 +18,6 @@ export default function Index() {
         alignItems: "flex-start",
       }}
     >
-      <Stack.Screen
-        options={{
-          title: "Discover",
-        }}
-      />
       <ModeSelection />
       <ScrollView>
         <Carousel

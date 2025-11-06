@@ -14,6 +14,7 @@ export default function RootLayout() {
           name="index"
           options={{
             headerShown: false,
+            title: "Discover",
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="compass" size={24} color="color" />
             ),
@@ -23,6 +24,7 @@ export default function RootLayout() {
           name="matches"
           options={{
             headerShown: false,
+            title: "Matches",
             tabBarIcon: ({ color, size }) => (
               <Feather name="heart" size={24} color="color" />
             ),
@@ -32,6 +34,7 @@ export default function RootLayout() {
           name="filters"
           options={{
             headerShown: false,
+            title: "Filters",
             tabBarIcon: ({ color, size }) => (
               <Octicons name="sliders" size={24} color="color" />
             ),
