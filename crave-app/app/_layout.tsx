@@ -27,7 +27,7 @@ export default function RootLayout() {
           }}
         />
         <Tabs.Screen
-          name="filter"
+          name="filters"
           options={{
             tabBarIcon: ({ color, size }) => (
               <Octicons name="sliders" size={24} color="color" />

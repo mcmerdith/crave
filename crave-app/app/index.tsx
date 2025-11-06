@@ -20,7 +20,7 @@ export default function Index() {
     >
       <Stack.Screen
         options={{
-          title: "CRAVE",
+          title: "Discover",
         }}
       />
       <ModeSelection />
