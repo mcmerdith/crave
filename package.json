@@ -10,7 +10,9 @@
     "crave-app"
   ],
   "dependencies": {
-    "prettier": "^3.6.2"
+    "@react-native-community/slider": "5.0.1",
+    "prettier": "^3.6.2",
+    "react-native-custom-slider": "^1.0.2"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^5.0.2"
