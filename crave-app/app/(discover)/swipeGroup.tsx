@@ -7,8 +7,8 @@ export default function SwipeGroup() {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>This is the group swipe page</Text>
-      <Link href="/Discover" asChild>
-        <Button title="Go to index" />
+      <Link href="/(tabs)" asChild>
+        <Button title="Go to Discover" />
       </Link>
     </View>
   );

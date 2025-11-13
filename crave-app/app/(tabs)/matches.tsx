@@ -7,7 +7,7 @@ export default function Matches() {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>This is the matches tab</Text>
-      <Link href="/Discover" asChild>
+      <Link href="/(tabs)" asChild>
         <Button title="Go to index" />
       </Link>
     </View>

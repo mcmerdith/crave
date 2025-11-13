@@ -15,11 +15,11 @@ export default function ModeSelection() {
   const router = useRouter();
 
   const handleStartSolo = () => {
-    router.push("/(tabs)/Discover/swipeSolo");
+    router.push("/(discover)/swipeSolo");
   };
 
   const handleStartGroup = () => {
-    router.push("/(tabs)/Discover/swipeGroup");
+    router.push("/(discover)/swipeGroup");
   };
 
   return (

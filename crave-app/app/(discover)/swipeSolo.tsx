@@ -25,7 +25,7 @@ type Restaurant = {
   image: string;
 };
 
-export default function SwipeScreen() {
+export default function SwipeSolo() {
   const ref = useRef<SwiperCardRefType>(null);
   const renderCard = useCallback((item: Restaurant) => {
     return (
@@ -95,8 +95,8 @@ export default function SwipeScreen() {
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text>This is the solo swipe page</Text>
-        <Link href="/Discover" asChild>
-          <Button title="Go to index" />
+        <Link href="/(tabs)" asChild>
+          <Button title="Go to Discover" />
         </Link>
       </View>
     </GestureHandlerRootView>
