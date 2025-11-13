@@ -35,14 +35,25 @@ export default function SwipeSolo() {
           style={styles.renderCardImage}
           resizeMode="cover"
         />
-        <View style={{ position: "absolute", bottom: 20, left: 20 }}>
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "#fff" }}>
+        <View
+          style={{
+            position: "absolute",
+            bottom: 20,
+            left: 20,
+            backgroundColor: "#510df2aa",
+            padding: 10,
+            borderRadius: 8,
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, fontWeight: "bold", color: "#000000ff" }}
+          >
             {item.name}
           </Text>
-          <Text style={{ color: "#fff", fontSize: 16 }}>
+          <Text style={{ color: "#000000ff", fontSize: 16 }}>
             {item.cuisine} • {item.price} • ⭐ {item.rating}
           </Text>
-          <Text style={{ color: "#ddd", fontSize: 14 }}>
+          <Text style={{ color: "#1f0808ff", fontSize: 14 }}>
             {item.distance} away
           </Text>
         </View>
