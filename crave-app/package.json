@@ -46,6 +46,7 @@
     "react-native-svg": "^15.14.0",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
+    "rn-swiper-list": "^3.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

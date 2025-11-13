@@ -9,14 +9,17 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { User, Users } from "lucide-react-native";
 import { theme } from "@/theme";
+import { useRouter } from "expo-router";
 
 export default function ModeSelection() {
+  const router = useRouter();
+
   const handleStartSolo = () => {
-    console.log("Solo mode started");
+    router.push("/(tabs)/Discover/swipe");
   };
 
   const handleStartGroup = () => {
-    console.log("Group mode started");
+    router.push("/(tabs)/Discover/swipeGroup");
   };
 
   return (

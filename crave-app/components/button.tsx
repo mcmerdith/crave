@@ -1,6 +1,10 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent } from "react-native";
-
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  GestureResponderEvent,
+} from "react-native";
 
 type ButtonProps = {
   title: string;
@@ -10,36 +14,35 @@ type ButtonProps = {
 };
 
 export default function Button({
-    title,
-    onPress,
-    variant = "default",
-    size = "medium",
+  title,
+  onPress,
+  variant = "default",
+  size = "medium",
 }: ButtonProps) {
   const backgroundColor =
     variant === "destructive"
       ? "#ef4444"
       : variant === "outline"
-      ? "transparent"
-      : "#2563eb";
+        ? "transparent"
+        : "#2563eb";
 
-    const textColor = variant === "outline" ? "#2563eb" : "#ffffff";
+  const textColor = variant === "outline" ? "#2563eb" : "#ffffff";
 
-    const paddingVertical =
-        size === "small" ? 8 : size === "large" ? 16 : 12;
-    const paddingHorizontal =
-        size === "small" ? 12 : size === "large" ? 24 : 16;
+  const paddingVertical = size === "small" ? 8 : size === "large" ? 16 : 12;
+  const paddingHorizontal = size === "small" ? 12 : size === "large" ? 24 : 16;
 
-
-    return (    <TouchableOpacity
+  return (
+    <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
         {
           backgroundColor,
           paddingVertical,
-          paddingHorizontal},
-          variant === "outline" && styles.outline,
-        ]}
+          paddingHorizontal,
+        },
+        variant === "outline" && styles.outline,
+      ]}
     >
       <Text style={[styles.text, { color: textColor }]}>{title}</Text>
     </TouchableOpacity>
@@ -57,5 +60,4 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#2563eb",
   },
-}); 
-
+});

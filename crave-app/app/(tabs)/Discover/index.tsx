@@ -4,7 +4,8 @@ import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 import { ScrollView } from "react-native";
-import { Stack } from "expo-router";
+import { View, Text, Button } from "react-native";
+import { Link } from "expo-router";
 
 export default function Index() {
   return (
@@ -30,6 +31,9 @@ export default function Index() {
           data={DiscoverData}
           onViewAll={() => console.log("View All pressed")}
         />
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        ></View>
       </ScrollView>
     </SafeAreaView>
   );

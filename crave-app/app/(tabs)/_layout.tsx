@@ -11,7 +11,7 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <Tabs>
         <Tabs.Screen
-          name="index"
+          name="Discover"
           options={{
             headerShown: false,
             title: "Discover",
