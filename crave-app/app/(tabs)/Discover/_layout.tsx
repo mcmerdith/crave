@@ -8,7 +8,7 @@ export default function ProfileStackLayout() {
         options={{ title: "Discover", headerShown: false }}
       />
       <Stack.Screen
-        name="swipe"
+        name="swipeSolo"
         options={{ title: "Swipe", headerShown: false }}
       />
       <Stack.Screen

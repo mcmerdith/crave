@@ -4,38 +4,40 @@ import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 import { ScrollView } from "react-native";
-import { View, Text, Button } from "react-native";
-import { Link } from "expo-router";
+import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function Index() {
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: theme.colors.background,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-      }}
-    >
-      <ModeSelection />
-      <ScrollView>
-        <Carousel
-          title="Recent Cravings"
-          data={RecentsData}
-          onViewAll={() => console.log("View All pressed")}
-        />
-        <Carousel
-          title="Discover New"
-          data={DiscoverData}
-          onViewAll={() => console.log("View All pressed")}
-        />
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        ></View>
-      </ScrollView>
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          backgroundColor: theme.colors.background,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        }}
+      >
+        <ModeSelection />
+        <ScrollView>
+          <Carousel
+            title="Recent Cravings"
+            data={RecentsData}
+            onViewAll={() => console.log("View All pressed")}
+          />
+          <Carousel
+            title="Discover New"
+            data={DiscoverData}
+            onViewAll={() => console.log("View All pressed")}
+          />
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          ></View>
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
