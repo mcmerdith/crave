@@ -13,8 +13,15 @@ import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
 import { TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { Button } from "react-native";
+import type { WithSpringConfig } from "react-native-reanimated";
 
 const ICON_SIZE = 24;
+export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
+  damping: 200,
+  stiffness: 250,
+  mass: 15,
+  overshootClamping: true,
+};
 
 type Restaurant = {
   name: string;
@@ -40,20 +47,20 @@ export default function SwipeSolo() {
             position: "absolute",
             bottom: 20,
             left: 20,
-            backgroundColor: "#510df2aa",
+            backgroundColor: "#242424aa",
             padding: 10,
             borderRadius: 8,
           }}
         >
           <Text
-            style={{ fontSize: 24, fontWeight: "bold", color: "#000000ff" }}
+            style={{ fontSize: 24, fontWeight: "bold", color: "#ffffffff" }}
           >
             {item.name}
           </Text>
-          <Text style={{ color: "#000000ff", fontSize: 16 }}>
+          <Text style={{ color: "#ffffffff", fontSize: 16 }}>
             {item.cuisine} • {item.price} • ⭐ {item.rating}
           </Text>
-          <Text style={{ color: "#1f0808ff", fontSize: 14 }}>
+          <Text style={{ color: "#ffffffff", fontSize: 14 }}>
             {item.distance} away
           </Text>
         </View>
@@ -81,23 +88,29 @@ export default function SwipeSolo() {
           ref={ref}
           data={swipeData}
           cardStyle={styles.cardStyle}
+          disableTopSwipe={true}
+          swipeVelocityThreshold={300}
+          disableBottomSwipe={true}
           overlayLabelContainerStyle={styles.overlayLabelContainerStyle}
           renderCard={renderCard}
-          //   FlippedContent={renderFlippedCard}
+          //FlippedContent={renderFlippedCard}
           OverlayLabelRight={() => OverlayLabel("green")}
           OverlayLabelLeft={() => OverlayLabel("red")}
-          OverlayLabelTop={() => OverlayLabel("blue")}
-          OverlayLabelBottom={() => OverlayLabel("orange")}
+          //OverlayLabelTop={() => OverlayLabel("blue")}
+          //OverlayLabelBottom={() => OverlayLabel("orange")}
           onSwipedAll={() => console.log("All cards swiped")}
         />
       </View>
 
       <View style={styles.buttonsContainer}>
         {[
-          //   { icon: "sync", action: () => ref.current?.flipCard() },
-          { icon: "close", action: () => ref.current?.swipeLeft() },
-          { icon: "reload", action: () => ref.current?.swipeBack() },
-          { icon: "heart", action: () => ref.current?.swipeRight() },
+          //{ icon: "sync", action: () => ref.current?.flipCard() },
+          {
+            icon: "close",
+            action: () => ref.current?.swipeLeft(),
+          }, //dislike
+          { icon: "reload", action: () => ref.current?.swipeBack() }, //undo
+          { icon: "heart", action: () => ref.current?.swipeRight() }, //like
         ].map(({ icon, action }, i) => (
           <TouchableOpacity key={i} style={styles.button} onPress={action}>
             <AntDesign name={icon as any} size={ICON_SIZE} color="white" />

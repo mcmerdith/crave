@@ -7,6 +7,14 @@ import { ScrollView } from "react-native";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
+const SWIPE_SPRING_CONFIG: SpringConfig = {
+  damping: 2,
+  stiffness: 100,
+  mass: 100,
+  overshootClamping: true,
+};
+
 export default function Index() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
