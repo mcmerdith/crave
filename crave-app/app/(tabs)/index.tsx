@@ -4,34 +4,48 @@ import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 import { ScrollView } from "react-native";
-import { Stack } from "expo-router";
+import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
+const SWIPE_SPRING_CONFIG: SpringConfig = {
+  damping: 2,
+  stiffness: 100,
+  mass: 100,
+  overshootClamping: true,
+};
 
 export default function Index() {
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: theme.colors.background,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-      }}
-    >
-      <ModeSelection />
-      <ScrollView>
-        <Carousel
-          title="Recent Cravings"
-          data={RecentsData}
-          onViewAll={() => console.log("View All pressed")}
-        />
-        <Carousel
-          title="Discover New"
-          data={DiscoverData}
-          onViewAll={() => console.log("View All pressed")}
-        />
-      </ScrollView>
-    </SafeAreaView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          backgroundColor: theme.colors.background,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        }}
+      >
+        <ModeSelection />
+        <ScrollView>
+          <Carousel
+            title="Recent Cravings"
+            data={RecentsData}
+            onViewAll={() => console.log("View All pressed")}
+          />
+          <Carousel
+            title="Discover New"
+            data={DiscoverData}
+            onViewAll={() => console.log("View All pressed")}
+          />
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          ></View>
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
