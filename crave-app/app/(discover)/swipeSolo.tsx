@@ -14,6 +14,9 @@ import { TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { Button } from "react-native";
 import type { WithSpringConfig } from "react-native-reanimated";
+import { useRouter } from "expo-router";
+
+const router = useRouter();
 
 const ICON_SIZE = 24;
 export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
@@ -77,6 +80,11 @@ export default function SwipeSolo() {
     [],
   );
 
+  const doneSwiping = () => {
+    router.navigate("/sessionComplete");
+    console.log("done swiping");
+  };
+
   const OverlayLabel = (color: string) => (
     <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
   );
@@ -98,7 +106,7 @@ export default function SwipeSolo() {
           OverlayLabelLeft={() => OverlayLabel("red")}
           //OverlayLabelTop={() => OverlayLabel("blue")}
           //OverlayLabelBottom={() => OverlayLabel("orange")}
-          onSwipedAll={() => console.log("All cards swiped")}
+          onSwipedAll={() => doneSwiping}
         />
       </View>
 
@@ -118,7 +126,6 @@ export default function SwipeSolo() {
         ))}
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>This is the solo swipe page</Text>
         <Link href="/(tabs)" asChild>
           <Button title="Go to Discover" />
         </Link>
