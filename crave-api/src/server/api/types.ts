@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export type { AppRouter } from "./routers/index"
 
-const Place = z.object({
+export const Place = z.object({
   name: z.string(),
   primaryCuisine: z.string(),
   secondaryCuisines: z.string().array(),

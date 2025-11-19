@@ -2,6 +2,7 @@ import { publicProcedure, router } from "../trpc";
 import { PlacesClient } from "@googlemaps/places";
 import { Client } from "@googlemaps/google-maps-services-js";
 import { env } from "@/env";
+import { Place } from "../types";
 
 const places = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -41,6 +42,7 @@ async function search() {
         radius: toMeters(5)
       },
     },
+
   }, {
     otherArgs: {
       headers: {
@@ -53,9 +55,9 @@ async function search() {
 }
 
 export const placesRouter = router({
-  list: publicProcedure.query(async () => {
-    const res = await search()
-    return { places: res };
+  list: publicProcedure.output(Place.array()).query(async () => {
+    // const res = await search()
+    return [];
   }),
   // TODO
 });
