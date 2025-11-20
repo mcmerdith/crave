@@ -106,7 +106,7 @@ export default function SwipeSolo() {
           OverlayLabelLeft={() => OverlayLabel("red")}
           //OverlayLabelTop={() => OverlayLabel("blue")}
           //OverlayLabelBottom={() => OverlayLabel("orange")}
-          onSwipedAll={() => doneSwiping}
+          onSwipedAll={() => doneSwiping()}
         />
       </View>
 
