@@ -32,13 +32,13 @@ const Filters = () => {
           minimumValue={1}
           maximumValue={4}
           step={1}
-          minimumTrackTintColor="#4CAF50"
+          minimumTrackTintColor="#a542fb"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#4CAF50"
+          thumbTintColor="#7b13ca"
           value={priceRange}
           onValueChange={setPriceRange}
         />
-
+        
         {/* Distance Slider */}
         <Text style={styles.label}>Distance ({distance} mi)</Text>
         <Slider
@@ -46,9 +46,9 @@ const Filters = () => {
           minimumValue={1}
           maximumValue={50}
           step={1}
-          minimumTrackTintColor="#2196F3"
+          minimumTrackTintColor="#f91671ff"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#2196F3"
+          thumbTintColor="#f91671ff"
           value={distance}
           onValueChange={setDistance}
         />
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   priceLabelActive: {
-    color: "#4CAF50",
+    color: "#7b13ca",
     fontWeight: "bold",
   },
   applyButton: {
