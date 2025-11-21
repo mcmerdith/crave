@@ -6,6 +6,7 @@ import Carousel from "@/components/Carousel";
 import { ScrollView } from "react-native";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import LocationHeader from "@/app/(discover)/locationHeader";
 
 import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
 const SWIPE_SPRING_CONFIG: SpringConfig = {
@@ -28,6 +29,7 @@ export default function Index() {
           alignItems: "flex-start",
         }}
       >
+        <LocationHeader userName="User" />
         <ModeSelection />
         <ScrollView>
           <Carousel

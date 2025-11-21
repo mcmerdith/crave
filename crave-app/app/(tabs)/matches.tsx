@@ -62,18 +62,19 @@ export default function Matches() {
 
           <View style={styles.cardsGrid}>
             {MatchedRestaurants.map((item) => (
-              <Card
-                key={item.name}
-                name={item.name}
-                cuisine={item.cuisine}
-                rating={item.rating}
-                distance={item.distance}
-                price={item.price}
-                image={item.image}
-              />
+              <View key={item.name} style={styles.cardWrapper}>
+                <Card
+                  name={item.name}
+                  cuisine={item.cuisine}
+                  rating={item.rating}
+                  distance={item.distance}
+                  price={item.price}
+                  image={item.image}
+                />
+              </View>
             ))}
           </View>
-        </ScrollView>
+          </ScrollView>
       ) : (
         <View style={styles.emptyContainer}>
           <Text style={styles.heartEmoji}>💚</Text>
@@ -142,8 +143,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardsGrid: {
-    flex: 1,
+    flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+  },
+  cardWrapper: {
+    width: "48%",
+    marginBottom: 16,
   },
 });

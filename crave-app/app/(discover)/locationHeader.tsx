@@ -62,6 +62,7 @@ export default function LocationHeader({userName = "User"}) {
         </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    width: "100%"
   },
   subtext: {
     fontSize: 14,
