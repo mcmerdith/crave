@@ -1,22 +1,12 @@
 import { z } from "zod";
 
-export type { AppRouter } from "./routers/index"
+export type { AppRouter } from "./routers/index";
 
-export const Place = z.object({
-  name: z.string(),
-  primaryCuisine: z.string(),
-  secondaryCuisines: z.string().array(),
-  rating: z.number(),
-  distance: z.string(),
-  location: z.string(),
-  price: z.string(),
-  image: z.url(),
-  serves: {
-    beer: z.boolean(),
-    breakfast: z.boolean(),
-    // TODO
-  },
-  goodForGroups: z.boolean(),
-  cuisine: z.string().array()
+export * from "./types/autocomplete";
+export * from "./types/places";
+
+export const Coordinate = z.object({
+  latitude: z.number(),
+  longitude: z.number(),
 });
-export type Place = z.infer<typeof Place>;
+export type Coordinate = z.infer<typeof Coordinate>;
