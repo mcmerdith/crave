@@ -56,42 +56,52 @@ export const RestaurantAttribute = z.enum([
 export type RestaurantAttribute = z.infer<typeof RestaurantAttribute>;
 
 export const PlacesApiPlace = z.object({
-  name: z.string(), // essentials (ids), pro search
-  id: z.string(), // essentials (ids), pro search
-  displayName: z.object({ text: z.string() }), // pro, pro search
-  types: z.string().array(), // essentials, pro search TODO: make this typed
-  formattedAddress: z.string(), // essentials, pro search
-  location: Coordinate, // essentials, pro search
-  rating: z.number(), // enterprise, enterprise search
-  googleMapsUri: z.string(), // pro, pro search
-  websiteUri: z.string().optional(), // enterprise, enterprise search
-  // currentOpeningHours: z.unknown(), // enterprise, enterprise search
-  // regularOpeningHours: z.unknown(), // enterprise, enterprise search TODO: make this typed
-  // photos: z.unknown().array(), // essentials (ids), pro search TODO: make this typed
-  businessStatus: z.string(), // pro, pro search TODO: enum
-  priceLevel: z.string(), // enterprise, enterprise search TODO: enum
-  priceRange: z
-    .object({
-      startPrice: z.object({
-        currencyCode: z.string(),
-        units: z.coerce.number(),
-        nanos: z.number(),
-      }),
-      endPrice: z
-        .object({
-          currencyCode: z.string(),
-          units: z.coerce.number(),
-          nanos: z.number(),
-        })
-        .nullable(),
-    })
-    .nullable(), // enterprise, enterprise search TODO: enum
+  /* SKU Text Search Essentials ID Only */
+  id: z.string(),
+  name: z.string(),
+  /* SKU Text Search Pro */
+  displayName: z.object({ text: z.string() }),
+  types: z.string().array(), // TODO: make this typed
+  formattedAddress: z.string(),
+  location: Coordinate,
+  googleMapsUri: z.string(),
+  businessStatus: z.string(), // TODO: enum
+  photos: z.unknown().array(), // TODO: make this typed
+  /* SKU Text Search Enterprise */
+  // currentOpeningHours: z.unknown(),
+  // regularOpeningHours: z.unknown(), // TODO: make this typed
+  // rating: z.number(),
+  // websiteUri: z.string().optional(),
+  // priceLevel: z.string(), // TODO: enum
+  // priceRange: z
+  //   .object({
+  //     startPrice: z.object({
+  //       currencyCode: z.string(),
+  //       units: z.coerce.number(),
+  //       nanos: z.number(),
+  //     }),
+  //     endPrice: z
+  //       .object({
+  //         currencyCode: z.string(),
+  //         units: z.coerce.number(),
+  //         nanos: z.number(),
+  //       })
+  //       .nullable(),
+  //   })
+  //   .nullable(), // TODO: enum
+  /* SKU Text Search Enterprise + Atmosphere */
+  // curbsidePickup
+  // delivery
+  // dineIn
+  // goodForGroups
+  // takeout
+  // serves* -> (beer, breakfast, brunch, cocktails, coffee, dessert, dinner, lunch, vegetarian, wine)
 });
 export type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 
 export const Restaurant = PlacesApiPlace.transform((p) => ({
-  resourceName: p.name,
   id: p.id,
+  resourceName: p.name,
   displayName: p.displayName.text,
   cuisines: p.types
     .map((t) => t.replace(/_restaurant$/, ""))
@@ -103,10 +113,14 @@ export const Restaurant = PlacesApiPlace.transform((p) => ({
   address: p.formattedAddress,
   coordinates: p.location,
   mapsUri: p.googleMapsUri,
-  websiteUri: p.websiteUri,
-  // regularHours: p.regularOpeningHours,
-  // photos: p.photos,
   businessStatus: p.businessStatus,
-  priceRange: p.priceRange,
+  // photos: p.photos,
+  // websiteUri: p.websiteUri,
+  // currentHours: p.currentOpeningHours,
+  // regularHours: p.regularOpeningHours,
+  // rating: p.rating,
+  // websiteUri: p.websiteUri,
+  // priceLevel: p.priceLevel,
+  // priceRange: p.priceRange,
 }));
 export type Location = z.infer<typeof Restaurant>;
