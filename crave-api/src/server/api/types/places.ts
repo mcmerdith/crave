@@ -1,5 +1,14 @@
 import { z } from "zod";
-import { Coordinate } from "@/server/api/types";
+
+import { Coordinate } from "@/server/api/types/geography";
+
+export const SearchPlacesParams = z.object({
+  center: Coordinate,
+  radius: z.number().optional(),
+  maxPriceLevel: z.number().min(0).max(5).optional(),
+  sort: z.enum(["RELEVANCE", "DISTANCE"]).optional(),
+});
+export type SearchPlacesParams = z.infer<typeof SearchPlacesParams>;
 
 /* Defines for types returned by the places api. They appear in responses suffixed by "_restaurant" */
 
@@ -80,7 +89,7 @@ export const PlacesApiPlace = z.object({
 });
 export type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 
-export const Location = PlacesApiPlace.transform((p) => ({
+export const Restaurant = PlacesApiPlace.transform((p) => ({
   resourceName: p.name,
   id: p.id,
   displayName: p.displayName.text,
@@ -100,4 +109,4 @@ export const Location = PlacesApiPlace.transform((p) => ({
   businessStatus: p.businessStatus,
   priceRange: p.priceRange,
 }));
-export type Location = z.infer<typeof Location>;
+export type Location = z.infer<typeof Restaurant>;

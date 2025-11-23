@@ -7,7 +7,7 @@ export const AutocompleteParams = z.object({
 export type AutocompleteParams = z.infer<typeof AutocompleteParams>;
 
 export const GetAutocompleteCoordinatesParams = z.object({
-  resourceName: z.string(),
+  resourceName: z.string().refine((s) => s.startsWith("places/")),
   token: z.string(),
 });
 export type GetAutocompleteCoordinatesParams = z.infer<

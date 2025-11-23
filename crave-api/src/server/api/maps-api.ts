@@ -1,15 +1,18 @@
 import { PlacesClient } from "@googlemaps/places";
 import { Client } from "@googlemaps/google-maps-services-js";
 import { env } from "@/env";
+import { newUUID, toMeters } from "@/utils";
 import {
-  Coordinate,
-  Location,
-  PlacesApiPlace,
   AutocompleteParams,
   GetAutocompleteCoordinatesParams,
   PlacesApiAutocompleteResult,
-} from "@/server/api/types";
-import { newUUID, toMeters } from "@/utils";
+} from "@/server/api/types/autocomplete";
+import { Coordinate } from "@/server/api/types/geography";
+import {
+  PlacesApiPlace,
+  Restaurant,
+  SearchPlacesParams,
+} from "@/server/api/types/places";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -105,12 +108,7 @@ export async function searchPlaces({
   radius = toMeters(10),
   maxPriceLevel = 5,
   // sort = "RELEVANCE",
-}: {
-  center: Coordinate;
-  radius?: number;
-  maxPriceLevel?: number;
-  sort?: "RELEVANCE" | "DISTANCE";
-}) {
+}: SearchPlacesParams) {
   const [data] = await placesApi.searchText(
     {
       textQuery: "restaurants nearby",
@@ -137,5 +135,5 @@ export async function searchPlaces({
   );
   console.debug(`found ${data.places?.length} locations`);
   if (!data.places) return [];
-  return Location.array().parse(data.places);
+  return Restaurant.array().parse(data.places);
 }
