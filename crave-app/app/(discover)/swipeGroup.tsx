@@ -1,201 +1,225 @@
+import React, { useCallback, useRef } from "react";
 import {
-  View,
-  Text,
+  Image,
   StyleSheet,
+  Text,
+  View,
   TouchableOpacity,
-  Animated,
-  ScrollView,
+  Button,
+  // type ImageSourcePropType,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
-import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/startSwipingButton";
-import { useRouter } from "expo-router";
-import BackButton from "@/components/backButton";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AntDesign } from "@expo/vector-icons";
+import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
+import { Link } from "expo-router";
+import type { WithSpringConfig } from "react-native-reanimated";
+
+const ICON_SIZE = 24;
+export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
+  damping: 200,
+  stiffness: 250,
+  mass: 15,
+  overshootClamping: true,
+};
+
+type Restaurant = {
+  name: string;
+  cuisine: string;
+  rating: number;
+  distance: string;
+  price: string;
+  image: string;
+};
 
 export default function SwipeGroup() {
-  const router = useRouter();
-  const sessionCode = "COBRCY";
-
-  const handleStartSolo = () => {
-    router.push("/swipeSolo");
-  };
-
-  const people = [
-    { name: "You", emoji: "🧑‍💼", host: true },
-    { name: "Clara", emoji: "👱‍♀️" },
-    { name: "Matt", emoji: "👱‍♂️" },
-    { name: "Ellie", emoji: "👱‍♀️", joined: true },
-  ];
-
-  // Animation refs for each item
-  const anims = useRef(people.map(() => new Animated.Value(0))).current;
-
-  useEffect(() => {
-    const animations = anims.map((anim, i) =>
-      Animated.timing(anim, {
-        toValue: 1,
-        duration: 500,
-        delay: i * 400, // <-- Stagger animation every 0.4s
-        useNativeDriver: true,
-      }),
+  const ref = useRef<SwiperCardRefType>(null);
+  const renderCard = useCallback((item: Restaurant) => {
+    return (
+      <View style={styles.renderCardContainer}>
+        <Image
+          source={{ uri: item.image }}
+          style={styles.renderCardImage}
+          resizeMode="cover"
+        />
+        <View
+          style={{
+            position: "absolute",
+            bottom: 20,
+            left: 20,
+            backgroundColor: "#242424aa",
+            padding: 10,
+            borderRadius: 8,
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, fontWeight: "bold", color: "#ffffffff" }}
+          >
+            {item.name}
+          </Text>
+          <Text style={{ color: "#ffffffff", fontSize: 16 }}>
+            {item.cuisine} • {item.price} • ⭐ {item.rating}
+          </Text>
+          <Text style={{ color: "#ffffffff", fontSize: 14 }}>
+            {item.distance} away
+          </Text>
+        </View>
+      </View>
     );
-
-    Animated.stagger(300, animations).start();
   }, []);
 
-  const copyCode = () => {
-    Clipboard.setStringAsync(sessionCode);
-  };
+  // const renderFlippedCard = useCallback(
+  //   (_: ImageSourcePropType, index: number) => (
+  //     <View style={styles.renderFlippedCardContainer}>
+  //       <Text style={styles.text}>Flipped content 🚀 {index}</Text>
+  //     </View>
+  //   ),
+  //   [],
+  // );
+
+  const OverlayLabel = (color: string) => (
+    <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
+  );
 
   return (
-    <View style={styles.container}>
-      {/* Back */}
-      <BackButton />
-      <Text style={styles.title}>Group Lobby</Text>
-      <Text style={styles.subtitle}>Share the code with your friends</Text>
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.subContainer}>
+        <Swiper
+          ref={ref}
+          data={swipeData}
+          cardStyle={styles.cardStyle}
+          disableTopSwipe={true}
+          swipeVelocityThreshold={300}
+          disableBottomSwipe={true}
+          overlayLabelContainerStyle={styles.overlayLabelContainerStyle}
+          renderCard={renderCard}
+          //FlippedContent={renderFlippedCard}
+          OverlayLabelRight={() => OverlayLabel("green")}
+          OverlayLabelLeft={() => OverlayLabel("red")}
+          //OverlayLabelTop={() => OverlayLabel("blue")}
+          //OverlayLabelBottom={() => OverlayLabel("orange")}
+          onSwipedAll={() => console.log("All cards swiped")}
+        />
+      </View>
 
-      {/* Code Card */}
-      <LinearGradient colors={["#FF8A00", "#E92E7F"]} style={styles.codeCard}>
-        <Text style={styles.sessionLabel}>Session Code</Text>
-
-        <View style={styles.codeRow}>
-          <Text style={styles.sessionCode}>{sessionCode}</Text>
-          <TouchableOpacity onPress={copyCode}>
-            <Ionicons name="copy-outline" size={28} color="#fff" />
+      <View style={styles.buttonsContainer}>
+        {[
+          //{ icon: "sync", action: () => ref.current?.flipCard() },
+          {
+            icon: "close",
+            action: () => ref.current?.swipeLeft(),
+          }, //dislike
+          { icon: "reload", action: () => ref.current?.swipeBack() }, //undo
+          { icon: "heart", action: () => ref.current?.swipeRight() }, //like
+        ].map(({ icon, action }, i) => (
+          <TouchableOpacity key={i} style={styles.button} onPress={action}>
+            <AntDesign name={icon as any} size={ICON_SIZE} color="white" />
           </TouchableOpacity>
-        </View>
-
-        <Text style={styles.smallText}>Friends can join using this code</Text>
-      </LinearGradient>
-
-      <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text>
-
-      {/* Scrollable List */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {people.map((item, idx) => {
-          const fade = anims[idx].interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-          });
-
-          const slide = anims[idx].interpolate({
-            inputRange: [0, 1],
-            outputRange: [20, 0], // slide upward
-          });
-
-          return (
-            <Animated.View
-              key={idx}
-              style={[
-                styles.lobbyItem,
-                {
-                  opacity: fade,
-                  transform: [{ translateY: slide }],
-                },
-              ]}
-            >
-              <Text style={styles.emoji}>{item.emoji}</Text>
-
-              <View>
-                <Text style={styles.name}>{item.name}</Text>
-                {item.host && <Text style={styles.host}>Host</Text>}
-              </View>
-
-              {item.joined && (
-                <View style={styles.joinedBadge}>
-                  <Text style={styles.joinedText}>Just joined</Text>
-                </View>
-              )}
-            </Animated.View>
-          );
-        })}
-
-        <View style={{ height: 80 }} />
-      </ScrollView>
-      <StartSwipingButton
-        canStart={people.length > 1}
-        onPress={() => {
-          handleStartSolo();
-        }}
-      />
-    </View>
+        ))}
+      </View>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Link href="/(tabs)" asChild>
+          <Button title="Go to Discover" />
+        </Link>
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
-// --- styles ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
-    backgroundColor: "#fff",
-    paddingTop: 60,
-  },
-
-  backButton: { marginBottom: 10 },
-  backText: { fontSize: 18, color: "#555" },
-
-  title: { fontSize: 28, fontWeight: "700" },
-  subtitle: { color: "#777", marginBottom: 20 },
-
-  codeCard: {
-    width: "100%",
-    borderRadius: 18,
-    padding: 25,
-    marginBottom: 25,
-  },
-  sessionLabel: {
-    textAlign: "center",
-    color: "#fff",
-    marginBottom: 6,
-  },
-  sessionCode: {
-    fontSize: 38,
-    color: "#fff",
-    fontWeight: "700",
-    letterSpacing: 4,
-    marginRight: 10,
-  },
-  codeRow: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
   },
-  smallText: {
-    textAlign: "center",
-    color: "#fff",
-    marginTop: 4,
-  },
-
-  lobbyTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-
-  lobbyItem: {
-    backgroundColor: "#f5f5f7",
-    padding: 18,
-    borderRadius: 12,
-    flexDirection: "row",
+  subContainer: {
+    flex: 1,
     alignItems: "center",
-    marginBottom: 12,
+    justifyContent: "center",
   },
-  emoji: { fontSize: 30, marginRight: 15 },
-  name: { fontSize: 18, fontWeight: "600" },
-  host: { fontSize: 12, color: "#666" },
-
-  joinedBadge: {
-    marginLeft: "auto",
-    backgroundColor: "#d8ffdf",
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 12,
+  buttonsContainer: {
+    flexDirection: "row",
+    bottom: 34,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 24,
   },
-  joinedText: {
-    color: "#2e9c4f",
-    fontWeight: "600",
-    fontSize: 12,
+  button: {
+    height: 50,
+    borderRadius: 40,
+    aspectRatio: 1,
+    backgroundColor: "#3A3D45",
+    elevation: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  renderCardContainer: {
+    borderRadius: 15,
+    width: "100%",
+    height: "100%",
+  },
+  renderFlippedCardContainer: {
+    borderRadius: 15,
+    backgroundColor: "#baeee5",
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cardStyle: {
+    width: "90%",
+    height: "90%",
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  renderCardImage: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 15,
+  },
+  overlayLabelContainer: {
+    borderRadius: 15,
+    height: "90%",
+    width: "90%",
+  },
+  overlayLabelContainerStyle: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: "#001a72",
   },
 });
+
+const swipeData = [
+  {
+    name: "Taverna",
+    cuisine: "Italian",
+    rating: 4.8,
+    distance: "0.5 mi",
+    price: "$$",
+    image:
+      "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
+  },
+  {
+    name: "El Diablo",
+    cuisine: "Mexican",
+    rating: 4.4,
+    distance: "0.5 mi",
+    price: "$",
+    image:
+      "https://images.squarespace-cdn.com/content/v1/58b57e8b2e69cffff969c6cd/1488299173082-81E2GCSB63YW66RKF8HO/Burrito_wood_retouched.jpg?format=1500w",
+  },
+  {
+    name: "m2o Burger",
+    cuisine: "American",
+    rating: 4.9,
+    distance: "0.4 mi",
+    price: "$",
+    image:
+      "https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_1200,q_auto,fl_lossy,dpr_auto,c_fill,f_auto,h_800,g_auto/wtisrayz07qylnbwba6e",
+  },
+];
