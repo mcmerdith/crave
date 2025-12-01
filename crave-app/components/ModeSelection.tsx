@@ -19,7 +19,7 @@ export default function ModeSelection() {
   };
 
   const handleStartGroup = () => {
-    router.push("/swipeGroup");
+    router.push("/groupLobby");
   };
 
   return (

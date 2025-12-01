@@ -11,6 +11,10 @@ export default function ProfileStackLayout() {
         name="swipeGroup"
         options={{ title: "Swipe Group", headerShown: false }}
       />
+      <Stack.Screen
+        name="groupLobby"
+        options={{ title: "groupLobby", headerShown: false }}
+      />
     </Stack>
   );
 }
