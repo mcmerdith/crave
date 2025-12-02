@@ -1,7 +1,7 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "@firebase/app";
 import { getFirestore } from "@firebase/firestore";
 // @ts-expect-error getReactNativePersistence is not exported from @firebase/auth
-import {  initializeAuth, getReactNativePersistence } from "@firebase/auth";
+import { initializeAuth, getReactNativePersistence } from "@firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
@@ -14,13 +14,11 @@ const firebaseConfig = {
   measurementId: "G-FG8NEZ5HMF",
 };
 
-console.debug("Initializing Firebase")
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
 
 export { firestore, auth };

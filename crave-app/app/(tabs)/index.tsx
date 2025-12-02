@@ -8,6 +8,9 @@ import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
+import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { CardProps } from "@/components/Card";
 const SWIPE_SPRING_CONFIG: SpringConfig = {
   damping: 2,
   stiffness: 100,
@@ -16,6 +19,44 @@ const SWIPE_SPRING_CONFIG: SpringConfig = {
 };
 
 export default function Index() {
+  const { data: location } = useQuery(
+    trpc.places.autocomplete.queryOptions({ query: "Newark, DE" }),
+  );
+  const { data: coordinates } = useQuery(
+    trpc.places.getAutocompleteCoordinates.queryOptions({
+      resourceName: location?.suggestions[0]?.resourceName,
+      token: location?.token,
+    }),
+  );
+  const { data: places } = useQuery(
+    trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
+  );
+  const RecentsData = places?.map(
+    (p): CardProps => ({
+      name: p.displayName,
+      cuisine: p.cuisines.length ? p.cuisines[0] : "American",
+      rating: p.rating,
+      distance: "5mi",
+      image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
+      price: `$${p.priceRange.startPrice.units}${
+        p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
+      }`,
+    }),
+  );
+  const DiscoverData = places
+    ?.map(
+      (p): CardProps => ({
+        name: p.displayName,
+        cuisine: p.cuisines.length ? p.cuisines[0] : "American",
+        rating: p.rating,
+        distance: "5mi",
+        image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
+        price: `$${p.priceRange.startPrice.units}${
+          p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
+        }`,
+      }),
+    )
+    .reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
@@ -29,15 +70,15 @@ export default function Index() {
         }}
       >
         <ModeSelection />
-        <ScrollView>
+        <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
           <Carousel
             title="Recent Cravings"
-            data={RecentsData}
+            data={RecentsData ?? []}
             onViewAll={() => console.log("View All pressed")}
           />
           <Carousel
             title="Discover New"
-            data={DiscoverData}
+            data={DiscoverData ?? []}
             onViewAll={() => console.log("View All pressed")}
           />
           <View

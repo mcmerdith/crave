@@ -13,6 +13,9 @@ import {
   Restaurant,
   SearchPlacesParams,
 } from "@/server/api/types/places";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { z } from "zod";
+import path from "path";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -31,6 +34,12 @@ function toTypes(attributes?: string[]): string[] {
 
 export async function autocomplete({ query, token }: AutocompleteParams) {
   token ??= newUUID(); // generate a new token if none is provided
+  const cache = await readCache(
+    "autocomplete",
+    query,
+    PlacesApiAutocompleteResult.array(),
+  );
+  if (cache) return { suggestions: cache, token };
   const [data] = await placesApi.autocompletePlaces(
     {
       input: query,
@@ -48,6 +57,7 @@ export async function autocomplete({ query, token }: AutocompleteParams) {
       },
     },
   );
+  await writeCache("autocomplete", query, data.suggestions);
   return {
     suggestions: data.suggestions
       ? PlacesApiAutocompleteResult.array().parse(data.suggestions)
@@ -60,6 +70,12 @@ export async function getAutocompleteCoordinates({
   resourceName,
   token,
 }: GetAutocompleteCoordinatesParams) {
+  const cache = await readCache(
+    "autocomplete_coordinates",
+    resourceName,
+    Coordinate,
+  );
+  if (cache) return cache;
   const [data] = await placesApi.getPlace(
     {
       name: resourceName,
@@ -71,7 +87,7 @@ export async function getAutocompleteCoordinates({
       },
     },
   );
-
+  await writeCache("autocomplete_coordinates", resourceName, data.location);
   return Coordinate.parse(data.location);
 }
 
@@ -109,6 +125,12 @@ export async function searchPlaces({
   maxPriceLevel = 5,
   // sort = "RELEVANCE",
 }: SearchPlacesParams) {
+  const cache = await readCache(
+    "places",
+    `${center.latitude}_${center.longitude}`,
+    Restaurant.array(),
+  );
+  if (cache) return cache;
   const [data] = await placesApi.searchText(
     {
       textQuery: "restaurants nearby",
@@ -133,7 +155,65 @@ export async function searchPlaces({
       },
     },
   );
-  console.debug(`found ${data.places?.length} locations`);
+  await writeCache(
+    "places",
+    `${center.latitude}_${center.longitude}`,
+    data.places,
+  );
   if (!data.places) return [];
   return Restaurant.array().parse(data.places);
+}
+
+function isInsignificantError(error: unknown): boolean {
+  return (
+    !error ||
+    typeof error !== "object" ||
+    !("code" in error) ||
+    error.code === "ENOENT" ||
+    error.code === "EEXIST"
+  );
+}
+
+async function readCache<Parser extends z.ZodType>(
+  prefix: string,
+  identifier: string,
+  parser: Parser,
+): Promise<z.output<Parser> | null> {
+  if (env.NODE_ENV !== "development") return null;
+  try {
+    const filename = `${prefix}-${identifier}.json`.replace(
+      /[/\\:*?"<>|#%]/g,
+      "_",
+    );
+    const data = await readFile(path.join("cache", filename), {
+      encoding: "utf-8",
+    });
+    console.debug(`[Places-API] Using cache file ${filename}`);
+    return parser.parse(JSON.parse(data));
+  } catch (error) {
+    if (!isInsignificantError(error)) throw error;
+  }
+  return null;
+}
+
+async function writeCache(prefix: string, identifier: string, data: unknown) {
+  if (env.NODE_ENV !== "development") return;
+  try {
+    await mkdir("cache");
+  } catch (error) {
+    if (!isInsignificantError(error)) throw error;
+  }
+  try {
+    const filename = `${prefix}-${identifier}.json`.replace(
+      /[/\\:*?"<>|#%]/g,
+      "_",
+    );
+    console.debug(`[Places-API] Writing cache file ${filename}`);
+    await writeFile(path.join("cache", filename), JSON.stringify(data), {
+      encoding: "utf-8",
+    });
+  } catch (error) {
+    console.error("Writing to cache file failed!");
+    if (!isInsignificantError(error)) throw error;
+  }
 }

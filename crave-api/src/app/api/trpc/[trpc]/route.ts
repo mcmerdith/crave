@@ -7,6 +7,9 @@ function handler(req: Request) {
     req,
     router: appRouter,
     createContext: ({ req }) => createContext(req),
+    responseMeta: () => ({
+      headers: { "Access-Control-Allow-Origin": "http://localhost:8081" },
+    }),
   });
 }
 export { handler as GET, handler as POST };

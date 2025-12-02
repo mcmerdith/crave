@@ -23,20 +23,48 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
     }, _trpc_server.TRPCDecorateCreateRouterOptions<{
         search: _trpc_server.TRPCQueryProcedure<{
             input: {
-                center: {
+                center?: {
                     latitude: number;
                     longitude: number;
-                };
+                } | undefined;
                 radius?: number | undefined;
                 maxPriceLevel?: number | undefined;
                 sort?: "RELEVANCE" | "DISTANCE" | undefined;
             };
-            output: never[];
+            output: {
+                id: string;
+                resourceName: string;
+                displayName: string;
+                cuisines: RestaurantCuisine[];
+                attributes: RestaurantAttribute[];
+                types: string[];
+                address: string;
+                coordinates: {
+                    latitude: number;
+                    longitude: number;
+                };
+                mapsUri: string;
+                businessStatus: string;
+                photos: unknown[];
+                rating: number;
+                priceRange: {
+                    startPrice: {
+                        currencyCode: string;
+                        units: number;
+                        nanos: number;
+                    };
+                    endPrice: {
+                        currencyCode: string;
+                        units: number;
+                        nanos: number;
+                    } | null;
+                };
+            }[] | null;
             meta: object;
         }>;
         autocomplete: _trpc_server.TRPCQueryProcedure<{
             input: {
-                query: string;
+                query?: string | undefined;
                 token?: string | undefined;
             };
             output: {
@@ -46,18 +74,18 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                     resourceName: string;
                 }[];
                 token: string;
-            };
+            } | null;
             meta: object;
         }>;
         getAutocompleteCoordinates: _trpc_server.TRPCQueryProcedure<{
             input: {
-                resourceName: string;
-                token: string;
+                resourceName?: string | undefined;
+                token?: string | undefined;
             };
             output: {
                 latitude: number;
                 longitude: number;
-            };
+            } | null;
             meta: object;
         }>;
     }>>;
@@ -152,8 +180,8 @@ declare const RestaurantAttribute: z.ZodEnum<{
 }>;
 type RestaurantAttribute = z.infer<typeof RestaurantAttribute>;
 declare const PlacesApiPlace: z.ZodObject<{
-    name: z.ZodString;
     id: z.ZodString;
+    name: z.ZodString;
     displayName: z.ZodObject<{
         text: z.ZodString;
     }, z.core.$strip>;
@@ -163,12 +191,11 @@ declare const PlacesApiPlace: z.ZodObject<{
         latitude: z.ZodNumber;
         longitude: z.ZodNumber;
     }, z.core.$strip>;
-    rating: z.ZodNumber;
     googleMapsUri: z.ZodString;
-    websiteUri: z.ZodOptional<z.ZodString>;
     businessStatus: z.ZodString;
-    priceLevel: z.ZodString;
-    priceRange: z.ZodNullable<z.ZodObject<{
+    photos: z.ZodArray<z.ZodUnknown>;
+    rating: z.ZodNumber;
+    priceRange: z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -179,12 +206,12 @@ declare const PlacesApiPlace: z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
-    }, z.core.$strip>>;
+    }, z.core.$strip>;
 }, z.core.$strip>;
 type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 declare const Restaurant: z.ZodPipe<z.ZodObject<{
-    name: z.ZodString;
     id: z.ZodString;
+    name: z.ZodString;
     displayName: z.ZodObject<{
         text: z.ZodString;
     }, z.core.$strip>;
@@ -194,12 +221,11 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
         latitude: z.ZodNumber;
         longitude: z.ZodNumber;
     }, z.core.$strip>;
-    rating: z.ZodNumber;
     googleMapsUri: z.ZodString;
-    websiteUri: z.ZodOptional<z.ZodString>;
     businessStatus: z.ZodString;
-    priceLevel: z.ZodString;
-    priceRange: z.ZodNullable<z.ZodObject<{
+    photos: z.ZodArray<z.ZodUnknown>;
+    rating: z.ZodNumber;
+    priceRange: z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -210,10 +236,10 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
-    }, z.core.$strip>>;
+    }, z.core.$strip>;
 }, z.core.$strip>, z.ZodTransform<{
-    resourceName: string;
     id: string;
+    resourceName: string;
     displayName: string;
     cuisines: RestaurantCuisine[];
     attributes: RestaurantAttribute[];
@@ -224,8 +250,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
         longitude: number;
     };
     mapsUri: string;
-    websiteUri: string | undefined;
     businessStatus: string;
+    photos: unknown[];
+    rating: number;
     priceRange: {
         startPrice: {
             currencyCode: string;
@@ -237,10 +264,10 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    } | null;
+    };
 }, {
-    name: string;
     id: string;
+    name: string;
     displayName: {
         text: string;
     };
@@ -250,10 +277,10 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
         latitude: number;
         longitude: number;
     };
-    rating: number;
     googleMapsUri: string;
     businessStatus: string;
-    priceLevel: string;
+    photos: unknown[];
+    rating: number;
     priceRange: {
         startPrice: {
             currencyCode: string;
@@ -265,10 +292,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    } | null;
-    websiteUri?: string | undefined;
+    };
 }>>;
-type Location = z.infer<typeof Restaurant>;
+type Restaurant = z.infer<typeof Restaurant>;
 
 declare const Coordinate: z.ZodObject<{
     latitude: z.ZodNumber;
@@ -277,4 +303,4 @@ declare const Coordinate: z.ZodObject<{
 type Coordinate = z.infer<typeof Coordinate>;
 
 export { AutocompleteParams, Coordinate, GetAutocompleteCoordinatesParams, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, SearchPlacesParams };
-export type { AppRouter, Location };
+export type { AppRouter };

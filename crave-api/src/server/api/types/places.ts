@@ -70,24 +70,23 @@ export const PlacesApiPlace = z.object({
   /* SKU Text Search Enterprise */
   // currentOpeningHours: z.unknown(),
   // regularOpeningHours: z.unknown(), // TODO: make this typed
-  // rating: z.number(),
+  rating: z.number(),
   // websiteUri: z.string().optional(),
   // priceLevel: z.string(), // TODO: enum
-  // priceRange: z
-  //   .object({
-  //     startPrice: z.object({
-  //       currencyCode: z.string(),
-  //       units: z.coerce.number(),
-  //       nanos: z.number(),
-  //     }),
-  //     endPrice: z
-  //       .object({
-  //         currencyCode: z.string(),
-  //         units: z.coerce.number(),
-  //         nanos: z.number(),
-  //       })
-  //       .nullable(),
-  //   })
+  priceRange: z.object({
+    startPrice: z.object({
+      currencyCode: z.string(),
+      units: z.coerce.number(),
+      nanos: z.number(),
+    }),
+    endPrice: z
+      .object({
+        currencyCode: z.string(),
+        units: z.coerce.number(),
+        nanos: z.number(),
+      })
+      .nullable(),
+  }),
   //   .nullable(), // TODO: enum
   /* SKU Text Search Enterprise + Atmosphere */
   // curbsidePickup
@@ -114,13 +113,13 @@ export const Restaurant = PlacesApiPlace.transform((p) => ({
   coordinates: p.location,
   mapsUri: p.googleMapsUri,
   businessStatus: p.businessStatus,
-  // photos: p.photos,
-  // websiteUri: p.websiteUri,
+  photos: p.photos,
   // currentHours: p.currentOpeningHours,
   // regularHours: p.regularOpeningHours,
-  // rating: p.rating,
+  rating: p.rating,
+  // websiteUri: p.websiteUri,
   // websiteUri: p.websiteUri,
   // priceLevel: p.priceLevel,
-  // priceRange: p.priceRange,
+  priceRange: p.priceRange,
 }));
-export type Location = z.infer<typeof Restaurant>;
+export type Restaurant = z.infer<typeof Restaurant>;

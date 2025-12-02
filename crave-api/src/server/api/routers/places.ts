@@ -11,17 +11,22 @@ import {
 } from "@/server/api/types/autocomplete";
 
 export const placesRouter = router({
-  search: publicProcedure.input(SearchPlacesParams).query(async ({ input }) => {
-    return await searchPlaces(input);
-  }),
+  search: publicProcedure
+    .input(SearchPlacesParams.partial())
+    .query(async ({ input: { center, ...input } }) => {
+      if (!center) return null;
+      return await searchPlaces({ center, ...input });
+    }),
   autocomplete: publicProcedure
-    .input(AutocompleteParams)
-    .query(async ({ input }) => {
-      return await autocomplete(input);
+    .input(AutocompleteParams.partial())
+    .query(async ({ input: { query, token } }) => {
+      if (!query) return null;
+      return await autocomplete({ query, token });
     }),
   getAutocompleteCoordinates: publicProcedure
-    .input(GetAutocompleteCoordinatesParams)
-    .query(async ({ input }) => {
-      return await getAutocompleteCoordinates(input);
+    .input(GetAutocompleteCoordinatesParams.partial())
+    .query(async ({ input: { resourceName, token } }) => {
+      if (!resourceName || !token) return null;
+      return await getAutocompleteCoordinates({ resourceName, token });
     }),
 });
