@@ -9,7 +9,6 @@ export default function BackButton() {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
       </Link>
-      ;
     </View>
   );
 }

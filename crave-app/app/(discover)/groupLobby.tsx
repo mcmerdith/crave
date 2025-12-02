@@ -55,7 +55,6 @@ export default function GroupLobby() {
       <BackButton />
       <Text style={styles.title}>Group Lobby</Text>
       <Text style={styles.subtitle}>Share the code with your friends</Text>
-
       {/* Code Card */}
       <LinearGradient colors={["#FF8A00", "#E92E7F"]} style={styles.codeCard}>
         <Text style={styles.sessionLabel}>Session Code</Text>
@@ -69,9 +68,7 @@ export default function GroupLobby() {
 
         <Text style={styles.smallText}>Friends can join using this code</Text>
       </LinearGradient>
-
       <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text>
-
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {people.map((item, idx) => {
