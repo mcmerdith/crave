@@ -133,8 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   buttonWrapper: {
-    flex: 1,
-    marginHorizontal: 6,
+    width: "48%",
   },
   gradientButton: {
     padding: 24,
