@@ -5,10 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 export interface CardProps {
   id: string;
   name: string;
-  cuisine: string;
-  rating: number;
-  distance: string;
-  price: string;
+  cuisine?: string;
+  rating?: number;
+  distance?: string;
+  price?: string;
   image: string;
 }
 
@@ -27,17 +27,21 @@ const Card: React.FC<CardProps> = ({
       <Text style={styles.subtitle}>{cuisine}</Text>
 
       <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <Ionicons name="star" size={14} color="#F6BE00" />
-          <Text style={styles.infoText}>{rating}</Text>
-        </View>
+        {rating && (
+          <View style={styles.infoItem}>
+            <Ionicons name="star" size={14} color="#F6BE00" />
+            <Text style={styles.infoText}>{rating}</Text>
+          </View>
+        )}
 
-        <View style={styles.infoItem}>
-          <Ionicons name="location-outline" size={14} color="#777" />
-          <Text style={styles.infoText}>{distance}</Text>
-        </View>
+        {distance && (
+          <View style={styles.infoItem}>
+            <Ionicons name="location-outline" size={14} color="#777" />
+            <Text style={styles.infoText}>{distance}</Text>
+          </View>
+        )}
 
-        <Text style={styles.price}>{price}</Text>
+        {price && <Text style={styles.price}>{price}</Text>}
       </View>
     </View>
   );
@@ -65,6 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginHorizontal: 10,
     marginTop: 6,
+    flex: 1,
   },
   subtitle: {
     color: "#777",
