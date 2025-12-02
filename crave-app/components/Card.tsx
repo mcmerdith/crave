@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export interface CardProps {
+  id: string;
   name: string;
   cuisine: string;
   rating: number;
