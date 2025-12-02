@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Link } from "expo-router";
 const FiltersSolo = () => {
@@ -58,9 +58,19 @@ const FiltersSolo = () => {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        {" "}
         <Link href="/(discover)/swipeSolo" asChild>
-          <Button title="Start Swiping" />
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#2196F3",
+              paddingVertical: 15,
+              paddingHorizontal: 30,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+              Start Swiping
+            </Text>
+          </TouchableOpacity>
         </Link>
       </View>
     </View>
