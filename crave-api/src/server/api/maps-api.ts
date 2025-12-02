@@ -13,9 +13,7 @@ import {
   Restaurant,
   SearchPlacesParams,
 } from "@/server/api/types/places";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { z } from "zod";
-import path from "path";
+import { readCache, writeCache } from "@/server/api/cache";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -162,58 +160,4 @@ export async function searchPlaces({
   );
   if (!data.places) return [];
   return Restaurant.array().parse(data.places);
-}
-
-function isInsignificantError(error: unknown): boolean {
-  return (
-    !error ||
-    typeof error !== "object" ||
-    !("code" in error) ||
-    error.code === "ENOENT" ||
-    error.code === "EEXIST"
-  );
-}
-
-async function readCache<Parser extends z.ZodType>(
-  prefix: string,
-  identifier: string,
-  parser: Parser,
-): Promise<z.output<Parser> | null> {
-  if (env.NODE_ENV !== "development") return null;
-  try {
-    const filename = `${prefix}-${identifier}.json`.replace(
-      /[/\\:*?"<>|#%]/g,
-      "_",
-    );
-    const data = await readFile(path.join("cache", filename), {
-      encoding: "utf-8",
-    });
-    console.debug(`[Places-API] Using cache file ${filename}`);
-    return parser.parse(JSON.parse(data));
-  } catch (error) {
-    if (!isInsignificantError(error)) throw error;
-  }
-  return null;
-}
-
-async function writeCache(prefix: string, identifier: string, data: unknown) {
-  if (env.NODE_ENV !== "development") return;
-  try {
-    await mkdir("cache");
-  } catch (error) {
-    if (!isInsignificantError(error)) throw error;
-  }
-  try {
-    const filename = `${prefix}-${identifier}.json`.replace(
-      /[/\\:*?"<>|#%]/g,
-      "_",
-    );
-    console.debug(`[Places-API] Writing cache file ${filename}`);
-    await writeFile(path.join("cache", filename), JSON.stringify(data), {
-      encoding: "utf-8",
-    });
-  } catch (error) {
-    console.error("Writing to cache file failed!");
-    if (!isInsignificantError(error)) throw error;
-  }
 }
