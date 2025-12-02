@@ -14,6 +14,7 @@
   "dependencies": {
     "@crave/api": "*",
     "@expo/vector-icons": "^15.0.2",
+    "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
@@ -50,6 +51,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@trpc/server": "^11.6.0",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",

@@ -5,24 +5,32 @@
   "scripts": {
     "dev": "next dev --turbopack -H 0.0.0.0",
     "build": "next build --turbopack",
+    "build:types": "tsc --project tsconfig.types.json && rollup -c rollup.types.config.mjs",
     "start": "next start",
     "lint": "eslint"
   },
-  "types": "./src/server/api/index.ts",
+  "types": "./api-types.d.ts",
   "exports": {
     ".": {
-      "types": "./src/server/api/index.ts",
-      "import": "./src/server/api/index.ts"
+      "types": "./api-types.d.ts"
     }
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.2",
     "@googlemaps/places": "^2.1.1",
-    "@trpc/client": "^11.6.0",
-    "@trpc/server": "^11.6.0",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "@tanstack/react-query": "^5.90.7",
+    "@trpc/client": "^11.7.1",
+    "@trpc/server": "^11.7.1",
+    "@trpc/tanstack-react-query": "^11.7.1",
+    "client-only": "^0.0.1",
     "firebase": "^12.4.0",
+    "firebase-admin": "^13.5.0",
     "next": "15.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "server-only": "^0.0.1",
+    "uuid": "^13.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -33,6 +41,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
+    "rollup": "^4.53.3",
+    "rollup-plugin-dts": "^6.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

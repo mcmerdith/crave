@@ -1,12 +1,15 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "@/server/api";
-import { createContext } from "@/server/trpc";
+import { appRouter } from "@/server/api/routers";
+import { createContext } from "@/server/api/trpc";
 function handler(req: Request) {
   return fetchRequestHandler({
     endpoint: "/api/trpc",
     req,
     router: appRouter,
     createContext: ({ req }) => createContext(req),
+    responseMeta: () => ({
+      headers: { "Access-Control-Allow-Origin": "http://localhost:8081" },
+    }),
   });
 }
 export { handler as GET, handler as POST };
