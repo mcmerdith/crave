@@ -21,7 +21,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
       <FlatList
         data={data}
         renderItem={({ item }) => <Card {...item} />}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16 }}

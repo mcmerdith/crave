@@ -34,6 +34,7 @@ export default function Index() {
   );
   const RecentsData = places?.map(
     (p): CardProps => ({
+      id: p.resourceName,
       name: p.displayName,
       cuisine: p.cuisines.length ? p.cuisines[0] : "American",
       rating: p.rating,
@@ -47,6 +48,7 @@ export default function Index() {
   const DiscoverData = places
     ?.map(
       (p): CardProps => ({
+        id: p.resourceName,
         name: p.displayName,
         cuisine: p.cuisines.length ? p.cuisines[0] : "American",
         rating: p.rating,
