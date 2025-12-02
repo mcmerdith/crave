@@ -73,21 +73,22 @@ export const PlacesApiPlace = z.object({
   rating: z.number(),
   // websiteUri: z.string().optional(),
   // priceLevel: z.string(), // TODO: enum
-  priceRange: z.object({
-    startPrice: z.object({
-      currencyCode: z.string(),
-      units: z.coerce.number(),
-      nanos: z.number(),
-    }),
-    endPrice: z
-      .object({
+  priceRange: z
+    .object({
+      startPrice: z.object({
         currencyCode: z.string(),
         units: z.coerce.number(),
         nanos: z.number(),
-      })
-      .nullable(),
-  }),
-  //   .nullable(), // TODO: enum
+      }),
+      endPrice: z
+        .object({
+          currencyCode: z.string(),
+          units: z.coerce.number(),
+          nanos: z.number(),
+        })
+        .nullable(),
+    })
+    .nullable(),
   /* SKU Text Search Enterprise + Atmosphere */
   // curbsidePickup
   // delivery
@@ -98,7 +99,14 @@ export const PlacesApiPlace = z.object({
 });
 export type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 
-export const Restaurant = PlacesApiPlace.transform((p) => ({
+export const Place = PlacesApiPlace.extend({
+  /* Synthetic Fields */
+  distanceMiles: z.string().optional(),
+  primaryImage: z.string().optional(),
+});
+export type Place = z.infer<typeof Place>;
+
+export const Restaurant = Place.transform((p) => ({
   id: p.id,
   resourceName: p.name,
   displayName: p.displayName.text,
@@ -121,5 +129,7 @@ export const Restaurant = PlacesApiPlace.transform((p) => ({
   // websiteUri: p.websiteUri,
   // priceLevel: p.priceLevel,
   priceRange: p.priceRange,
+  distanceMiles: p.distanceMiles,
+  primaryImage: p.primaryImage,
 }));
 export type Restaurant = z.infer<typeof Restaurant>;

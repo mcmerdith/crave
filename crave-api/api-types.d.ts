@@ -58,7 +58,9 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                         units: number;
                         nanos: number;
                     } | null;
-                };
+                } | null;
+                distanceMiles: string | undefined;
+                primaryImage: string | undefined;
             }[] | null;
             meta: object;
         }>;
@@ -195,7 +197,7 @@ declare const PlacesApiPlace: z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
-    priceRange: z.ZodObject<{
+    priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -206,9 +208,41 @@ declare const PlacesApiPlace: z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
-    }, z.core.$strip>;
+    }, z.core.$strip>>;
 }, z.core.$strip>;
 type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
+declare const Place: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    displayName: z.ZodObject<{
+        text: z.ZodString;
+    }, z.core.$strip>;
+    types: z.ZodArray<z.ZodString>;
+    formattedAddress: z.ZodString;
+    location: z.ZodObject<{
+        latitude: z.ZodNumber;
+        longitude: z.ZodNumber;
+    }, z.core.$strip>;
+    googleMapsUri: z.ZodString;
+    businessStatus: z.ZodString;
+    photos: z.ZodArray<z.ZodUnknown>;
+    rating: z.ZodNumber;
+    priceRange: z.ZodNullable<z.ZodObject<{
+        startPrice: z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>;
+        endPrice: z.ZodNullable<z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>>;
+    }, z.core.$strip>>;
+    distanceMiles: z.ZodOptional<z.ZodString>;
+    primaryImage: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+type Place = z.infer<typeof Place>;
 declare const Restaurant: z.ZodPipe<z.ZodObject<{
     id: z.ZodString;
     name: z.ZodString;
@@ -225,7 +259,7 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
-    priceRange: z.ZodObject<{
+    priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -236,7 +270,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
-    }, z.core.$strip>;
+    }, z.core.$strip>>;
+    distanceMiles: z.ZodOptional<z.ZodString>;
+    primaryImage: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodTransform<{
     id: string;
     resourceName: string;
@@ -264,7 +300,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    };
+    } | null;
+    distanceMiles: string | undefined;
+    primaryImage: string | undefined;
 }, {
     id: string;
     name: string;
@@ -292,7 +330,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    };
+    } | null;
+    distanceMiles?: string | undefined;
+    primaryImage?: string | undefined;
 }>>;
 type Restaurant = z.infer<typeof Restaurant>;
 
@@ -302,5 +342,5 @@ declare const Coordinate: z.ZodObject<{
 }, z.core.$strip>;
 type Coordinate = z.infer<typeof Coordinate>;
 
-export { AutocompleteParams, Coordinate, GetAutocompleteCoordinatesParams, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, SearchPlacesParams };
+export { AutocompleteParams, Coordinate, GetAutocompleteCoordinatesParams, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, SearchPlacesParams };
 export type { AppRouter };

@@ -1,7 +1,7 @@
 import { PlacesClient } from "@googlemaps/places";
 import { Client } from "@googlemaps/google-maps-services-js";
 import { env } from "@/env";
-import { newUUID, toMeters } from "@/utils";
+import { newUUID, toMeters, toMiles } from "@/utils";
 import {
   AutocompleteParams,
   GetAutocompleteCoordinatesParams,
@@ -14,6 +14,7 @@ import {
   SearchPlacesParams,
 } from "@/server/api/types/places";
 import { readCache, writeCache } from "@/server/api/cache";
+import { getDistance } from "geolib";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -89,7 +90,11 @@ export async function getAutocompleteCoordinates({
   return Coordinate.parse(data.location);
 }
 
-/** Get the coordinates for a given query */
+/**
+ * Get the coordinates for a given query
+ *
+ * @deprecated use getAutocompleteCoordinates instead
+ */
 export async function getCoordinates(query: string) {
   const data = await mapsApi.geocode({
     params: {
@@ -107,6 +112,21 @@ export async function getCoordinates(query: string) {
     latitude: lat,
     longitude: lng,
   } satisfies Coordinate;
+}
+
+export async function getPlaceImage(resourceName: string) {
+  console.debug("fetching image");
+  try {
+    const [data] = await placesApi.getPhotoMedia({
+      name: `${resourceName}/media`,
+      maxHeightPx: 600,
+    });
+    console.debug("image fetched:", !!data.photoUri);
+    return data.photoUri ?? undefined;
+  } catch (e) {
+    console.error("failed to fetch image", e);
+    return undefined;
+  }
 }
 
 /**
@@ -153,11 +173,35 @@ export async function searchPlaces({
       },
     },
   );
-  await writeCache(
-    "places",
-    `${center.latitude}_${center.longitude}`,
-    data.places,
-  );
-  if (!data.places) return [];
-  return Restaurant.array().parse(data.places);
+  const places = data.places
+    ? await Promise.all(
+        data.places.map(async (p) => {
+          const distance =
+            p.location?.latitude && p.location.longitude
+              ? getDistance(
+                  {
+                    latitude: p.location.latitude,
+                    longitude: p.location.longitude,
+                  },
+                  center,
+                )
+              : undefined;
+          const distanceMiles = distance ? toMiles(distance) : undefined;
+          const usablePhotos = p.photos; // p.photos?.filter((p) => !p.authorAttributions);
+          const primaryImage = usablePhotos?.length
+            ? usablePhotos[0].name
+            : undefined;
+          return {
+            ...p,
+            distanceMiles: `${distanceMiles?.toFixed(distanceMiles >= 5 ? 0 : 1)}mi`,
+            primaryImage: primaryImage
+              ? await getPlaceImage(primaryImage)
+              : undefined,
+          };
+        }),
+      )
+    : undefined;
+  await writeCache("places", `${center.latitude}_${center.longitude}`, places);
+  if (!places) return [];
+  return Restaurant.array().parse(places);
 }
