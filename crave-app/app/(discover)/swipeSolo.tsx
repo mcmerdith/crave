@@ -1,19 +1,21 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useCallback, useRef } from "react";
 import {
   Image,
   StyleSheet,
   Text,
   View,
-  type ImageSourcePropType,
+  TouchableOpacity,
+  Button,
+  // type ImageSourcePropType,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
-import { TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
-import { Button } from "react-native";
 import type { WithSpringConfig } from "react-native-reanimated";
+import { useRouter } from "expo-router";
+
+const router = useRouter();
 
 const ICON_SIZE = 24;
 export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
@@ -68,14 +70,19 @@ export default function SwipeSolo() {
     );
   }, []);
 
-  const renderFlippedCard = useCallback(
-    (_: ImageSourcePropType, index: number) => (
-      <View style={styles.renderFlippedCardContainer}>
-        <Text style={styles.text}>Flipped content 🚀 {index}</Text>
-      </View>
-    ),
-    [],
-  );
+  // const renderFlippedCard = useCallback(
+  //   (_: ImageSourcePropType, index: number) => (
+  //     <View style={styles.renderFlippedCardContainer}>
+  //       <Text style={styles.text}>Flipped content 🚀 {index}</Text>
+  //     </View>
+  //   ),
+  //   [],
+  // );
+
+  const doneSwiping = () => {
+    router.navigate("/sessionComplete");
+    console.log("done swiping");
+  };
 
   const OverlayLabel = (color: string) => (
     <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
@@ -98,7 +105,7 @@ export default function SwipeSolo() {
           OverlayLabelLeft={() => OverlayLabel("red")}
           //OverlayLabelTop={() => OverlayLabel("blue")}
           //OverlayLabelBottom={() => OverlayLabel("orange")}
-          onSwipedAll={() => console.log("All cards swiped")}
+          onSwipedAll={() => doneSwiping()}
         />
       </View>
 
@@ -118,7 +125,6 @@ export default function SwipeSolo() {
         ))}
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>This is the solo swipe page</Text>
         <Link href="/(tabs)" asChild>
           <Button title="Go to Discover" />
         </Link>

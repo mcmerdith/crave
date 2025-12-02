@@ -8,8 +8,16 @@ export default function ProfileStackLayout() {
         options={{ title: "Swipe Solo", headerShown: false }}
       />
       <Stack.Screen
+        name="filtersSolo"
+        options={{ title: "Filter Solo", headerShown: false }}
+      />
+      <Stack.Screen
         name="swipeGroup"
         options={{ title: "Swipe Group", headerShown: false }}
+      />
+      <Stack.Screen
+        name="groupLobby"
+        options={{ title: "groupLobby", headerShown: false }}
       />
     </Stack>
   );

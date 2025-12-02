@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const Filters = () => {
+import { Link } from "expo-router";
+const FiltersSolo = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
   const [distance, setDistance] = useState(10); // miles
 
   const priceLabels = ["$", "$$", "$$$", "$$$$"];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
+    <View style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
       <View style={styles.container}>
         <Text style={styles.header}>Filters</Text>
         <Text style={styles.label}>Price Range</Text>
@@ -32,23 +31,23 @@ const Filters = () => {
           minimumValue={1}
           maximumValue={4}
           step={1}
-          minimumTrackTintColor="#a542fb"
+          minimumTrackTintColor="#4CAF50"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#7b13ca"
+          thumbTintColor="#4CAF50"
           value={priceRange}
           onValueChange={setPriceRange}
         />
-        
+
         {/* Distance Slider */}
-        <Text style={styles.label}>Distance ({distance} mi)</Text>
+        <Text style={styles.label}>Max Distance ({distance} mi)</Text>
         <Slider
           style={{ width: "100%", height: 40 }}
           minimumValue={1}
           maximumValue={50}
           step={1}
-          minimumTrackTintColor="#f91671ff"
+          minimumTrackTintColor="#2196F3"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#f91671ff"
+          thumbTintColor="#2196F3"
           value={distance}
           onValueChange={setDistance}
         />
@@ -58,11 +57,27 @@ const Filters = () => {
           <Text style={styles.applyText}>Apply Filters</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Link href="/(discover)/swipeSolo" asChild>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#2196F3",
+              paddingVertical: 15,
+              paddingHorizontal: 30,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+              Start Swiping
+            </Text>
+          </TouchableOpacity>
+        </Link>
+      </View>
+    </View>
   );
 };
 
-export default Filters;
+export default FiltersSolo;
 
 const styles = StyleSheet.create({
   container: {
@@ -90,7 +105,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   priceLabelActive: {
-    color: "#7b13ca",
+    color: "#4CAF50",
     fontWeight: "bold",
   },
   applyButton: {

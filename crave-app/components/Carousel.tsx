@@ -13,9 +13,9 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.heading}>{title}</Text>
-        <Text style={styles.viewAll} onPress={onViewAll}>
+        {/* <Text style={styles.viewAll} onPress={onViewAll}>
           View All
-        </Text>
+        </Text> */}
       </View>
 
       <FlatList
