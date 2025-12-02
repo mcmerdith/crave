@@ -33,16 +33,32 @@ export default function GroupLobby() {
   const anims = useRef(people.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
-    const animations = anims.map((anim, i) =>
-      Animated.timing(anim, {
+    let totalDelay = 0;
+
+    const animations = anims.map((anim, i) => {
+      if (i === 0) {
+        // You spawn instantly
+        return Animated.timing(anim, {
+          toValue: 1,
+          duration: 500,
+          delay: 0,
+          useNativeDriver: true,
+        });
+      }
+      // Random step between 500ms–1500ms
+      const step = Math.random() * 3000 + 800;
+
+      totalDelay += step;
+
+      return Animated.timing(anim, {
         toValue: 1,
         duration: 500,
-        delay: i * 400, // <-- Stagger animation every 0.4s
+        delay: totalDelay,
         useNativeDriver: true,
-      }),
-    );
+      });
+    });
 
-    Animated.stagger(300, animations).start();
+    Animated.stagger(0, animations).start();
   }, []);
 
   const copyCode = () => {
