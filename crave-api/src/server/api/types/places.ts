@@ -106,30 +106,66 @@ export const Place = PlacesApiPlace.extend({
 });
 export type Place = z.infer<typeof Place>;
 
-export const Restaurant = Place.transform((p) => ({
-  id: p.id,
-  resourceName: p.name,
-  displayName: p.displayName.text,
-  cuisines: p.types
-    .map((t) => t.replace(/_restaurant$/, ""))
-    .filter((t) => t in RestaurantCuisine.enum) as RestaurantCuisine[],
-  attributes: p.types
-    .map((t) => t.replace(/_restaurant$/, ""))
-    .filter((t) => t in RestaurantAttribute.enum) as RestaurantAttribute[],
-  types: p.types.filter((t) => !t.endsWith("_restaurant")),
-  address: p.formattedAddress,
-  coordinates: p.location,
-  mapsUri: p.googleMapsUri,
-  businessStatus: p.businessStatus,
-  photos: p.photos,
-  // currentHours: p.currentOpeningHours,
-  // regularHours: p.regularOpeningHours,
-  rating: p.rating,
-  // websiteUri: p.websiteUri,
-  // websiteUri: p.websiteUri,
-  // priceLevel: p.priceLevel,
-  priceRange: p.priceRange,
-  distanceMiles: p.distanceMiles,
-  primaryImage: p.primaryImage,
-}));
+export const Restaurant = z.object({
+  id: z.string(),
+  resourceName: z.string(),
+  displayName: z.string(),
+  cuisines: RestaurantCuisine.array(), // TODO: make this typed
+  attributes: RestaurantAttribute.array(),
+  types: z.string().array(),
+  address: z.string(),
+  coordinates: Coordinate,
+  mapsUri: z.string(),
+  businessStatus: z.string(), // TODO: enum
+  photos: z.unknown().array(), // TODO: make this typed
+  rating: z.number(),
+  priceRange: z
+    .object({
+      startPrice: z.object({
+        currencyCode: z.string(),
+        units: z.coerce.number(),
+        nanos: z.number(),
+      }),
+      endPrice: z
+        .object({
+          currencyCode: z.string(),
+          units: z.coerce.number(),
+          nanos: z.number(),
+        })
+        .nullable(),
+    })
+    .nullable(),
+  distanceMiles: z.string().optional(),
+  primaryImage: z.string().optional(),
+});
 export type Restaurant = z.infer<typeof Restaurant>;
+
+export const RestaurantParser = Place.transform(
+  (p) =>
+    ({
+      id: p.id,
+      resourceName: p.name,
+      displayName: p.displayName.text,
+      cuisines: p.types
+        .map((t) => t.replace(/_restaurant$/, ""))
+        .filter((t) => t in RestaurantCuisine.enum) as RestaurantCuisine[],
+      attributes: p.types
+        .map((t) => t.replace(/_restaurant$/, ""))
+        .filter((t) => t in RestaurantAttribute.enum) as RestaurantAttribute[],
+      types: p.types.filter((t) => !t.endsWith("_restaurant")),
+      address: p.formattedAddress,
+      coordinates: p.location,
+      mapsUri: p.googleMapsUri,
+      businessStatus: p.businessStatus,
+      photos: p.photos,
+      // currentHours: p.currentOpeningHours,
+      // regularHours: p.regularOpeningHours,
+      rating: p.rating,
+      // websiteUri: p.websiteUri,
+      // websiteUri: p.websiteUri,
+      // priceLevel: p.priceLevel,
+      priceRange: p.priceRange,
+      distanceMiles: p.distanceMiles,
+      primaryImage: p.primaryImage,
+    }) satisfies Restaurant,
+);

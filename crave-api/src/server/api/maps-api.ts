@@ -4,6 +4,7 @@ import { env } from "@/env";
 import { newUUID, toMeters, toMiles } from "@/utils";
 import {
   AutocompleteParams,
+  AutocompleteResult,
   GetAutocompleteCoordinatesParams,
   PlacesApiAutocompleteResult,
 } from "@/server/api/types/autocomplete";
@@ -11,6 +12,7 @@ import { Coordinate } from "@/server/api/types/geography";
 import {
   PlacesApiPlace,
   Restaurant,
+  RestaurantParser,
   SearchPlacesParams,
 } from "@/server/api/types/places";
 import { readCache, writeCache } from "@/server/api/cache";
@@ -31,7 +33,10 @@ function toTypes(attributes?: string[]): string[] {
   return attributes?.map((a) => `${a}_restaurant`) ?? [];
 }
 
-export async function autocomplete({ query, token }: AutocompleteParams) {
+export async function autocomplete({
+  query,
+  token,
+}: AutocompleteParams): Promise<AutocompleteResult> {
   token ??= newUUID(); // generate a new token if none is provided
   const cache = await readCache(
     "autocomplete",
@@ -68,7 +73,7 @@ export async function autocomplete({ query, token }: AutocompleteParams) {
 export async function getAutocompleteCoordinates({
   resourceName,
   token,
-}: GetAutocompleteCoordinatesParams) {
+}: GetAutocompleteCoordinatesParams): Promise<Coordinate> {
   const cache = await readCache(
     "autocomplete_coordinates",
     resourceName,
@@ -142,11 +147,11 @@ export async function searchPlaces({
   radius = toMeters(10),
   maxPriceLevel = 5,
   // sort = "RELEVANCE",
-}: SearchPlacesParams) {
+}: SearchPlacesParams): Promise<Restaurant[]> {
   const cache = await readCache(
     "places",
     `${center.latitude}_${center.longitude}`,
-    Restaurant.array(),
+    RestaurantParser.array(),
   );
   if (cache) return cache;
   const [data] = await placesApi.searchText(
@@ -203,5 +208,5 @@ export async function searchPlaces({
     : undefined;
   await writeCache("places", `${center.latitude}_${center.longitude}`, places);
   if (!places) return [];
-  return Restaurant.array().parse(places);
+  return RestaurantParser.array().parse(places);
 }
