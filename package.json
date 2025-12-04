@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "app": "npm run start -w crave-app",
-    "api": "npm run dev -w crave-api"
+    "api": "npm run dev -w crave-api",
+    "postinstall": "npm run postinstall -w crave-app"
   },
   "workspaces": [
     "crave-api",
