@@ -38,7 +38,7 @@ export default function Index() {
             alignItems: "flex-start",
           }}
         >
-          <LocationHeader userName="User" />
+          <LocationHeader userName="Christian" />
           <ModeSelection />
           <Carousel
             title="Recent Cravings"
