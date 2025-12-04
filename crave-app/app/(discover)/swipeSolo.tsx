@@ -1,4 +1,6 @@
 import React, { useCallback, useRef } from "react";
+import {theme } from "@/theme";
+
 import {
   Image,
   StyleSheet,
@@ -126,7 +128,9 @@ export default function SwipeSolo() {
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Link href="/(tabs)" asChild>
-          <Button title="Go to Discover" />
+          <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: "500" }}>
+            Go to Discover
+          </Text>
         </Link>
       </View>
     </GestureHandlerRootView>

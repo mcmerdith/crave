@@ -8,6 +8,8 @@ export const theme = {
     cardForeground: "#030213",
     popover: "#ffffff",
     popoverForeground: "#030213",
+    black: "#000000",
+    buttonText: "#000000",
     primary: "#030213",
     primaryForeground: "#ffffff",
     secondary: "#f3f3f5",
