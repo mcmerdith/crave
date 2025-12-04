@@ -1,7 +1,12 @@
 import { initializeApp } from "@firebase/app";
 import { getFirestore } from "@firebase/firestore";
-// @ts-expect-error getReactNativePersistence is not exported from @firebase/auth
-import { initializeAuth, getReactNativePersistence } from "@firebase/auth";
+import {
+  browserSessionPersistence,
+  // @ts-expect-error getReactNativePersistence is not exported from @firebase/auth
+  getReactNativePersistence,
+  initializeAuth,
+  Persistence,
+} from "@firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebaseConfig = {
@@ -17,8 +22,18 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
+let persistence: Persistence;
+try {
+  persistence = getReactNativePersistence(ReactNativeAsyncStorage);
+} catch (e) {
+  console.warn(
+    "React native persistence is not available. Falling back to local storage",
+    e,
+  );
+  persistence = browserSessionPersistence;
+}
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  persistence: persistence,
 });
 
 export { firestore, auth };

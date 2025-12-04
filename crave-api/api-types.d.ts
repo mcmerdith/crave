@@ -35,8 +35,8 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                 id: string;
                 resourceName: string;
                 displayName: string;
-                cuisines: RestaurantCuisine[];
-                attributes: RestaurantAttribute[];
+                cuisines: ("afghani" | "african" | "american" | "asian" | "barbecue" | "brazilian" | "chinese" | "french" | "greek" | "indian" | "indonesian" | "italian" | "japanese" | "korean" | "lebanese" | "mediterranean" | "mexican" | "middle_eastern" | "spanish" | "thai" | "turkish" | "vietnamese")[];
+                attributes: ("breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi" | "vegan" | "vegetarian")[];
                 types: string[];
                 address: string;
                 coordinates: {
@@ -58,8 +58,10 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                         units: number;
                         nanos: number;
                     } | null;
-                };
-            }[] | null;
+                } | null;
+                distanceMiles?: string | undefined;
+                primaryImage?: string | undefined;
+            }[] | undefined;
             meta: object;
         }>;
         autocomplete: _trpc_server.TRPCQueryProcedure<{
@@ -74,7 +76,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                     resourceName: string;
                 }[];
                 token: string;
-            } | null;
+            } | undefined;
             meta: object;
         }>;
         getAutocompleteCoordinates: _trpc_server.TRPCQueryProcedure<{
@@ -85,7 +87,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
             output: {
                 latitude: number;
                 longitude: number;
-            } | null;
+            } | undefined;
             meta: object;
         }>;
     }>>;
@@ -102,6 +104,15 @@ declare const GetAutocompleteCoordinatesParams: z.ZodObject<{
     token: z.ZodString;
 }, z.core.$strip>;
 type GetAutocompleteCoordinatesParams = z.infer<typeof GetAutocompleteCoordinatesParams>;
+declare const AutocompleteResult: z.ZodObject<{
+    suggestions: z.ZodArray<z.ZodObject<{
+        text: z.ZodString;
+        placeId: z.ZodString;
+        resourceName: z.ZodString;
+    }, z.core.$strip>>;
+    token: z.ZodString;
+}, z.core.$strip>;
+type AutocompleteResult = z.infer<typeof AutocompleteResult>;
 declare const PlacesApiAutocompleteResult: z.ZodPipe<z.ZodObject<{
     placePrediction: z.ZodObject<{
         text: z.ZodObject<{
@@ -123,7 +134,6 @@ declare const PlacesApiAutocompleteResult: z.ZodPipe<z.ZodObject<{
         placeId: string;
     };
 }>>;
-type PlacesApiAutocompleteResult = z.infer<typeof PlacesApiAutocompleteResult>;
 
 declare const SearchPlacesParams: z.ZodObject<{
     center: z.ZodObject<{
@@ -195,7 +205,7 @@ declare const PlacesApiPlace: z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
-    priceRange: z.ZodObject<{
+    priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -206,10 +216,10 @@ declare const PlacesApiPlace: z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
-    }, z.core.$strip>;
+    }, z.core.$strip>>;
 }, z.core.$strip>;
 type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
-declare const Restaurant: z.ZodPipe<z.ZodObject<{
+declare const Place: z.ZodObject<{
     id: z.ZodString;
     name: z.ZodString;
     displayName: z.ZodObject<{
@@ -225,7 +235,7 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
-    priceRange: z.ZodObject<{
+    priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
             units: z.ZodCoercedNumber<unknown>;
@@ -236,7 +246,110 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: z.ZodCoercedNumber<unknown>;
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
+    }, z.core.$strip>>;
+    distanceMiles: z.ZodOptional<z.ZodString>;
+    primaryImage: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+type Place = z.infer<typeof Place>;
+declare const Restaurant: z.ZodObject<{
+    id: z.ZodString;
+    resourceName: z.ZodString;
+    displayName: z.ZodString;
+    cuisines: z.ZodArray<z.ZodEnum<{
+        afghani: "afghani";
+        african: "african";
+        american: "american";
+        asian: "asian";
+        barbecue: "barbecue";
+        brazilian: "brazilian";
+        chinese: "chinese";
+        french: "french";
+        greek: "greek";
+        indian: "indian";
+        indonesian: "indonesian";
+        italian: "italian";
+        japanese: "japanese";
+        korean: "korean";
+        lebanese: "lebanese";
+        mediterranean: "mediterranean";
+        mexican: "mexican";
+        middle_eastern: "middle_eastern";
+        spanish: "spanish";
+        thai: "thai";
+        turkish: "turkish";
+        vietnamese: "vietnamese";
+    }>>;
+    attributes: z.ZodArray<z.ZodEnum<{
+        breakfast: "breakfast";
+        brunch: "brunch";
+        buffet: "buffet";
+        dessert: "dessert";
+        fast_food: "fast_food";
+        fine_dining: "fine_dining";
+        hamburger: "hamburger";
+        pizza: "pizza";
+        ramen: "ramen";
+        seafood: "seafood";
+        sushi: "sushi";
+        vegan: "vegan";
+        vegetarian: "vegetarian";
+    }>>;
+    types: z.ZodArray<z.ZodString>;
+    address: z.ZodString;
+    coordinates: z.ZodObject<{
+        latitude: z.ZodNumber;
+        longitude: z.ZodNumber;
     }, z.core.$strip>;
+    mapsUri: z.ZodString;
+    businessStatus: z.ZodString;
+    photos: z.ZodArray<z.ZodUnknown>;
+    rating: z.ZodNumber;
+    priceRange: z.ZodNullable<z.ZodObject<{
+        startPrice: z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>;
+        endPrice: z.ZodNullable<z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>>;
+    }, z.core.$strip>>;
+    distanceMiles: z.ZodOptional<z.ZodString>;
+    primaryImage: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+type Restaurant = z.infer<typeof Restaurant>;
+declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodString;
+    displayName: z.ZodObject<{
+        text: z.ZodString;
+    }, z.core.$strip>;
+    types: z.ZodArray<z.ZodString>;
+    formattedAddress: z.ZodString;
+    location: z.ZodObject<{
+        latitude: z.ZodNumber;
+        longitude: z.ZodNumber;
+    }, z.core.$strip>;
+    googleMapsUri: z.ZodString;
+    businessStatus: z.ZodString;
+    photos: z.ZodArray<z.ZodUnknown>;
+    rating: z.ZodNumber;
+    priceRange: z.ZodNullable<z.ZodObject<{
+        startPrice: z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>;
+        endPrice: z.ZodNullable<z.ZodObject<{
+            currencyCode: z.ZodString;
+            units: z.ZodCoercedNumber<unknown>;
+            nanos: z.ZodNumber;
+        }, z.core.$strip>>;
+    }, z.core.$strip>>;
+    distanceMiles: z.ZodOptional<z.ZodString>;
+    primaryImage: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodTransform<{
     id: string;
     resourceName: string;
@@ -264,7 +377,9 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    };
+    } | null;
+    distanceMiles: string | undefined;
+    primaryImage: string | undefined;
 }, {
     id: string;
     name: string;
@@ -292,9 +407,10 @@ declare const Restaurant: z.ZodPipe<z.ZodObject<{
             units: number;
             nanos: number;
         } | null;
-    };
+    } | null;
+    distanceMiles?: string | undefined;
+    primaryImage?: string | undefined;
 }>>;
-type Restaurant = z.infer<typeof Restaurant>;
 
 declare const Coordinate: z.ZodObject<{
     latitude: z.ZodNumber;
@@ -302,5 +418,5 @@ declare const Coordinate: z.ZodObject<{
 }, z.core.$strip>;
 type Coordinate = z.infer<typeof Coordinate>;
 
-export { AutocompleteParams, Coordinate, GetAutocompleteCoordinatesParams, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, SearchPlacesParams };
+export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams };
 export type { AppRouter };

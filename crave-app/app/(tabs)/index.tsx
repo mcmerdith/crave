@@ -3,21 +3,13 @@ import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
-import { ScrollView } from "react-native";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LocationHeader from "@/app/(discover)/locationHeader";
-
-import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
+import { transformPlacesApiData } from "@/lib/places";
 import { CardProps } from "@/components/Card";
-const SWIPE_SPRING_CONFIG: SpringConfig = {
-  damping: 2,
-  stiffness: 100,
-  mass: 100,
-  overshootClamping: true,
-};
 
 export default function Index() {
   const { data: location } = useQuery(
@@ -32,49 +24,23 @@ export default function Index() {
   const { data: places } = useQuery(
     trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
   );
-  const RecentsData = places?.map(
-    (p): CardProps => ({
-      id: p.resourceName,
-      name: p.displayName,
-      cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-      rating: p.rating,
-      distance: "5mi",
-      image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-      price: `$${p.priceRange.startPrice.units}${
-        p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-      }`,
-    }),
-  );
-  const DiscoverData = places
-    ?.map(
-      (p): CardProps => ({
-        id: p.resourceName,
-        name: p.displayName,
-        cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-        rating: p.rating,
-        distance: "5mi",
-        image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-        price: `$${p.priceRange.startPrice.units}${
-          p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-        }`,
-      }),
-    )
-    .reverse();
+  const RecentsData = transformPlacesApiData(places);
+  const DiscoverData = RecentsData?.reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView
-        style={{
-          backgroundColor: theme.colors.background,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}
-      >
-        <LocationHeader userName="User" />
-        <ModeSelection />
-        <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
+      <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
+        <SafeAreaView
+          style={{
+            backgroundColor: theme.colors.background,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          <LocationHeader userName="User" />
+          <ModeSelection />
           <Carousel
             title="Recent Cravings"
             data={RecentsData ?? []}
@@ -88,8 +54,8 @@ export default function Index() {
           <View
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           ></View>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </GestureHandlerRootView>
   );
 }

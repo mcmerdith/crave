@@ -73,21 +73,22 @@ export const PlacesApiPlace = z.object({
   rating: z.number(),
   // websiteUri: z.string().optional(),
   // priceLevel: z.string(), // TODO: enum
-  priceRange: z.object({
-    startPrice: z.object({
-      currencyCode: z.string(),
-      units: z.coerce.number(),
-      nanos: z.number(),
-    }),
-    endPrice: z
-      .object({
+  priceRange: z
+    .object({
+      startPrice: z.object({
         currencyCode: z.string(),
         units: z.coerce.number(),
         nanos: z.number(),
-      })
-      .nullable(),
-  }),
-  //   .nullable(), // TODO: enum
+      }),
+      endPrice: z
+        .object({
+          currencyCode: z.string(),
+          units: z.coerce.number(),
+          nanos: z.number(),
+        })
+        .nullable(),
+    })
+    .nullable(),
   /* SKU Text Search Enterprise + Atmosphere */
   // curbsidePickup
   // delivery
@@ -98,28 +99,73 @@ export const PlacesApiPlace = z.object({
 });
 export type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 
-export const Restaurant = PlacesApiPlace.transform((p) => ({
-  id: p.id,
-  resourceName: p.name,
-  displayName: p.displayName.text,
-  cuisines: p.types
-    .map((t) => t.replace(/_restaurant$/, ""))
-    .filter((t) => t in RestaurantCuisine.enum) as RestaurantCuisine[],
-  attributes: p.types
-    .map((t) => t.replace(/_restaurant$/, ""))
-    .filter((t) => t in RestaurantAttribute.enum) as RestaurantAttribute[],
-  types: p.types.filter((t) => !t.endsWith("_restaurant")),
-  address: p.formattedAddress,
-  coordinates: p.location,
-  mapsUri: p.googleMapsUri,
-  businessStatus: p.businessStatus,
-  photos: p.photos,
-  // currentHours: p.currentOpeningHours,
-  // regularHours: p.regularOpeningHours,
-  rating: p.rating,
-  // websiteUri: p.websiteUri,
-  // websiteUri: p.websiteUri,
-  // priceLevel: p.priceLevel,
-  priceRange: p.priceRange,
-}));
+export const Place = PlacesApiPlace.extend({
+  /* Synthetic Fields */
+  distanceMiles: z.string().optional(),
+  primaryImage: z.string().optional(),
+});
+export type Place = z.infer<typeof Place>;
+
+export const Restaurant = z.object({
+  id: z.string(),
+  resourceName: z.string(),
+  displayName: z.string(),
+  cuisines: RestaurantCuisine.array(), // TODO: make this typed
+  attributes: RestaurantAttribute.array(),
+  types: z.string().array(),
+  address: z.string(),
+  coordinates: Coordinate,
+  mapsUri: z.string(),
+  businessStatus: z.string(), // TODO: enum
+  photos: z.unknown().array(), // TODO: make this typed
+  rating: z.number(),
+  priceRange: z
+    .object({
+      startPrice: z.object({
+        currencyCode: z.string(),
+        units: z.coerce.number(),
+        nanos: z.number(),
+      }),
+      endPrice: z
+        .object({
+          currencyCode: z.string(),
+          units: z.coerce.number(),
+          nanos: z.number(),
+        })
+        .nullable(),
+    })
+    .nullable(),
+  distanceMiles: z.string().optional(),
+  primaryImage: z.string().optional(),
+});
 export type Restaurant = z.infer<typeof Restaurant>;
+
+export const RestaurantParser = Place.transform(
+  (p) =>
+    ({
+      id: p.id,
+      resourceName: p.name,
+      displayName: p.displayName.text,
+      cuisines: p.types
+        .map((t) => t.replace(/_restaurant$/, ""))
+        .filter((t) => t in RestaurantCuisine.enum) as RestaurantCuisine[],
+      attributes: p.types
+        .map((t) => t.replace(/_restaurant$/, ""))
+        .filter((t) => t in RestaurantAttribute.enum) as RestaurantAttribute[],
+      types: p.types.filter((t) => !t.endsWith("_restaurant")),
+      address: p.formattedAddress,
+      coordinates: p.location,
+      mapsUri: p.googleMapsUri,
+      businessStatus: p.businessStatus,
+      photos: p.photos,
+      // currentHours: p.currentOpeningHours,
+      // regularHours: p.regularOpeningHours,
+      rating: p.rating,
+      // websiteUri: p.websiteUri,
+      // websiteUri: p.websiteUri,
+      // priceLevel: p.priceLevel,
+      priceRange: p.priceRange,
+      distanceMiles: p.distanceMiles,
+      primaryImage: p.primaryImage,
+    }) satisfies Restaurant,
+);
