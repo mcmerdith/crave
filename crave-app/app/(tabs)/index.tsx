@@ -26,7 +26,7 @@ export default function Index() {
   const RecentsData = transformPlacesApiData(places);
   const DiscoverData = RecentsData?.toReversed();
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#fff" }}>
       <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
         <SafeAreaView
           style={{

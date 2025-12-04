@@ -10,7 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/startSwipingButton";
+import StartSwipingButton from "../../components/startSwipingButtonGroup";
 import { useRouter } from "expo-router";
 import BackButton from "@/components/backButton";
 
