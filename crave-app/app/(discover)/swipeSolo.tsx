@@ -17,7 +17,7 @@ import { Link } from "expo-router";
 import type { WithSpringConfig } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 
-const router = useRouter();
+//const router = useRouter();
 
 const ICON_SIZE = 24;
 export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
@@ -37,6 +37,7 @@ type Restaurant = {
 };
 
 export default function SwipeSolo() {
+  const router = useRouter();
   const ref = useRef<SwiperCardRefType>(null);
   const renderCard = useCallback((item: Restaurant) => {
     return (
@@ -120,11 +121,20 @@ export default function SwipeSolo() {
           }, //dislike
           { icon: "reload", action: () => ref.current?.swipeBack() }, //undo
           { icon: "heart", action: () => ref.current?.swipeRight() }, //like
-        ].map(({ icon, action }, i) => (
-          <TouchableOpacity key={i} style={styles.button} onPress={action}>
-            <AntDesign name={icon as any} size={ICON_SIZE} color="white" />
-          </TouchableOpacity>
-        ))}
+        ].map(({ icon, action }, i) => {
+          let bgColor = "white";
+          let iconColor = "white";
+
+          if (icon === "close") bgColor = "red";
+          if (icon === "heart") bgColor = "green";
+          if (icon === "reload") { bgColor = "white"; iconColor = "black";}
+          return (
+            <TouchableOpacity key={i} style={[styles.button, {backgroundColor: bgColor}]}
+             onPress={action}>
+              <AntDesign name={icon as any} size={ICON_SIZE} color={iconColor}  />
+            </TouchableOpacity>
+          );
+      })}
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Link href="/(tabs)" asChild>

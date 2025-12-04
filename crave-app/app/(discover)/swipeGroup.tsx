@@ -111,11 +111,20 @@ export default function SwipeGroup() {
           }, //dislike
           { icon: "reload", action: () => ref.current?.swipeBack() }, //undo
           { icon: "heart", action: () => ref.current?.swipeRight() }, //like
-        ].map(({ icon, action }, i) => (
-          <TouchableOpacity key={i} style={styles.button} onPress={action}>
-            <AntDesign name={icon as any} size={ICON_SIZE} color="white" />
-          </TouchableOpacity>
-        ))}
+        ].map(({ icon, action }, i) => {
+          let bgColor = "white";
+          let iconColor = "white";
+      
+          if (icon === "close") bgColor = "red";
+          if (icon === "heart") bgColor = "green";
+          if (icon === "reload") { bgColor = "white"; iconColor = "black";}
+          return (
+            <TouchableOpacity key={i} style={[styles.button, {backgroundColor: bgColor}]}
+            onPress={action}>
+              <AntDesign name={icon as any} size={ICON_SIZE} color={iconColor}  />
+            </TouchableOpacity>
+          );
+      })}
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Link href="/(tabs)" asChild>
