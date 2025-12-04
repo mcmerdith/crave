@@ -77,7 +77,7 @@ export default function SwipeGroup() {
   // );
 
   const doneSwiping = () => {
-    router.navigate("/sessionComplete");
+    router.navigate("/finishedLobby");
     console.log("done swiping");
   };
 
