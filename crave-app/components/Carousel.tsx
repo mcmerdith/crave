@@ -26,7 +26,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 10 }}
       />
     </View>
   );
@@ -35,7 +35,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    height: 220,
+    height: 250,
   },
   header: {
     flexDirection: "row",
