@@ -1,47 +1,25 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-import Card, { CardProps } from "@/components/Card";
+import Card from "@/components/Card";
 import { theme } from "../../theme";
-
-//example data for matches/liked resturaunts
-
-const MatchedRestaurants: CardProps[] = [
-  {
-    name: "Taverna",
-    cuisine: "Italian",
-    rating: 4.8,
-    distance: "0.5 mi",
-    price: "$$",
-    image:
-      "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
-  },
-  {
-    name: "El Diablo",
-    cuisine: "Mexican",
-    rating: 4.4,
-    distance: "0.5 mi",
-    price: "$",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/58b57e8b2e69cffff969c6cd/1488299173082-81E2GCSB63YW66RKF8HO/Burrito_wood_retouched.jpg?format=1500w",
-  },
-  {
-    name: "m2o Burger",
-    cuisine: "American",
-    rating: 4.9,
-    distance: "0.5 mi",
-    price: "$$",
-    image:
-      "https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_1200,q_auto,fl_lossy,dpr_auto,c_fill,f_auto,h_800,g_auto/wtisrayz07qylnbwba6e",
-  },
-];
-
-//comment this line out to test the empty state
-//const MatchedRestaurants: CardProps[] = []
+import { useLocationContext } from "@/lib/context";
+import { useQuery } from "@tanstack/react-query";
+import { trpc } from "@/lib/trpc";
+import { skeletonPlacesData, transformPlacesApiData } from "@/lib/places";
 
 export default function Matches() {
-  const hasMatches = MatchedRestaurants.length > 0;
+  const { location } = useLocationContext();
+  const { data: places } = useQuery(
+    trpc.places.search.queryOptions({
+      center: location.coordinate ?? undefined,
+    }),
+  );
+  const matches = (
+    transformPlacesApiData(places) ?? skeletonPlacesData()
+  ).slice(0, 4);
+  const hasMatches = matches.length > 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,24 +35,17 @@ export default function Matches() {
         >
           <Text style={styles.headerTitle}>Current Matches</Text>
           <Text style={styles.sectionSubtitle}>
-            {MatchedRestaurants.length} saved restaurants
+            {matches.length} saved restaurants
           </Text>
 
           <View style={styles.cardsGrid}>
-            {MatchedRestaurants.map((item) => (
-              <View key={item.name} style={styles.cardWrapper}>
-                <Card
-                  name={item.name}
-                  cuisine={item.cuisine}
-                  rating={item.rating}
-                  distance={item.distance}
-                  price={item.price}
-                  image={item.image}
-                />
+            {matches.map((item) => (
+              <View key={item.id} style={styles.cardWrapper}>
+                <Card {...item} />
               </View>
             ))}
           </View>
-          </ScrollView>
+        </ScrollView>
       ) : (
         <View style={styles.emptyContainer}>
           <Text style={styles.heartEmoji}>💚</Text>
