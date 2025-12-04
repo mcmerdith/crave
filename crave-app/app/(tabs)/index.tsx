@@ -9,19 +9,14 @@ import LocationHeader from "@/app/(discover)/locationHeader";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { transformPlacesApiData } from "@/lib/places";
+import { useLocationContext } from "@/lib/context";
 
 export default function Index() {
-  const { data: location } = useQuery(
-    trpc.places.autocomplete.queryOptions({ query: "Newark, DE" }),
-  );
-  const { data: coordinates } = useQuery(
-    trpc.places.getAutocompleteCoordinates.queryOptions({
-      resourceName: location?.suggestions[0]?.resourceName,
-      token: location?.token,
-    }),
-  );
+  const { location } = useLocationContext();
   const { data: places } = useQuery(
-    trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
+    trpc.places.search.queryOptions({
+      center: location.coordinate ?? undefined,
+    }),
   );
   const RecentsData = transformPlacesApiData(places);
   const DiscoverData = RecentsData?.toReversed();
@@ -58,63 +53,3 @@ export default function Index() {
     </GestureHandlerRootView>
   );
 }
-
-const RecentsData = [
-  {
-    name: "Taverna",
-    cuisine: "Italian",
-    rating: 4.8,
-    distance: "0.5 mi",
-    price: "$$",
-    image:
-      "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
-  },
-  {
-    name: "El Diablo",
-    cuisine: "Mexican",
-    rating: 4.4,
-    distance: "0.5 mi",
-    price: "$",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/58b57e8b2e69cffff969c6cd/1488299173082-81E2GCSB63YW66RKF8HO/Burrito_wood_retouched.jpg?format=1500w",
-  },
-  {
-    name: "m2o Burger",
-    cuisine: "American",
-    rating: 4.9,
-    distance: "0.4 mi",
-    price: "$",
-    image:
-      "https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_1200,q_auto,fl_lossy,dpr_auto,c_fill,f_auto,h_800,g_auto/wtisrayz07qylnbwba6e",
-  },
-];
-
-const DiscoverData = [
-  {
-    name: "Taverna",
-    cuisine: "Italian",
-    rating: 4.8,
-    distance: "0.5 mi",
-    price: "$$",
-    image:
-      "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
-  },
-  {
-    name: "El Diablo",
-    cuisine: "Mexican",
-    rating: 4.4,
-    distance: "0.5 mi",
-    price: "$",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/58b57e8b2e69cffff969c6cd/1488299173082-81E2GCSB63YW66RKF8HO/Burrito_wood_retouched.jpg?format=1500w",
-  },
-  {
-    name: "m2o Burger",
-    cuisine: "American",
-    rating: 4.9,
-    distance: "0.4 mi",
-    price: "$",
-    image:
-      "https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_1200,q_auto,fl_lossy,dpr_auto,c_fill,f_auto,h_800,g_auto/wtisrayz07qylnbwba6e",
-  },
-];

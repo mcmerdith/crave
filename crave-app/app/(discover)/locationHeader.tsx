@@ -1,27 +1,22 @@
 //adds location header to discover page
 import React, { useState } from "react";
 import {
-  View,
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  FlatList,
-  Pressable,
-  Modal,
-  StyleSheet,
+  View,
 } from "react-native";
-import { MapPin, ChevronDown, Check } from "lucide-react-native";
+import { Check, ChevronDown, MapPin } from "lucide-react-native";
 import { theme } from "@/theme";
-
-const locations = [
-  "Newark, DE",
-  "Wilmington, DE",
-  "Philadelphia, PA",
-  "Baltimore, MD",
-  "Washington, DC",
-];
+import { useLocationContext } from "@/lib/context";
+import { TempLocationData } from "@/lib/locationShim";
 
 export default function LocationHeader({ userName = "Christian" }) {
-  const [selectedLocation, setSelectedLocation] = useState(locations[0]);
+  const locations = TempLocationData;
+  const { location, setNewLocation } = useLocationContext();
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -38,9 +33,7 @@ export default function LocationHeader({ userName = "Christian" }) {
           onPress={() => setModalVisible(true)}
         >
           <MapPin size={16} color={theme.colors.primary} />
-          <Text style={styles.locationText}>
-            {selectedLocation.split(",")[0]}
-          </Text>
+          <Text style={styles.locationText}>{location.name.split(",")[0]}</Text>
           <ChevronDown size={16} color={theme.colors.foreground} />
         </TouchableOpacity>
       </View>
@@ -55,23 +48,23 @@ export default function LocationHeader({ userName = "Christian" }) {
         <View style={styles.dropdown}>
           <FlatList
             data={locations}
-            keyExtractor={(item) => item}
+            keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[
                   styles.item,
-                  selectedLocation === item && styles.selectedItem,
+                  location.name === item.name && styles.selectedItem,
                 ]}
                 onPress={() => {
-                  setSelectedLocation(item);
+                  setNewLocation(item);
                   setModalVisible(false);
                 }}
               >
                 <View style={styles.itemLeft}>
                   <MapPin size={16} color={theme.colors.mutedForeground} />
-                  <Text style={styles.itemText}>{item}</Text>
+                  <Text style={styles.itemText}>{item.name}</Text>
                 </View>
-                {selectedLocation === item && (
+                {location.name === item.name && (
                   <Check size={16} color={theme.colors.primary} />
                 )}
               </TouchableOpacity>
@@ -87,6 +80,7 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
     paddingHorizontal: 20,
+    width: "100%",
   },
   row: {
     flexDirection: "row",

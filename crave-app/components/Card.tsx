@@ -1,18 +1,21 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Skeleton from "react-native-reanimated-skeleton";
 
 export interface CardProps {
+  loading: boolean;
   id: string;
   name: string;
   cuisine?: string;
   rating?: number;
   distance?: string;
   price?: string;
-  image: string;
+  image?: string;
 }
 
 const Card: React.FC<CardProps> = ({
+  loading,
   name,
   cuisine,
   rating,
@@ -21,8 +24,16 @@ const Card: React.FC<CardProps> = ({
   image,
 }) => {
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: image }} style={styles.image} />
+    <Skeleton containerStyle={styles.card} isLoading={loading}>
+      <Image
+        source={{
+          uri: loading
+            ? undefined
+            : (image ??
+              "https://placehold.co/600x600/?text=Image+Not+Available"),
+        }}
+        style={styles.image}
+      />
       <Text style={styles.title}>{name}</Text>
       <Text style={styles.subtitle}>{cuisine}</Text>
 
@@ -43,7 +54,7 @@ const Card: React.FC<CardProps> = ({
 
         {price && <Text style={styles.price}>{price}</Text>}
       </View>
-    </View>
+    </Skeleton>
   );
 };
 
@@ -69,18 +80,20 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginHorizontal: 10,
     marginTop: 6,
-    flex: 1,
+    height: 40,
   },
   subtitle: {
     color: "#777",
     marginHorizontal: 10,
     fontSize: 13,
+    height: 15,
   },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 10,
     marginVertical: 8,
+    height: 15,
   },
   infoItem: {
     flexDirection: "row",
