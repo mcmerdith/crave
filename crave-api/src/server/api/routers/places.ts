@@ -15,23 +15,23 @@ import { Coordinate } from "@/server/api/types/geography";
 export const placesRouter = router({
   search: publicProcedure
     .input(SearchPlacesParams.partial())
-    .output(Restaurant.array().optional())
+    .output(Restaurant.array().nullable())
     .query(async ({ input: { center, ...input } }) => {
-      if (!center) return undefined;
+      if (!center) return null;
       return await searchPlaces({ center, ...input });
     }),
   autocomplete: publicProcedure
     .input(AutocompleteParams.partial())
-    .output(AutocompleteResult.optional())
+    .output(AutocompleteResult.nullable())
     .query(async ({ input: { query, token } }) => {
-      if (!query) return undefined;
+      if (!query) return null;
       return await autocomplete({ query, token });
     }),
   getAutocompleteCoordinates: publicProcedure
     .input(GetAutocompleteCoordinatesParams.partial())
-    .output(Coordinate.optional())
+    .output(Coordinate.nullable())
     .query(async ({ input: { resourceName, token } }) => {
-      if (!resourceName || !token) return undefined;
+      if (!resourceName || !token) return null;
       return await getAutocompleteCoordinates({ resourceName, token });
     }),
 });

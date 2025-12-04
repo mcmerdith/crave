@@ -18,7 +18,7 @@ export async function readCache<Parser extends z.ZodType>(
   identifier: string,
   parser: Parser,
 ): Promise<z.output<Parser> | null> {
-  if (env.NODE_ENV !== "development") return null;
+  // if (env.NODE_ENV !== "development") return null;
   try {
     const filename = `${prefix}-${identifier}.json`.replace(
       /[/\\:*?"<>|#%]/g,

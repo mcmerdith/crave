@@ -61,7 +61,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                 } | null;
                 distanceMiles?: string | undefined;
                 primaryImage?: string | undefined;
-            }[] | undefined;
+            }[] | null;
             meta: object;
         }>;
         autocomplete: _trpc_server.TRPCQueryProcedure<{
@@ -76,7 +76,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                     resourceName: string;
                 }[];
                 token: string;
-            } | undefined;
+            } | null;
             meta: object;
         }>;
         getAutocompleteCoordinates: _trpc_server.TRPCQueryProcedure<{
@@ -87,7 +87,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
             output: {
                 latitude: number;
                 longitude: number;
-            } | undefined;
+            } | null;
             meta: object;
         }>;
     }>>;

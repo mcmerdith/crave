@@ -9,7 +9,6 @@ import LocationHeader from "@/app/(discover)/locationHeader";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { transformPlacesApiData } from "@/lib/places";
-import { CardProps } from "@/components/Card";
 
 export default function Index() {
   const { data: location } = useQuery(
@@ -25,7 +24,7 @@ export default function Index() {
     trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
   );
   const RecentsData = transformPlacesApiData(places);
-  const DiscoverData = RecentsData?.reverse();
+  const DiscoverData = RecentsData?.toReversed();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
@@ -43,12 +42,12 @@ export default function Index() {
           <ModeSelection />
           <Carousel
             title="Recent Cravings"
-            data={RecentsData ?? []}
+            data={RecentsData}
             onViewAll={() => console.log("View All pressed")}
           />
           <Carousel
             title="Discover New"
-            data={DiscoverData ?? []}
+            data={DiscoverData}
             onViewAll={() => console.log("View All pressed")}
           />
           <View
