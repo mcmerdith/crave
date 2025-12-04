@@ -12,12 +12,31 @@ import type { SpringConfig } from "react-native-reanimated/lib/typescript/animat
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { CardProps } from "@/components/Card";
+import { Restaurant } from "@crave/api";
 const SWIPE_SPRING_CONFIG: SpringConfig = {
   damping: 2,
   stiffness: 100,
   mass: 100,
   overshootClamping: true,
 };
+
+function transformApiData(restaurants?: Restaurant[]) {
+  if (!restaurants) return undefined;
+  return restaurants.map(
+    (r): CardProps => ({
+      loading: false,
+      id: r.resourceName,
+      name: r.displayName,
+      cuisine: r.cuisines.length ? r.cuisines[0] : "American",
+      rating: r.rating,
+      distance: r.distanceMiles,
+      image: r.primaryImage,
+      price: r.priceRange
+        ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
+        : undefined,
+    }),
+  );
+}
 
 export default function Index() {
   const { data: location } = useQuery(
@@ -32,34 +51,8 @@ export default function Index() {
   const { data: places } = useQuery(
     trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
   );
-  const RecentsData = places?.map(
-    (p): CardProps => ({
-      id: p.resourceName,
-      name: p.displayName,
-      cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-      rating: p.rating,
-      distance: "5mi",
-      image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-      price: `$${p.priceRange.startPrice.units}${
-        p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-      }`,
-    }),
-  );
-  const DiscoverData = places
-    ?.map(
-      (p): CardProps => ({
-        id: p.resourceName,
-        name: p.displayName,
-        cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-        rating: p.rating,
-        distance: "5mi",
-        image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-        price: `$${p.priceRange.startPrice.units}${
-          p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-        }`,
-      }),
-    )
-    .reverse();
+  const RecentsData = transformApiData(places);
+  const DiscoverData = RecentsData?.reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
