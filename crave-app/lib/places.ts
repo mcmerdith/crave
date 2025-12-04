@@ -18,3 +18,16 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
     }),
   );
 }
+
+export function skeletonPlacesData(): CardProps[] {
+  return [...Array(10)].map((_, i) => ({
+    loading: true,
+    id: `skeleton-${i}`,
+    name: "Restaurant",
+    cuisine: "Food",
+    rating: 3,
+    distance: "5mi",
+    price: "$10 - $20",
+    image: undefined,
+  }));
+}
