@@ -20,7 +20,6 @@ if (isWindows) {
 if (proc.error || proc.status !== 0) {
   console.error("Failed!");
   if (proc.error) console.error(proc.error);
-  else console.error(proc.stderr.toString());
 } else {
   console.log("Success!");
 }
