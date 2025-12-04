@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    bottom: 34,
+    bottom: 20,
     alignItems: "center",
     justifyContent: "center",
     gap: 24,
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: "100%",
     height: "100%",
+    paddingTop: 40,
   },
   renderFlippedCardContainer: {
     borderRadius: 15,
