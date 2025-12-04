@@ -3,40 +3,21 @@ import ModeSelection from "@/components/ModeSelection";
 import { theme } from "@/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
-import { ScrollView } from "react-native";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LocationHeader from "@/app/(discover)/locationHeader";
 
 import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
-import { CardProps } from "@/components/Card";
-import { Restaurant } from "@crave/api";
+import { transformPlacesApiData } from "@/lib/places";
+
 const SWIPE_SPRING_CONFIG: SpringConfig = {
   damping: 2,
   stiffness: 100,
   mass: 100,
   overshootClamping: true,
 };
-
-function transformApiData(restaurants?: Restaurant[]) {
-  if (!restaurants) return undefined;
-  return restaurants.map(
-    (r): CardProps => ({
-      loading: false,
-      id: r.resourceName,
-      name: r.displayName,
-      cuisine: r.cuisines.length ? r.cuisines[0] : "American",
-      rating: r.rating,
-      distance: r.distanceMiles,
-      image: r.primaryImage,
-      price: r.priceRange
-        ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
-        : undefined,
-    }),
-  );
-}
 
 export default function Index() {
   const { data: location } = useQuery(
@@ -51,7 +32,7 @@ export default function Index() {
   const { data: places } = useQuery(
     trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
   );
-  const RecentsData = transformApiData(places);
+  const RecentsData = transformPlacesApiData(places);
   const DiscoverData = RecentsData?.reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
