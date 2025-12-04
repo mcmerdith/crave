@@ -1,18 +1,23 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { Text, StyleSheet } from "react-native";
 import { theme } from "@/theme";
+import RestaurantCard from "@/components/restaurantCard";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import ColorfulButton from "@/components/colorfulButton";
+import { useRouter } from "expo-router";
 
-export default function SessionComplete() {
+export default function GroupSessionComplete() {
+  const router = useRouter();
   return (
-    <View style={styles.container}>
-      <Text style={styles.message}>Here&apos;s your match!</Text>
-      <Text style={styles.message}>1 restaurant everyone loved</Text>
-      <Link href="/(tabs)" asChild>
-        <TouchableOpacity style={styles.linkButton}>
-          <Text style={styles.linkText}>Go to Discover</Text>
-        </TouchableOpacity>
-      </Link>
-    </View>
+    <GestureHandlerRootView style={styles.container}>
+      <Text style={styles.message}>Group Matches</Text>
+      <RestaurantCard restaurant={example} />
+      <ColorfulButton
+        variant="group"
+        onPress={() => router.push("/(tabs)")}
+        canStart={true}
+        text="Go to Discover"
+      />
+    </GestureHandlerRootView>
   );
 }
 
@@ -38,3 +43,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
+
+export const example = {
+  name: "Taverna",
+  cuisine: "Italian",
+  rating: 4.8,
+  distance: "0.5 mi",
+  price: "$$",
+  image:
+    "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
+};

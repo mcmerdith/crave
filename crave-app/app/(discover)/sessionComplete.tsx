@@ -1,17 +1,23 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { View, Text, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import { theme } from "@/theme";
+import RestaurantCard from "@/components/restaurantCard";
+import ColorfulButton from "@/components/colorfulButton";
 
 export default function SessionComplete() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
-      <Text style={styles.message}>Here&apos;s your matches!</Text>
+      <Text style={styles.message}>What You&apos;re Craving</Text>
+      {/* <Text style={styles.message}>You liked 6 restaurants</Text> */}
+      <RestaurantCard restaurant={example} />
 
-      <Link href="/(tabs)" asChild>
-        <TouchableOpacity style={styles.linkButton}>
-          <Text style={styles.linkText}>Go to Discover</Text>
-        </TouchableOpacity>
-      </Link>
+      <ColorfulButton
+        variant="solo"
+        onPress={() => router.push("/(tabs)")}
+        canStart={true}
+        text="Go to Discover"
+      />
     </View>
   );
 }
@@ -38,3 +44,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
+
+export const example = {
+  name: "Taverna",
+  cuisine: "Italian",
+  rating: 4.8,
+  distance: "0.5 mi",
+  price: "$$",
+  image:
+    "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
+};

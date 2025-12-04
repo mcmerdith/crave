@@ -1,13 +1,6 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, Animated, ScrollView } from "react-native";
 import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/startSwipingButtonGroup";
+import ColorfulButton from "../../components/colorfulButton";
 import { useRouter } from "expo-router";
 import BackButton from "@/components/backButton";
 
@@ -104,8 +97,10 @@ export default function FinishedLobby() {
 
         <View style={{ height: 80 }} />
       </ScrollView>
-      <StartSwipingButton
+      <ColorfulButton
         canStart={people.length > 1}
+        text="View Matches"
+        variant="group"
         onPress={() => {
           viewMatches();
         }}

@@ -10,7 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/startSwipingButtonGroup";
+import StartSwipingButton from "../../components/colorfulButton";
 import { useRouter } from "expo-router";
 import BackButton from "@/components/backButton";
 
@@ -129,6 +129,8 @@ export default function GroupLobby() {
       </ScrollView>
       <StartSwipingButton
         canStart={people.length > 1}
+        variant="group"
+        text="Start Swiping"
         onPress={() => {
           handleStartSolo();
         }}
