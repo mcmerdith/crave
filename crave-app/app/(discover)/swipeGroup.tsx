@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
-import {theme } from "@/theme";
+import { theme } from "@/theme";
+
 import {
   Image,
   StyleSheet,
@@ -14,6 +15,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
 import { Link } from "expo-router";
 import type { WithSpringConfig } from "react-native-reanimated";
+import { useRouter } from "expo-router";
+
+//const router = useRouter();
 
 const ICON_SIZE = 24;
 export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
@@ -33,34 +37,29 @@ type Restaurant = {
 };
 
 export default function SwipeGroup() {
+  const router = useRouter();
   const ref = useRef<SwiperCardRefType>(null);
   const renderCard = useCallback((item: Restaurant) => {
     return (
       <View style={styles.renderCardContainer}>
-        <Image
-          source={{ uri: item.image }}
-          style={styles.renderCardImage}
-          resizeMode="cover"
-        />
-        <View
-          style={{
-            position: "absolute",
-            bottom: 20,
-            left: 20,
-            backgroundColor: "#242424aa",
-            padding: 10,
-            borderRadius: 8,
-          }}
-        >
-          <Text
-            style={{ fontSize: 24, fontWeight: "bold", color: "#ffffffff" }}
-          >
+        {/* Top Half Image */}
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: item.image }}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
+        </View>
+
+        {/* Bottom Half Info */}
+        <View style={styles.infoBlock}>
+          <Text style={{ fontSize: 24, fontWeight: "bold", color: "black" }}>
             {item.name}
           </Text>
-          <Text style={{ color: "#ffffffff", fontSize: 16 }}>
+          <Text style={{ color: "black", fontSize: 16 }}>
             {item.cuisine} • {item.price} • ⭐ {item.rating}
           </Text>
-          <Text style={{ color: "#ffffffff", fontSize: 14 }}>
+          <Text style={{ color: "black", fontSize: 14 }}>
             {item.distance} away
           </Text>
         </View>
@@ -76,6 +75,11 @@ export default function SwipeGroup() {
   //   ),
   //   [],
   // );
+
+  const doneSwiping = () => {
+    router.navigate("/sessionComplete");
+    console.log("done swiping");
+  };
 
   const OverlayLabel = (color: string) => (
     <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
@@ -98,7 +102,7 @@ export default function SwipeGroup() {
           OverlayLabelLeft={() => OverlayLabel("red")}
           //OverlayLabelTop={() => OverlayLabel("blue")}
           //OverlayLabelBottom={() => OverlayLabel("orange")}
-          onSwipedAll={() => console.log("All cards swiped")}
+          onSwipedAll={() => doneSwiping()}
         />
       </View>
 
@@ -114,21 +118,37 @@ export default function SwipeGroup() {
         ].map(({ icon, action }, i) => {
           let bgColor = "white";
           let iconColor = "white";
-      
+
           if (icon === "close") bgColor = "red";
           if (icon === "heart") bgColor = "green";
-          if (icon === "reload") { bgColor = "white"; iconColor = "black";}
+          if (icon === "reload") {
+            bgColor = "white";
+            iconColor = "black";
+          }
           return (
-            <TouchableOpacity key={i} style={[styles.button, {backgroundColor: bgColor}]}
-            onPress={action}>
-              <AntDesign name={icon as any} size={ICON_SIZE} color={iconColor}  />
+            <TouchableOpacity
+              key={i}
+              style={[styles.button, { backgroundColor: bgColor }]}
+              onPress={action}
+            >
+              <AntDesign
+                name={icon as any}
+                size={ICON_SIZE}
+                color={iconColor}
+              />
             </TouchableOpacity>
           );
-      })}
+        })}
       </View>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Link href="/(tabs)" asChild>
-          <Text style={{ color: theme.colors.black, fontSize: 16, fontWeight: "500" }}>
+          <Text
+            style={{
+              color: theme.colors.black,
+              fontSize: 16,
+              fontWeight: "500",
+            }}
+          >
             Go to Discover
           </Text>
         </Link>
@@ -142,11 +162,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  imageContainer: {
+    flex: 2,
+    width: "100%",
   },
   subContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  infoBlock: {
+    flex: 1,
+    width: "100%",
+    padding: 16,
+    justifyContent: "center",
+    backgroundColor: "white",
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -169,10 +202,13 @@ const styles = StyleSheet.create({
   },
   renderCardContainer: {
     borderRadius: 15,
+    overflow: "hidden",
     width: "100%",
     height: "100%",
-    paddingTop: 40,
+    flexDirection: "column",
+    backgroundColor: "white",
   },
+
   renderFlippedCardContainer: {
     borderRadius: 15,
     backgroundColor: "#baeee5",
