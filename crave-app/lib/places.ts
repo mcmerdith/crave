@@ -11,7 +11,7 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
       cuisine: r.cuisines.length ? r.cuisines[0] : "American",
       rating: r.rating,
       distance: r.distanceMiles,
-      image: r.primaryImage ?? "https://placehold.co/600x600/?text=Coming+Soon", // TODO: remove on next merge
+      image: r.primaryImage,
       price: r.priceRange
         ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
         : undefined,

@@ -15,6 +15,9 @@ function skeletonData(): CardProps[] {
     name: "Restaurant",
     cuisine: "Food",
     rating: 3,
+    distance: "5mi",
+    price: "$10 - $20",
+    image: undefined,
   }));
 }
 
