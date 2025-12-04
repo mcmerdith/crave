@@ -1,9 +1,10 @@
 import { PlacesClient } from "@googlemaps/places";
 import { Client } from "@googlemaps/google-maps-services-js";
 import { env } from "@/env";
-import { newUUID, toMeters } from "@/utils";
+import { newUUID, toMeters, toMiles } from "@/utils";
 import {
   AutocompleteParams,
+  AutocompleteResult,
   GetAutocompleteCoordinatesParams,
   PlacesApiAutocompleteResult,
 } from "@/server/api/types/autocomplete";
@@ -11,11 +12,11 @@ import { Coordinate } from "@/server/api/types/geography";
 import {
   PlacesApiPlace,
   Restaurant,
+  RestaurantParser,
   SearchPlacesParams,
 } from "@/server/api/types/places";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { z } from "zod";
-import path from "path";
+import { readCache, writeCache } from "@/server/api/cache";
+import { getDistance } from "geolib";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -32,7 +33,10 @@ function toTypes(attributes?: string[]): string[] {
   return attributes?.map((a) => `${a}_restaurant`) ?? [];
 }
 
-export async function autocomplete({ query, token }: AutocompleteParams) {
+export async function autocomplete({
+  query,
+  token,
+}: AutocompleteParams): Promise<AutocompleteResult> {
   token ??= newUUID(); // generate a new token if none is provided
   const cache = await readCache(
     "autocomplete",
@@ -69,7 +73,7 @@ export async function autocomplete({ query, token }: AutocompleteParams) {
 export async function getAutocompleteCoordinates({
   resourceName,
   token,
-}: GetAutocompleteCoordinatesParams) {
+}: GetAutocompleteCoordinatesParams): Promise<Coordinate> {
   const cache = await readCache(
     "autocomplete_coordinates",
     resourceName,
@@ -91,7 +95,11 @@ export async function getAutocompleteCoordinates({
   return Coordinate.parse(data.location);
 }
 
-/** Get the coordinates for a given query */
+/**
+ * Get the coordinates for a given query
+ *
+ * @deprecated use getAutocompleteCoordinates instead
+ */
 export async function getCoordinates(query: string) {
   const data = await mapsApi.geocode({
     params: {
@@ -111,6 +119,21 @@ export async function getCoordinates(query: string) {
   } satisfies Coordinate;
 }
 
+export async function getPlaceImage(resourceName: string) {
+  console.debug("fetching image");
+  try {
+    const [data] = await placesApi.getPhotoMedia({
+      name: `${resourceName}/media`,
+      maxHeightPx: 600,
+    });
+    console.debug("image fetched:", !!data.photoUri);
+    return data.photoUri ?? undefined;
+  } catch (e) {
+    console.error("failed to fetch image", e);
+    return undefined;
+  }
+}
+
 /**
  * Search for places near a given location
  *
@@ -124,11 +147,11 @@ export async function searchPlaces({
   radius = toMeters(10),
   maxPriceLevel = 5,
   // sort = "RELEVANCE",
-}: SearchPlacesParams) {
+}: SearchPlacesParams): Promise<Restaurant[]> {
   const cache = await readCache(
     "places",
     `${center.latitude}_${center.longitude}`,
-    Restaurant.array(),
+    RestaurantParser.array(),
   );
   if (cache) return cache;
   const [data] = await placesApi.searchText(
@@ -155,65 +178,35 @@ export async function searchPlaces({
       },
     },
   );
-  await writeCache(
-    "places",
-    `${center.latitude}_${center.longitude}`,
-    data.places,
-  );
-  if (!data.places) return [];
-  return Restaurant.array().parse(data.places);
-}
-
-function isInsignificantError(error: unknown): boolean {
-  return (
-    !error ||
-    typeof error !== "object" ||
-    !("code" in error) ||
-    error.code === "ENOENT" ||
-    error.code === "EEXIST"
-  );
-}
-
-async function readCache<Parser extends z.ZodType>(
-  prefix: string,
-  identifier: string,
-  parser: Parser,
-): Promise<z.output<Parser> | null> {
-  if (env.NODE_ENV !== "development") return null;
-  try {
-    const filename = `${prefix}-${identifier}.json`.replace(
-      /[/\\:*?"<>|#%]/g,
-      "_",
-    );
-    const data = await readFile(path.join("cache", filename), {
-      encoding: "utf-8",
-    });
-    console.debug(`[Places-API] Using cache file ${filename}`);
-    return parser.parse(JSON.parse(data));
-  } catch (error) {
-    if (!isInsignificantError(error)) throw error;
-  }
-  return null;
-}
-
-async function writeCache(prefix: string, identifier: string, data: unknown) {
-  if (env.NODE_ENV !== "development") return;
-  try {
-    await mkdir("cache");
-  } catch (error) {
-    if (!isInsignificantError(error)) throw error;
-  }
-  try {
-    const filename = `${prefix}-${identifier}.json`.replace(
-      /[/\\:*?"<>|#%]/g,
-      "_",
-    );
-    console.debug(`[Places-API] Writing cache file ${filename}`);
-    await writeFile(path.join("cache", filename), JSON.stringify(data), {
-      encoding: "utf-8",
-    });
-  } catch (error) {
-    console.error("Writing to cache file failed!");
-    if (!isInsignificantError(error)) throw error;
-  }
+  const places = data.places
+    ? await Promise.all(
+        data.places.map(async (p) => {
+          const distance =
+            p.location?.latitude && p.location.longitude
+              ? getDistance(
+                  {
+                    latitude: p.location.latitude,
+                    longitude: p.location.longitude,
+                  },
+                  center,
+                )
+              : undefined;
+          const distanceMiles = distance ? toMiles(distance) : undefined;
+          const usablePhotos = p.photos; // p.photos?.filter((p) => !p.authorAttributions);
+          const primaryImage = usablePhotos?.length
+            ? usablePhotos[0].name
+            : undefined;
+          return {
+            ...p,
+            distanceMiles: `${distanceMiles?.toFixed(distanceMiles >= 5 ? 0 : 1)}mi`,
+            primaryImage: primaryImage
+              ? await getPlaceImage(primaryImage)
+              : undefined,
+          };
+        }),
+      )
+    : undefined;
+  await writeCache("places", `${center.latitude}_${center.longitude}`, places);
+  if (!places) return [];
+  return RestaurantParser.array().parse(places);
 }

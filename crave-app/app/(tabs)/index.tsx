@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LocationHeader from "@/app/(discover)/locationHeader";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
+import { transformPlacesApiData } from "@/lib/places";
 import { CardProps } from "@/components/Card";
 
 export default function Index() {
@@ -23,34 +24,8 @@ export default function Index() {
   const { data: places } = useQuery(
     trpc.places.search.queryOptions({ center: coordinates ?? undefined }),
   );
-  const RecentsData = places?.map(
-    (p): CardProps => ({
-      id: p.resourceName,
-      name: p.displayName,
-      cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-      rating: p.rating,
-      distance: "5mi",
-      image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-      price: `$${p.priceRange.startPrice.units}${
-        p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-      }`,
-    }),
-  );
-  const DiscoverData = places
-    ?.map(
-      (p): CardProps => ({
-        id: p.resourceName,
-        name: p.displayName,
-        cuisine: p.cuisines.length ? p.cuisines[0] : "American",
-        rating: p.rating,
-        distance: "5mi",
-        image: "https://placehold.co/600x600/?text=Image+Coming+Soon",
-        price: `$${p.priceRange.startPrice.units}${
-          p.priceRange.endPrice ? ` - $${p.priceRange.endPrice.units}` : ""
-        }`,
-      }),
-    )
-    .reverse();
+  const RecentsData = transformPlacesApiData(places);
+  const DiscoverData = RecentsData?.reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
