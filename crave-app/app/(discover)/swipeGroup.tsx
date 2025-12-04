@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 70,
   },
   infoBlock: {
     flex: 1,
