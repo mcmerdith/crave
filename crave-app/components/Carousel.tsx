@@ -4,11 +4,22 @@ import Card, { CardProps } from "./Card";
 
 interface CarouselProps {
   title: string;
-  data: CardProps[];
+  data?: CardProps[];
   onViewAll?: () => void;
 }
 
+function skeletonData(): CardProps[] {
+  return [...Array(10)].map((_, i) => ({
+    loading: true,
+    id: `skeleton-${i}`,
+    name: "Restaurant",
+    cuisine: "Food",
+    rating: 3,
+  }));
+}
+
 const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
+  const renderData = data ?? skeletonData();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -19,7 +30,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
       </View>
 
       <FlatList
-        data={data}
+        data={renderData}
         renderItem={({ item }) => <Card {...item} />}
         keyExtractor={(item) => item.id}
         horizontal
