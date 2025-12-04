@@ -1,24 +1,23 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { Text, StyleSheet } from "react-native";
 import { theme } from "@/theme";
 import RestaurantCard from "@/components/restaurantCard";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ColorfulButton from "@/components/colorfulButton";
+import { useRouter } from "expo-router";
 
-export default function SessionComplete() {
+export default function GroupSessionComplete() {
   const router = useRouter();
   return (
-    <View style={styles.container}>
-      <Text style={styles.message}>What You&apos;re Craving</Text>
-      {/* <Text style={styles.message}>You liked 6 restaurants</Text> */}
+    <GestureHandlerRootView style={styles.container}>
+      <Text style={styles.message}>Group Matches</Text>
       <RestaurantCard restaurant={example} />
-
       <ColorfulButton
-        variant="solo"
+        variant="group"
         onPress={() => router.push("/(tabs)")}
         canStart={true}
         text="Go to Discover"
       />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 

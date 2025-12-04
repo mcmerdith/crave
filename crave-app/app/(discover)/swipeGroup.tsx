@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from "react";
-import { theme } from "@/theme";
 
 import {
   Image,
@@ -7,15 +6,14 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Button,
   // type ImageSourcePropType,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
-import { Link } from "expo-router";
-import type { WithSpringConfig } from "react-native-reanimated";
 import { useRouter } from "expo-router";
+import type { WithSpringConfig } from "react-native-reanimated";
+import ColorfulButton from "@/components/colorfulButton";
 
 //const router = useRouter();
 
@@ -77,7 +75,7 @@ export default function SwipeGroup() {
   // );
 
   const doneSwiping = () => {
-    router.navigate("/sessionComplete");
+    router.navigate("/finishedLobby");
     console.log("done swiping");
   };
 
@@ -140,19 +138,14 @@ export default function SwipeGroup() {
           );
         })}
       </View>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Link href="/(tabs)" asChild>
-          <Text
-            style={{
-              color: theme.colors.black,
-              fontSize: 16,
-              fontWeight: "500",
-            }}
-          >
-            Go to Discover
-          </Text>
-        </Link>
-      </View>
+      {/* <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ColorfulButton
+          variant="other"
+          canStart={true}
+          text="Go to Discover"
+          onPress={() => doneSwiping()}
+        />
+      </View> */}
     </GestureHandlerRootView>
   );
 }

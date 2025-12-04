@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
-import { Link } from "expo-router";
-import StartSwipingButton from "@/components/startSwipingButtonSolo";
+import ColorfulButton from "@/components/colorfulButton";
+import { useRouter } from "expo-router";
 
 const FiltersSolo = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
   const [distance, setDistance] = useState(10); // miles
-
+  const router = useRouter();
   const priceLabels = ["$", "$$", "$$$", "$$$$"];
 
   return (
@@ -61,9 +61,14 @@ const FiltersSolo = () => {
       </View>
       {/* Start Swiping Button */}
       <View style={styles.swipeButtonContainer}>
-        <Link href="/(discover)/swipeSolo" asChild>
-          <StartSwipingButton canStart={true} onPress={() => {}} />
-        </Link>
+        <ColorfulButton
+          variant="solo"
+          text="Start Swiping"
+          canStart={true}
+          onPress={() => {
+            router.push("/(discover)/swipeSolo");
+          }}
+        />
       </View>
     </View>
   );
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
-    paddingTop: 60
+    paddingTop: 60,
   },
   header: {
     fontSize: 28,

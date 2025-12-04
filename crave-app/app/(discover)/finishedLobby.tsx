@@ -1,25 +1,13 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-  ScrollView,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
+import { View, Text, StyleSheet, Animated, ScrollView } from "react-native";
 import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/colorfulButton";
+import ColorfulButton from "../../components/colorfulButton";
 import { useRouter } from "expo-router";
 import BackButton from "@/components/backButton";
 
-export default function GroupLobby() {
+export default function FinishedLobby() {
   const router = useRouter();
-  const sessionCode = "COBRCY";
-
-  const handleStartSolo = () => {
-    router.push("/swipeGroup");
+  const viewMatches = () => {
+    router.push("/groupSessionComplete");
   };
 
   const people = [
@@ -61,30 +49,12 @@ export default function GroupLobby() {
     Animated.stagger(0, animations).start();
   }, [anims]);
 
-  const copyCode = () => {
-    Clipboard.setStringAsync(sessionCode);
-  };
-
   return (
     <View style={styles.container}>
       {/* Back */}
       <BackButton />
-      <Text style={styles.title}>Group Lobby</Text>
-      <Text style={styles.subtitle}>Share the code with your friends</Text>
-      {/* Code Card */}
-      <LinearGradient colors={["#FF8A00", "#E92E7F"]} style={styles.codeCard}>
-        <Text style={styles.sessionLabel}>Session Code</Text>
-
-        <View style={styles.codeRow}>
-          <Text style={styles.sessionCode}>{sessionCode}</Text>
-          <TouchableOpacity onPress={copyCode}>
-            <Ionicons name="copy-outline" size={28} color="#fff" />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.smallText}>Friends can join using this code</Text>
-      </LinearGradient>
-      <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text>
+      <Text style={styles.title}>Waiting for your group...</Text>
+      {/* <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text> */}
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {people.map((item, idx) => {
@@ -127,12 +97,12 @@ export default function GroupLobby() {
 
         <View style={{ height: 80 }} />
       </ScrollView>
-      <StartSwipingButton
+      <ColorfulButton
         canStart={people.length > 1}
+        text="View Matches"
         variant="group"
-        text="Start Swiping"
         onPress={() => {
-          handleStartSolo();
+          viewMatches();
         }}
       />
     </View>
