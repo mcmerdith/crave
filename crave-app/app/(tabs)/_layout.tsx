@@ -28,12 +28,12 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
-        name="filters"
+        name="profile"
         options={{
           headerShown: false,
-          title: "Filters",
+          title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Octicons name="sliders" size={24} color="color" />
+            <Octicons name="person" size={24} color="color" />
           ),
         }}
       />
