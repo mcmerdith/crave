@@ -33,6 +33,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+    height: 220,
   },
   header: {
     flexDirection: "row",

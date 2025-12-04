@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 import { Link } from "expo-router";
+import StartSwipingButton from "@/components/startSwipingButtonSolo";
+
 const FiltersSolo = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
   const [distance, setDistance] = useState(10); // miles
@@ -31,9 +33,9 @@ const FiltersSolo = () => {
           minimumValue={1}
           maximumValue={4}
           step={1}
-          minimumTrackTintColor="#4CAF50"
+          minimumTrackTintColor="#a542fb"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#4CAF50"
+          thumbTintColor="#7b13ca"
           value={priceRange}
           onValueChange={setPriceRange}
         />
@@ -45,9 +47,9 @@ const FiltersSolo = () => {
           minimumValue={1}
           maximumValue={50}
           step={1}
-          minimumTrackTintColor="#2196F3"
+          minimumTrackTintColor="#f91671ff"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#2196F3"
+          thumbTintColor="#f91671ff"
           value={distance}
           onValueChange={setDistance}
         />
@@ -57,20 +59,10 @@ const FiltersSolo = () => {
           <Text style={styles.applyText}>Apply Filters</Text>
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      {/* Start Swiping Button */}
+      <View style={styles.swipeButtonContainer}>
         <Link href="/(discover)/swipeSolo" asChild>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "#2196F3",
-              paddingVertical: 15,
-              paddingHorizontal: 30,
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
-              Start Swiping
-            </Text>
-          </TouchableOpacity>
+          <StartSwipingButton canStart={true} onPress={() => {}} />
         </Link>
       </View>
     </View>
@@ -84,6 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
+    paddingTop: 60
   },
   header: {
     fontSize: 28,
@@ -105,7 +98,7 @@ const styles = StyleSheet.create({
     color: "#999",
   },
   priceLabelActive: {
-    color: "#4CAF50",
+    color: "#a542fb",
     fontWeight: "bold",
   },
   applyButton: {
@@ -119,5 +112,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  swipeButtonContainer: {
+    width: "100%",
+    padding: 20,
+    justifyContent: "flex-end",
   },
 });
