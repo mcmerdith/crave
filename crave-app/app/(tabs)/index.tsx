@@ -6,18 +6,10 @@ import Carousel from "@/components/Carousel";
 import { ScrollView, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LocationHeader from "@/app/(discover)/locationHeader";
-
-import type { SpringConfig } from "react-native-reanimated/lib/typescript/animation/spring";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { transformPlacesApiData } from "@/lib/places";
-
-const SWIPE_SPRING_CONFIG: SpringConfig = {
-  damping: 2,
-  stiffness: 100,
-  mass: 100,
-  overshootClamping: true,
-};
+import { CardProps } from "@/components/Card";
 
 export default function Index() {
   const { data: location } = useQuery(
@@ -36,19 +28,19 @@ export default function Index() {
   const DiscoverData = RecentsData?.reverse();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView
-        style={{
-          backgroundColor: theme.colors.background,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-        }}
-      >
-        <LocationHeader userName="User" />
-        <ModeSelection />
-        <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
+      <ScrollView style={{ width: "100%", maxWidth: "100%" }}>
+        <SafeAreaView
+          style={{
+            backgroundColor: theme.colors.background,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          <LocationHeader userName="User" />
+          <ModeSelection />
           <Carousel
             title="Recent Cravings"
             data={RecentsData ?? []}
@@ -62,8 +54,8 @@ export default function Index() {
           <View
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           ></View>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </GestureHandlerRootView>
   );
 }

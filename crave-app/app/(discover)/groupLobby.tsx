@@ -59,7 +59,7 @@ export default function GroupLobby() {
     });
 
     Animated.stagger(0, animations).start();
-  }, []);
+  }, [anims]);
 
   const copyCode = () => {
     Clipboard.setStringAsync(sessionCode);
