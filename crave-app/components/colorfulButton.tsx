@@ -3,9 +3,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
 interface StartSwipingButtonProps {
-  canStart: boolean;
+  enabled: boolean;
   onPress: () => void;
   text?: string;
+  disabledText?: string;
   variant?: "solo" | "group" | "other";
 }
 
@@ -17,9 +18,10 @@ const variants: Record<"solo" | "group" | "other", [string, string]> = {
 };
 
 export default function ColorfulButton({
-  canStart,
+  enabled,
   onPress,
   text = "Start",
+  disabledText = "Waiting for friends...",
   variant = "solo",
 }: StartSwipingButtonProps) {
   const activeColors = variants[variant];
@@ -28,31 +30,29 @@ export default function ColorfulButton({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        disabled={!canStart}
+        disabled={!enabled}
         onPress={onPress}
         style={{ width: "100%" }}
       >
         <LinearGradient
-          colors={canStart ? activeColors : disabledColors}
+          colors={enabled ? activeColors : disabledColors}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.button, { opacity: canStart ? 1 : 0.6 }]}
+          style={[styles.button, { opacity: enabled ? 1 : 0.6 }]}
         >
           <Ionicons
             name="play-circle-outline"
             size={22}
-            color={canStart ? "#fff" : "#666"}
+            color={enabled ? "#fff" : "#666"}
           />
 
-          <Text style={[styles.text, { color: canStart ? "#fff" : "#666" }]}>
+          <Text style={[styles.text, { color: enabled ? "#fff" : "#666" }]}>
             {text}
           </Text>
         </LinearGradient>
       </TouchableOpacity>
 
-      {!canStart && (
-        <Text style={styles.waitingText}>Waiting for friends to join...</Text>
-      )}
+      {!enabled && <Text style={styles.waitingText}>{disabledText}</Text>}
     </View>
   );
 }

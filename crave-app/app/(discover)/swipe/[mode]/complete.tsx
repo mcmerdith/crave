@@ -1,21 +1,44 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "@/theme";
 import RestaurantCard from "@/components/restaurantCard";
 import ColorfulButton from "@/components/colorfulButton";
+import { useMatchContext } from "@/lib/context";
+import { SwipeModeParams } from "@/lib/routeParams";
 
-export default function SessionComplete() {
+export default function Complete() {
   const router = useRouter();
+
+  const { mode } = useLocalSearchParams<SwipeModeParams>();
+
+  const { match } = useMatchContext();
+
+  if (!match) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Something went wrong...</Text>
+        <ColorfulButton
+          variant="other"
+          onPress={() => router.replace("/")}
+          enabled={true}
+          text="Return to Home"
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.message}>What You&apos;re Craving</Text>
+      <Text style={styles.message}>
+        {mode === "group" ? "It's a match!" : "What You're Craving"}
+      </Text>
       {/* <Text style={styles.message}>You liked 6 restaurants</Text> */}
-      <RestaurantCard restaurant={example} />
+      <RestaurantCard restaurant={match} />
 
       <ColorfulButton
         variant="solo"
         onPress={() => router.replace("/(tabs)")}
-        canStart={true}
+        enabled={true}
         text="Go to Discover"
       />
     </View>

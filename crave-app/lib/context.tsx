@@ -1,5 +1,6 @@
 import { Context, createContext, useContext } from "react";
 import { GeoLocation } from "@/lib/locationShim";
+import { RestaurantSwipeData } from "@/lib/places";
 
 export type Store<T> =
   | {
@@ -59,3 +60,10 @@ export const { context: LocationContext, Provider: LocationContextProvider } =
     location: GeoLocation;
   }>("Location");
 export const useLocationContext = () => useWrappedContext(LocationContext);
+
+export const { context: MatchContext, Provider: MatchContextProvider } =
+  createWrappedContext<{
+    setMatch: (match: RestaurantSwipeData) => void;
+    match: RestaurantSwipeData | null;
+  }>("Match");
+export const useMatchContext = () => useWrappedContext(MatchContext);
