@@ -4,6 +4,7 @@ import Slider from "@react-native-community/slider";
 import ColorfulButton from "@/components/colorfulButton";
 import { useRouter } from "expo-router";
 import CloseButton from "@/components/closeButton";
+import BackButton from "@/components/backButton";
 
 const FiltersSolo = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
@@ -14,18 +15,8 @@ const FiltersSolo = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
       <View style={styles.container}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 30,
-          }}
-        >
-          <Text style={styles.header}>Set Your Filters</Text>
-          <CloseButton />
-        </View>
+        <BackButton />
+        <Text style={styles.header}>Set Your Filters</Text>
         <Text style={styles.label}>Price Range</Text>
         <View style={styles.priceLabels}>
           {priceLabels.map((label, index) => (
@@ -98,6 +89,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: "bold",
+    marginBottom: 30,
   },
   label: {
     fontSize: 18,
