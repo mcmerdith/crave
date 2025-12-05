@@ -3,22 +3,11 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import Card from "@/components/Card";
-import { theme } from "../../theme";
-import { useLocationContext } from "@/lib/context";
-import { useQuery } from "@tanstack/react-query";
-import { trpc } from "@/lib/trpc";
-import { skeletonPlacesData, transformPlacesApiData } from "@/lib/places";
+import { theme } from "@/theme";
+import { useMatchContext } from "@/lib/context";
 
 export default function Matches() {
-  const { location } = useLocationContext();
-  const { data: places } = useQuery(
-    trpc.places.search.queryOptions({
-      center: location.coordinate ?? undefined,
-    }),
-  );
-  const matches = (
-    transformPlacesApiData(places) ?? skeletonPlacesData()
-  ).slice(0, 4);
+  const { allMatches: matches } = useMatchContext();
   const hasMatches = matches.length > 0;
 
   return (

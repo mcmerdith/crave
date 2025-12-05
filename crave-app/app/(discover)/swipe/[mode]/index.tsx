@@ -29,11 +29,12 @@ export default function Swipe() {
     }),
   );
 
-  const { setMatch } = useMatchContext();
+  const { setMatch, setAllMatches } = useMatchContext();
 
   const onSwipeComplete = (selected: RestaurantSwipeData[]) => {
     const selection = selected[Math.floor(Math.random() * selected.length)];
     setMatch(selection);
+    setAllMatches(selected);
     if (mode === "group") {
       router.replace("/swipe/group/lobby?code=COBRCY&started=true");
     } else {

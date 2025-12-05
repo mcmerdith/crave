@@ -10,6 +10,7 @@ import { RestaurantSwipeData } from "@/lib/places";
 export default function RootLayout() {
   const [location, setLocation] = useState<GeoLocation>(TempLocationData[0]);
   const [match, setMatch] = useState<RestaurantSwipeData | null>(null);
+  const [allMatches, setAllMatches] = useState<RestaurantSwipeData[]>([]);
   return (
     <QueryClientProvider client={queryClient}>
       <LocationContextProvider
@@ -25,7 +26,11 @@ export default function RootLayout() {
             setMatch: (match) => {
               setMatch(match);
             },
+            setAllMatches(matches) {
+              setAllMatches(matches);
+            },
             match: match,
+            allMatches: allMatches,
           }}
         >
           <Slot />

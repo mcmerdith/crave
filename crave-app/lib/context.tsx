@@ -64,6 +64,8 @@ export const useLocationContext = () => useWrappedContext(LocationContext);
 export const { context: MatchContext, Provider: MatchContextProvider } =
   createWrappedContext<{
     setMatch: (match: RestaurantSwipeData) => void;
+    setAllMatches: (matches: RestaurantSwipeData[]) => void;
     match: RestaurantSwipeData | null;
+    allMatches: RestaurantSwipeData[];
   }>("Match");
 export const useMatchContext = () => useWrappedContext(MatchContext);
