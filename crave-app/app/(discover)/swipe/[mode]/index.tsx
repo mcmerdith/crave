@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
@@ -11,6 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocationContext, useMatchContext } from "@/lib/context";
 
 import { SwipeModeParams } from "@/lib/routeParams";
+import RestaurantCard from "@/components/restaurantCard";
+import CloseButton from "@/components/closeButton";
 
 const ICON_SIZE = 24;
 
@@ -65,35 +67,7 @@ function SwipeFlow({
   const selected = useRef<RestaurantSwipeData[]>([]);
   const ref = useRef<SwiperCardRefType>(null);
   const renderCard = useCallback((item: RestaurantSwipeData) => {
-    return (
-      <View style={styles.renderCardContainer}>
-        {/* Top Half Image */}
-        <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri:
-                item.image ??
-                "https://placehold.co/600x600/?text=No+Image+Available",
-            }}
-            style={{ width: "100%", height: "100%" }}
-            resizeMode="cover"
-          />
-        </View>
-
-        {/* Bottom Half Info */}
-        <View style={styles.infoBlock}>
-          <Text style={{ fontSize: 24, fontWeight: "bold", color: "black" }}>
-            {item.name}
-          </Text>
-          <Text style={{ color: "black", fontSize: 16 }}>
-            {item.cuisine} • {item.price} • ⭐ {item.rating}
-          </Text>
-          <Text style={{ color: "black", fontSize: 14 }}>
-            {item.distance} away
-          </Text>
-        </View>
-      </View>
-    );
+    return <RestaurantCard restaurant={item} />;
   }, []);
 
   const OverlayLabel = (color: string) => (
@@ -102,6 +76,17 @@ function SwipeFlow({
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <View
+        style={{
+          padding: 20,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "flex-end",
+          display: "flex",
+        }}
+      >
+        <CloseButton />
+      </View>
       <View style={styles.subContainer}>
         <Swiper
           ref={ref}
@@ -221,7 +206,7 @@ const styles = StyleSheet.create({
   },
   cardStyle: {
     width: "90%",
-    height: "90%",
+    aspectRatio: 1, // square card
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",

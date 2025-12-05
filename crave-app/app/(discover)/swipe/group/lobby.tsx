@@ -12,9 +12,9 @@ import * as Clipboard from "expo-clipboard";
 import { useEffect, useRef, useState } from "react";
 import StartSwipingButton from "@/components/colorfulButton";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import BackButton from "@/components/backButton";
 
 import { LobbyParams } from "@/lib/routeParams";
+import CloseButton from "@/components/closeButton";
 
 export default function Lobby() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Lobby() {
   const { code, started: startedStr } = useLocalSearchParams<LobbyParams>();
   const started = !!startedStr && startedStr !== "";
 
-  const [ready, setReady] = useState(false);
+  const [allReady, setAllReady] = useState(false);
 
   const handleStartGroup = () => {
     router.replace("/swipe/group");
@@ -67,7 +67,7 @@ export default function Lobby() {
       });
     });
 
-    Animated.stagger(0, animations).start(() => setReady(true));
+    Animated.stagger(0, animations).start(() => setAllReady(true));
   }, [anims]);
 
   const copyCode = () => {
@@ -77,10 +77,18 @@ export default function Lobby() {
   return (
     <View style={styles.container}>
       {/* Back */}
-      <BackButton />
-      <Text style={styles.title}>
-        {started ? "Waiting for your group..." : "Group Lobby"}
-      </Text>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={styles.title}>
+          {started ? "Waiting for your group..." : "Group Lobby"}
+        </Text>
+        <CloseButton />
+      </View>
       {/* Code Card */}
       {!started && (
         <>
@@ -148,7 +156,7 @@ export default function Lobby() {
         <View style={{ height: 80 }} />
       </ScrollView>
       <StartSwipingButton
-        enabled={ready}
+        enabled={started ? allReady : people.length > 1}
         variant="group"
         text={started ? "View Matches" : "Start Swiping"}
         disabledText={

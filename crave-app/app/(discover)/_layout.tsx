@@ -1,20 +1,35 @@
-import { Stack } from "expo-router";
+import { Slot, Stack } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileStackLayout() {
   return (
-    <Stack>
-      <Stack.Screen
-        name="filtersSolo"
-        options={{ title: "Filter Solo", headerShown: false }}
-      />
-      <Stack.Screen
-        name="groupLobby"
-        options={{ title: "groupLobby", headerShown: false }}
-      />
-      <Stack.Screen
-        name="swipe/[mode]"
-        options={{ title: "Swipe Group", headerShown: false }}
-      />
-    </Stack>
+    <SafeAreaView
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        justifyContent: "flex-start",
+        flexDirection: "column",
+      }}
+    >
+      <Stack>
+        <Stack.Screen
+          name="filtersSolo"
+          options={{ title: "Solo Filters", headerShown: false }}
+        />
+        <Stack.Screen
+          name="swipe/[mode]/index"
+          options={{ title: "Swipe", headerShown: false }}
+        />
+        <Stack.Screen
+          name="swipe/[mode]/complete"
+          options={{ title: "Swipe Complete", headerShown: false }}
+        />
+        <Stack.Screen
+          name="swipe/group/lobby"
+          options={{ title: "Group Lobby", headerShown: false }}
+        />
+      </Stack>
+    </SafeAreaView>
   );
 }

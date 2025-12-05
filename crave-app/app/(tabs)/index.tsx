@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "@/components/Carousel";
 import { ScrollView, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import LocationHeader from "@/app/(discover)/locationHeader";
+import LocationHeader from "@/components/locationHeader";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { transformPlacesApiData } from "@/lib/places";

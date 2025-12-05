@@ -30,7 +30,7 @@ export default function Complete() {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>
-        {mode === "group" ? "It's a match!" : "What You're Craving"}
+        {mode === "group" ? "It's a match!" : "Cravings, satisfied!"}
       </Text>
       {/* <Text style={styles.message}>You liked 6 restaurants</Text> */}
       <RestaurantCard restaurant={match} />
