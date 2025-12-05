@@ -1,10 +1,26 @@
 import { Restaurant } from "@crave/api";
-import { CardProps } from "@/components/Card";
 
+export type RestaurantSwipeData = {
+  loading: boolean;
+  id: string;
+  name: string;
+  cuisine?: string;
+  rating?: number;
+  distance?: string;
+  price?: string;
+  image?: string;
+};
+
+export function transformPlacesApiData(
+  restaurants: Restaurant[],
+): RestaurantSwipeData[];
+export function transformPlacesApiData(
+  restaurants?: Restaurant[] | null,
+): undefined;
 export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
   if (!restaurants) return undefined;
   return restaurants.map(
-    (r): CardProps => ({
+    (r): RestaurantSwipeData => ({
       loading: false,
       id: r.resourceName,
       name: r.displayName,
@@ -19,7 +35,7 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
   );
 }
 
-export function skeletonPlacesData(): CardProps[] {
+export function skeletonPlacesData(): RestaurantSwipeData[] {
   return [...Array(10)].map((_, i) => ({
     loading: true,
     id: `skeleton-${i}`,

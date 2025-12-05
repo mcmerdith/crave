@@ -1,11 +1,11 @@
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import Card, { CardProps } from "./Card";
-import { skeletonPlacesData } from "@/lib/places";
+import Card from "./Card";
+import { RestaurantSwipeData, skeletonPlacesData } from "@/lib/places";
 
 interface CarouselProps {
   title: string;
-  data?: CardProps[];
+  data?: RestaurantSwipeData[];
   onViewAll?: () => void;
 }
 
