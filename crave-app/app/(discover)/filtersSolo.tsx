@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import ColorfulButton from "@/components/colorfulButton";
 import { useRouter } from "expo-router";
+import CloseButton from "@/components/closeButton";
+import BackButton from "@/components/backButton";
 
 const FiltersSolo = () => {
   const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
@@ -13,7 +15,8 @@ const FiltersSolo = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
-        <Text style={styles.header}>Filters</Text>
+        <BackButton />
+        <Text style={styles.header}>Set Your Filters</Text>
         <Text style={styles.label}>Price Range</Text>
         <View style={styles.priceLabels}>
           {priceLabels.map((label, index) => (

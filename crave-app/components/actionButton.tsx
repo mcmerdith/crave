@@ -5,7 +5,8 @@ type ActionButtonProps = React.ComponentProps<typeof TouchableOpacity> & {
   onTap?: () => void;
 };
 
-const ActionButton = React.memo(({ onTap, style, children, ...rest }: ActionButtonProps) => {
+const ActionButton = React.memo(
+  ({ onTap, style, children, ...rest }: ActionButtonProps) => {
     return (
       <TouchableOpacity onPress={onTap} {...rest} style={style}>
         {children}
@@ -13,5 +14,6 @@ const ActionButton = React.memo(({ onTap, style, children, ...rest }: ActionButt
     );
   },
 );
+ActionButton.displayName = "ActionButton";
 
 export default ActionButton;
