@@ -1,49 +1,75 @@
 import React, { useCallback, useRef } from "react";
 
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  // type ImageSourcePropType,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
-import { useRouter } from "expo-router";
-import type { WithSpringConfig } from "react-native-reanimated";
-import ColorfulButton from "@/components/colorfulButton";
-
-//const router = useRouter();
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
+import { trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { useLocationContext } from "@/lib/context";
 
 const ICON_SIZE = 24;
-export const SWIPE_SPRING_CONFIG: WithSpringConfig = {
-  damping: 200,
-  stiffness: 250,
-  mass: 15,
-  overshootClamping: true,
-};
 
-type Restaurant = {
-  name: string;
-  cuisine: string;
-  rating: number;
-  distance: string;
-  price: string;
-  image: string;
-};
-
-export default function SwipeGroup() {
+export default function Swipe() {
   const router = useRouter();
+
+  const { mode } = useLocalSearchParams<{ mode: "group" | "solo" }>();
+  console.log("mode", mode);
+
+  const { location } = useLocationContext();
+
+  const { data: locations } = useQuery(
+    trpc.places.search.queryOptions({
+      center: location.coordinate,
+    }),
+  );
+
+  const onSwipeComplete = (selected: RestaurantSwipeData[]) => {
+    if (mode === "group") {
+      router.replace("/finishedLobby");
+    } else {
+      router.replace("/sessionComplete");
+    }
+    console.log(
+      "done swiping",
+      selected.map((s) => s.name),
+    );
+  };
+
+  if (locations) {
+    return (
+      <SwipeFlow
+        options={transformPlacesApiData(locations).slice(0, 8)}
+        onSwipeComplete={onSwipeComplete}
+      />
+    );
+  } else {
+    return <></>;
+  }
+}
+
+function SwipeFlow({
+  options,
+  onSwipeComplete,
+}: {
+  options: RestaurantSwipeData[];
+  onSwipeComplete: (restaurants: RestaurantSwipeData[]) => void;
+}) {
+  const selected = useRef<RestaurantSwipeData[]>([]);
   const ref = useRef<SwiperCardRefType>(null);
-  const renderCard = useCallback((item: Restaurant) => {
+  const renderCard = useCallback((item: RestaurantSwipeData) => {
     return (
       <View style={styles.renderCardContainer}>
         {/* Top Half Image */}
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: item.image }}
+            source={{
+              uri:
+                item.image ??
+                "https://placehold.co/600x600/?text=No+Image+Available",
+            }}
             style={{ width: "100%", height: "100%" }}
             resizeMode="cover"
           />
@@ -65,20 +91,6 @@ export default function SwipeGroup() {
     );
   }, []);
 
-  // const renderFlippedCard = useCallback(
-  //   (_: ImageSourcePropType, index: number) => (
-  //     <View style={styles.renderFlippedCardContainer}>
-  //       <Text style={styles.text}>Flipped content 🚀 {index}</Text>
-  //     </View>
-  //   ),
-  //   [],
-  // );
-
-  const doneSwiping = () => {
-    router.navigate("/finishedLobby");
-    console.log("done swiping");
-  };
-
   const OverlayLabel = (color: string) => (
     <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
   );
@@ -88,7 +100,7 @@ export default function SwipeGroup() {
       <View style={styles.subContainer}>
         <Swiper
           ref={ref}
-          data={swipeData}
+          data={options}
           cardStyle={styles.cardStyle}
           disableTopSwipe={true}
           swipeVelocityThreshold={300}
@@ -98,9 +110,8 @@ export default function SwipeGroup() {
           //FlippedContent={renderFlippedCard}
           OverlayLabelRight={() => OverlayLabel("green")}
           OverlayLabelLeft={() => OverlayLabel("red")}
-          //OverlayLabelTop={() => OverlayLabel("blue")}
-          //OverlayLabelBottom={() => OverlayLabel("orange")}
-          onSwipedAll={() => doneSwiping()}
+          onSwipeRight={(index) => selected.current.push(options[index])}
+          onSwipedAll={() => onSwipeComplete(selected.current)}
         />
       </View>
 
@@ -138,14 +149,6 @@ export default function SwipeGroup() {
           );
         })}
       </View>
-      {/* <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ColorfulButton
-          variant="other"
-          canStart={true}
-          text="Go to Discover"
-          onPress={() => doneSwiping()}
-        />
-      </View> */}
     </GestureHandlerRootView>
   );
 }
@@ -236,33 +239,3 @@ const styles = StyleSheet.create({
     color: "#001a72",
   },
 });
-
-const swipeData = [
-  {
-    name: "Taverna",
-    cuisine: "Italian",
-    rating: 4.8,
-    distance: "0.5 mi",
-    price: "$$",
-    image:
-      "https://vrconcierge.com/wp-content/uploads/2021/02/taverna-rustic-italian-newark-de-exterior-1-768x512.jpg",
-  },
-  {
-    name: "El Diablo",
-    cuisine: "Mexican",
-    rating: 4.4,
-    distance: "0.5 mi",
-    price: "$",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/58b57e8b2e69cffff969c6cd/1488299173082-81E2GCSB63YW66RKF8HO/Burrito_wood_retouched.jpg?format=1500w",
-  },
-  {
-    name: "m2o Burger",
-    cuisine: "American",
-    rating: 4.9,
-    distance: "0.4 mi",
-    price: "$",
-    image:
-      "https://media-cdn.grubhub.com/image/upload/d_search:browse-images:default.jpg/w_1200,q_auto,fl_lossy,dpr_auto,c_fill,f_auto,h_800,g_auto/wtisrayz07qylnbwba6e",
-  },
-];

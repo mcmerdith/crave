@@ -66,7 +66,7 @@ const FiltersSolo = () => {
           text="Start Swiping"
           canStart={true}
           onPress={() => {
-            router.push("/(discover)/swipeSolo");
+            router.replace("/swipe/solo");
           }}
         />
       </View>
