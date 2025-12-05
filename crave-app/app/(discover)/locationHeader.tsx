@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: theme.colors.muted,
+    borderRadius: 13,
   },
   itemLeft: {
     flexDirection: "row",
