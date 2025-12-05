@@ -8,15 +8,16 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
-import { useLocationContext } from "@/lib/context";
+import { useLocationContext, useMatchContext } from "@/lib/context";
+
+import { SwipeModeParams } from "@/lib/routeParams";
 
 const ICON_SIZE = 24;
 
 export default function Swipe() {
   const router = useRouter();
 
-  const { mode } = useLocalSearchParams<{ mode: "group" | "solo" }>();
-  console.log("mode", mode);
+  const { mode } = useLocalSearchParams<SwipeModeParams>();
 
   const { location } = useLocationContext();
 
@@ -26,11 +27,15 @@ export default function Swipe() {
     }),
   );
 
+  const { setMatch } = useMatchContext();
+
   const onSwipeComplete = (selected: RestaurantSwipeData[]) => {
+    const selection = selected[Math.floor(Math.random() * selected.length)];
+    setMatch(selection);
     if (mode === "group") {
-      router.replace("/finishedLobby");
+      router.replace("/swipe/group/lobby?code=COBRCY&started=true");
     } else {
-      router.replace("/sessionComplete");
+      router.replace("/swipe/solo/complete");
     }
     console.log(
       "done swiping",

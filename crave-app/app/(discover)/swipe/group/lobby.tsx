@@ -1,25 +1,35 @@
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   Animated,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
-import { useEffect, useRef } from "react";
-import StartSwipingButton from "../../components/colorfulButton";
-import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import StartSwipingButton from "@/components/colorfulButton";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import BackButton from "@/components/backButton";
 
-export default function GroupLobby() {
+import { LobbyParams } from "@/lib/routeParams";
+
+export default function Lobby() {
   const router = useRouter();
-  const sessionCode = "COBRCY";
+
+  const { code, started: startedStr } = useLocalSearchParams<LobbyParams>();
+  const started = !!startedStr && startedStr !== "";
+
+  const [ready, setReady] = useState(false);
 
   const handleStartGroup = () => {
     router.replace("/swipe/group");
+  };
+
+  const viewMatches = () => {
+    router.replace("/swipe/group/complete");
   };
 
   const people = [
@@ -57,36 +67,47 @@ export default function GroupLobby() {
       });
     });
 
-    Animated.stagger(0, animations).start();
+    Animated.stagger(0, animations).start(() => setReady(true));
   }, [anims]);
 
   const copyCode = () => {
-    void Clipboard.setStringAsync(sessionCode);
+    void Clipboard.setStringAsync(code);
   };
 
   return (
     <View style={styles.container}>
       {/* Back */}
       <BackButton />
-      <Text style={styles.title}>Group Lobby</Text>
-      <Text style={styles.subtitle}>Share the code with your friends</Text>
+      <Text style={styles.title}>
+        {started ? "Waiting for your group..." : "Group Lobby"}
+      </Text>
       {/* Code Card */}
-      <LinearGradient colors={["#FF8A00", "#E92E7F"]} style={styles.codeCard}>
-        <Text style={styles.sessionLabel}>Session Code</Text>
+      {!started && (
+        <>
+          <Text style={styles.subtitle}>Share the code with your friends</Text>
+          <LinearGradient
+            colors={["#FF8A00", "#E92E7F"]}
+            style={styles.codeCard}
+          >
+            <Text style={styles.sessionLabel}>Session Code</Text>
 
-        <View style={styles.codeRow}>
-          <Text style={styles.sessionCode}>{sessionCode}</Text>
-          <TouchableOpacity onPress={copyCode}>
-            <Ionicons name="copy-outline" size={28} color="#fff" />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.codeRow}>
+              <Text style={styles.sessionCode}>{code}</Text>
+              <TouchableOpacity onPress={copyCode}>
+                <Ionicons name="copy-outline" size={28} color="#fff" />
+              </TouchableOpacity>
+            </View>
 
-        <Text style={styles.smallText}>Friends can join using this code</Text>
-      </LinearGradient>
+            <Text style={styles.smallText}>
+              Friends can join using this code
+            </Text>
+          </LinearGradient>
+        </>
+      )}
       <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text>
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {people.map((item, idx) => {
+        {people.map((member, idx) => {
           const fade = anims[idx].interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
@@ -108,14 +129,14 @@ export default function GroupLobby() {
                 },
               ]}
             >
-              <Text style={styles.emoji}>{item.emoji}</Text>
+              <Text style={styles.emoji}>{member.emoji}</Text>
 
               <View>
-                <Text style={styles.name}>{item.name}</Text>
-                {item.host && <Text style={styles.host}>Host</Text>}
+                <Text style={styles.name}>{member.name}</Text>
+                {member.host && <Text style={styles.host}>Host</Text>}
               </View>
 
-              {item.joined && (
+              {!started && member.joined && (
                 <View style={styles.joinedBadge}>
                   <Text style={styles.joinedText}>Just joined</Text>
                 </View>
@@ -127,11 +148,18 @@ export default function GroupLobby() {
         <View style={{ height: 80 }} />
       </ScrollView>
       <StartSwipingButton
-        canStart={people.length > 1}
+        enabled={ready}
         variant="group"
-        text="Start Swiping"
+        text={started ? "View Matches" : "Start Swiping"}
+        disabledText={
+          started ? "Waiting for friends..." : "Waiting for friends to join..."
+        }
         onPress={() => {
-          handleStartGroup();
+          if (started) {
+            viewMatches();
+          } else {
+            handleStartGroup();
+          }
         }}
       />
     </View>

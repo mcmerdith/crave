@@ -1,19 +1,11 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-
-type Restaurant = {
-  name: string;
-  cuisine: string;
-  rating: number;
-  distance: string;
-  price: string;
-  image: string;
-};
+import { RestaurantSwipeData } from "@/lib/places";
 
 export default function RestaurantCard({
   restaurant,
 }: {
-  restaurant: Restaurant;
+  restaurant: RestaurantSwipeData;
 }) {
   return (
     <View style={styles.card}>

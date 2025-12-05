@@ -64,7 +64,7 @@ const FiltersSolo = () => {
         <ColorfulButton
           variant="solo"
           text="Start Swiping"
-          canStart={true}
+          enabled={true}
           onPress={() => {
             router.replace("/swipe/solo");
           }}

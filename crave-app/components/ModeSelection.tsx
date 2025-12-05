@@ -19,7 +19,7 @@ export default function ModeSelection() {
   };
 
   const handleStartGroup = () => {
-    router.push("/groupLobby");
+    router.push("/swipe/group/lobby?code=COBRCY");
   };
 
   return (

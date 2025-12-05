@@ -16,7 +16,7 @@ export function transformPlacesApiData(
 ): RestaurantSwipeData[];
 export function transformPlacesApiData(
   restaurants?: Restaurant[] | null,
-): undefined;
+): RestaurantSwipeData[] | undefined;
 export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
   if (!restaurants) return undefined;
   return restaurants.map(
