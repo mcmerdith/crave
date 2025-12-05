@@ -135,6 +135,10 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     width: "48%",
     height: 170,
+    shadowRadius: 6,
+    shadowOpacity: 0.15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
   },
   gradientButton: {
     padding: 24,
