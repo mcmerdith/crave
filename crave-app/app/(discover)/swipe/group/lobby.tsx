@@ -15,6 +15,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { LobbyParams } from "@/lib/routeParams";
 import CloseButton from "@/components/closeButton";
+import BackButton from "@/components/backButton";
 
 export default function Lobby() {
   const router = useRouter();
@@ -77,6 +78,7 @@ export default function Lobby() {
   return (
     <View style={styles.container}>
       {/* Back */}
+      {!started && <BackButton />}
       <View
         style={{
           display: "flex",
@@ -87,7 +89,7 @@ export default function Lobby() {
         <Text style={styles.title}>
           {started ? "Waiting for your group..." : "Group Lobby"}
         </Text>
-        <CloseButton />
+        {started && <CloseButton />}
       </View>
       {/* Code Card */}
       {!started && (
