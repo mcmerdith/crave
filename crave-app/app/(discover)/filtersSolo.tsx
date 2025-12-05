@@ -13,7 +13,7 @@ const FiltersSolo = () => {
   const priceLabels = ["$", "$$", "$$$", "$$$$"];
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
+    <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.container}>
         <BackButton />
         <Text style={styles.header}>Set Your Filters</Text>
@@ -56,11 +56,6 @@ const FiltersSolo = () => {
           value={distance}
           onValueChange={setDistance}
         />
-
-        {/* Apply Button */}
-        <TouchableOpacity style={styles.applyButton}>
-          <Text style={styles.applyText}>Apply Filters</Text>
-        </TouchableOpacity>
       </View>
       {/* Start Swiping Button */}
       <View style={styles.swipeButtonContainer}>
