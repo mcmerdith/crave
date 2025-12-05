@@ -41,7 +41,7 @@ export default function Swipe() {
   if (locations) {
     return (
       <SwipeFlow
-        options={transformPlacesApiData(locations)}
+        options={transformPlacesApiData(locations).slice(0, 8)}
         onSwipeComplete={onSwipeComplete}
       />
     );
