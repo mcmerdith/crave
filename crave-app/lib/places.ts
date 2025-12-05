@@ -1,5 +1,14 @@
 import { Restaurant } from "@crave/api";
 
+function prettify(str: string) {
+  return str
+    .replace(/_/g, " ")
+    .replace(
+      /\w\S*/g,
+      (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase(),
+    );
+}
+
 export type RestaurantSwipeData = {
   loading: boolean;
   id: string;
@@ -24,7 +33,7 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
       loading: false,
       id: r.resourceName,
       name: r.displayName,
-      cuisine: r.cuisines.length ? r.cuisines[0] : "American",
+      cuisine: r.cuisines.length ? prettify(r.cuisines[0]) : "American",
       rating: r.rating,
       distance: r.distanceMiles,
       image: r.primaryImage,
