@@ -18,8 +18,8 @@ export default function GroupLobby() {
   const router = useRouter();
   const sessionCode = "COBRCY";
 
-  const handleStartSolo = () => {
-    router.push("/swipeGroup");
+  const handleStartGroup = () => {
+    router.replace("/swipe/group");
   };
 
   const people = [
@@ -45,7 +45,6 @@ export default function GroupLobby() {
           useNativeDriver: true,
         });
       }
-      // Random step between 500ms–1500ms
       const step = Math.random() * 3000 + 800;
 
       totalDelay += step;
@@ -62,7 +61,7 @@ export default function GroupLobby() {
   }, [anims]);
 
   const copyCode = () => {
-    Clipboard.setStringAsync(sessionCode);
+    void Clipboard.setStringAsync(sessionCode);
   };
 
   return (
@@ -132,7 +131,7 @@ export default function GroupLobby() {
         variant="group"
         text="Start Swiping"
         onPress={() => {
-          handleStartSolo();
+          handleStartGroup();
         }}
       />
     </View>

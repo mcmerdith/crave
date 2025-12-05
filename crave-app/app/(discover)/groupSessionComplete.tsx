@@ -13,7 +13,7 @@ export default function GroupSessionComplete() {
       <RestaurantCard restaurant={example} />
       <ColorfulButton
         variant="group"
-        onPress={() => router.push("/(tabs)")}
+        onPress={() => router.replace("/(tabs)")}
         canStart={true}
         text="Go to Discover"
       />

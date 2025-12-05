@@ -7,14 +7,14 @@ import BackButton from "@/components/backButton";
 export default function FinishedLobby() {
   const router = useRouter();
   const viewMatches = () => {
-    router.push("/groupSessionComplete");
+    router.replace("/groupSessionComplete");
   };
 
   const people = [
     { name: "You", emoji: "🧑‍💼", host: true },
     { name: "Clara", emoji: "👱‍♀️" },
     { name: "Matt", emoji: "👱‍♂️" },
-    { name: "Ellie", emoji: "👱‍♀️", joined: true },
+    { name: "Ellie", emoji: "👱‍♀️" },
   ];
 
   // Animation refs for each item
@@ -85,12 +85,6 @@ export default function FinishedLobby() {
                 <Text style={styles.name}>{item.name}</Text>
                 {item.host && <Text style={styles.host}>Host</Text>}
               </View>
-
-              {item.joined && (
-                <View style={styles.joinedBadge}>
-                  <Text style={styles.joinedText}>Just joined</Text>
-                </View>
-              )}
             </Animated.View>
           );
         })}

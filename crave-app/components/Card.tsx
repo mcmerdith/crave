@@ -1,20 +1,10 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Skeleton from "react-native-reanimated-skeleton";
+import { RestaurantSwipeData } from "@/lib/places";
 
-export interface CardProps {
-  loading: boolean;
-  id: string;
-  name: string;
-  cuisine?: string;
-  rating?: number;
-  distance?: string;
-  price?: string;
-  image?: string;
-}
-
-const Card: React.FC<CardProps> = ({
+const Card: React.FC<RestaurantSwipeData> = ({
   loading,
   name,
   cuisine,
@@ -68,6 +58,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     width: 180,
+    height: 205,
   },
   image: {
     width: "100%",

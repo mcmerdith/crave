@@ -1,25 +1,16 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
-import Card, { CardProps } from "./Card";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import Card from "./Card";
+import { RestaurantSwipeData, skeletonPlacesData } from "@/lib/places";
 
 interface CarouselProps {
   title: string;
-  data?: CardProps[];
+  data?: RestaurantSwipeData[];
   onViewAll?: () => void;
 }
 
-function skeletonData(): CardProps[] {
-  return [...Array(10)].map((_, i) => ({
-    loading: true,
-    id: `skeleton-${i}`,
-    name: "Restaurant",
-    cuisine: "Food",
-    rating: 3,
-  }));
-}
-
 const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
-  const renderData = data ?? skeletonData();
+  const renderData = data ?? skeletonPlacesData();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -35,7 +26,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 10 }}
       />
     </View>
   );
@@ -44,7 +35,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    height: 220,
+    height: 250,
   },
   header: {
     flexDirection: "row",

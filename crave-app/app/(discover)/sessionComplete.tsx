@@ -14,7 +14,7 @@ export default function SessionComplete() {
 
       <ColorfulButton
         variant="solo"
-        onPress={() => router.push("/(tabs)")}
+        onPress={() => router.replace("/(tabs)")}
         canStart={true}
         text="Go to Discover"
       />
