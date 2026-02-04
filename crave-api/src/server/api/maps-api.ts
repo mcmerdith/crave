@@ -200,7 +200,7 @@ export async function searchPlaces({
             ...p,
             distanceMiles: `${distanceMiles?.toFixed(distanceMiles >= 5 ? 0 : 1)}mi`,
             primaryImage: primaryImage
-              ? await getPlaceImage(primaryImage)
+              ? "https://placehold.co/600/png/?text=Coming+Soon" // await getPlaceImage(primaryImage)
               : undefined,
           };
         }),
