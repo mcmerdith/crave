@@ -1,16 +1,16 @@
-import { publicProcedure, router } from "../trpc";
 import {
   autocomplete,
   getAutocompleteCoordinates,
   searchPlaces,
 } from "@/server/api/maps-api";
-import { Restaurant, SearchPlacesParams } from "@/server/api/types/places";
 import {
   AutocompleteParams,
   AutocompleteResult,
   GetAutocompleteCoordinatesParams,
 } from "@/server/api/types/autocomplete";
 import { Coordinate } from "@/server/api/types/geography";
+import { Restaurant, SearchPlacesParams } from "@/server/api/types/places";
+import { publicProcedure, router } from "../trpc";
 
 export const placesRouter = router({
   search: publicProcedure
