@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
@@ -70,7 +70,11 @@ function SwipeFlow({
   }, []);
 
   const renderFlippedCard = useCallback((item: RestaurantSwipeData) => {
-    return <View style={styles.renderFlippedCardContainer}></View>;
+    return (
+      <View style={styles.renderFlippedCardContainer}>
+        <Text>Hello Flipped Card</Text>
+      </View>
+    );
   }, []);
 
   const OverlayLabel = (color: string) => (
