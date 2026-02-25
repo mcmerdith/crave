@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { transformPlacesApiData } from "@/lib/places";
 import { useLocationContext } from "@/lib/context";
 import RestaurantDetailModal from "@/components/RestaurantDetailModal";
-import { RestaurantSwipeData } from "@/lib/places"; // your shared type
+import { RestaurantSwipeData } from "@/lib/places";
 
 export default function Index() {
   const { location } = useLocationContext();
