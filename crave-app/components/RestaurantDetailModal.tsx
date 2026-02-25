@@ -8,9 +8,14 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Animated,
+  PanResponder,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { RestaurantSwipeData } from "@/lib/places";
+
 
 // Mock additional data
 const hours = "11:00 AM - 10:00 PM";
@@ -46,17 +51,72 @@ interface Props {
 
 const { height } = Dimensions.get("window");
 
-const RestaurantDetailModal: React.FC<Props> = ({ visible, restaurant, onClose }) => {
-  if (!restaurant) return null;
+const RestaurantDetailModal: React.FC<Props> = ({
+    visible,
+    restaurant,
+    onClose,
+  }) => {
+    const translateY = React.useRef(new Animated.Value(0)).current;
+    const scrollOffset = React.useRef(0);
+
+    React.useEffect(() => {
+      if (visible) {
+        translateY.setValue(0);
+      }
+    }, [visible]);
+
+    const panResponder = React.useRef(
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+          return gestureState.dy > 5 && scrollOffset.current <= 0;
+        },
+
+        onPanResponderMove: (_, gestureState) => {
+          if (gestureState.dy > 0) {
+            translateY.setValue(gestureState.dy);
+          }
+        },
+
+        onPanResponderRelease: (_, gestureState) => {
+          if (gestureState.dy > 120 || gestureState.vy > 1.5) {
+            Animated.timing(translateY, {
+              toValue: height,
+              duration: 200,
+              useNativeDriver: true,
+            }).start(() => onClose());
+          } else {
+            Animated.spring(translateY, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          }
+        },
+      })
+    ).current;
+
+    if (!restaurant) return null;
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
+    <Modal animationType="none" transparent visible={visible}>
       {/* Darkened background */}
       <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
 
       {/* Modal content */}
-      <View style={styles.modalContainer}>
-        <ScrollView contentContainerStyle={styles.content}>
+      <Animated.View
+          style={[
+            styles.modalContainer,
+            { transform: [{ translateY }] },
+          ]}
+          {...panResponder.panHandlers}
+        >
+        
+        <ScrollView
+          contentContainerStyle={styles.content}
+          onScroll={(e) => {
+            scrollOffset.current = e.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
+        >
           {/* Close button */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Ionicons name="close" size={28} color="#000" />
@@ -94,8 +154,7 @@ const RestaurantDetailModal: React.FC<Props> = ({ visible, restaurant, onClose }
             {restaurant.price && <Text style={styles.price}>{restaurant.price}</Text>}
           </View>
 
-          {/* Placeholder for more info */}
-          {/* Contact & Hours */}
+          {/* Placeholder info */}
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>Contact & Hours</Text>
 
@@ -154,7 +213,7 @@ const RestaurantDetailModal: React.FC<Props> = ({ visible, restaurant, onClose }
             ))}
           </View>
         </ScrollView>
-      </View>
+      </Animated.View>
     </Modal>
   );
 };
