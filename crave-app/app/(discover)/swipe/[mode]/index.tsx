@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from "react";
-
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
@@ -9,7 +8,6 @@ import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { useLocationContext, useMatchContext } from "@/lib/context";
-
 import { SwipeModeParams } from "@/lib/routeParams";
 import RestaurantCard from "@/components/restaurantCard";
 import CloseButton from "@/components/closeButton";
@@ -71,6 +69,14 @@ function SwipeFlow({
     return <RestaurantCard restaurant={item} />;
   }, []);
 
+  const renderFlippedCard = useCallback((item: RestaurantSwipeData) => {
+    return (
+      <View style={styles.renderFlippedCardContainer}>
+        <Text>Hello Flipped Card</Text>
+      </View>
+    );
+  }, []);
+
   const OverlayLabel = (color: string) => (
     <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
   );
@@ -98,17 +104,17 @@ function SwipeFlow({
           disableBottomSwipe={true}
           overlayLabelContainerStyle={styles.overlayLabelContainerStyle}
           renderCard={renderCard}
-          //FlippedContent={renderFlippedCard}
+          FlippedContent={renderFlippedCard}
           OverlayLabelRight={() => OverlayLabel("green")}
           OverlayLabelLeft={() => OverlayLabel("red")}
           onSwipeRight={(index) => selected.current.push(options[index])}
           onSwipedAll={() => onSwipeComplete(selected.current)}
+          onPress={() => ref.current?.flipCard()}
         />
       </View>
 
       <View style={styles.buttonsContainer}>
         {[
-          //{ icon: "sync", action: () => ref.current?.flipCard() },
           {
             icon: "close",
             action: () => ref.current?.swipeLeft(),
@@ -195,6 +201,15 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     backgroundColor: "white",
+  },
+
+  renderFlippedCard: {
+    borderRadius: 15,
+    backgroundColor: "#baeee5",
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   renderFlippedCardContainer: {
