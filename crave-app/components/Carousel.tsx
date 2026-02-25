@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Card from "./Card";
 import { RestaurantSwipeData, skeletonPlacesData } from "@/lib/places";
 
@@ -7,26 +7,40 @@ interface CarouselProps {
   title: string;
   data?: RestaurantSwipeData[];
   onViewAll?: () => void;
+  onItemPress?: (restaurant: RestaurantSwipeData) => void;
 }
 
-const Carousel: React.FC<CarouselProps> = ({ title, data, onViewAll }) => {
+const Carousel: React.FC<CarouselProps> = ({
+  title,
+  data,
+  onViewAll,
+  onItemPress,
+}) => {
   const renderData = data ?? skeletonPlacesData();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.heading}>{title}</Text>
-        {/* <Text style={styles.viewAll} onPress={onViewAll}>
-          View All
-        </Text> */}
       </View>
 
       <FlatList
         data={renderData}
-        renderItem={({ item }) => <Card {...item} />}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => onItemPress?.(item)}
+          >
+            <Card {...item} />
+          </TouchableOpacity>
+        )}
         keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 10 }}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+        }}
       />
     </View>
   );
