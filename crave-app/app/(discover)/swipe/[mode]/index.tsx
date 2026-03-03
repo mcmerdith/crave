@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#fff",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
   },
