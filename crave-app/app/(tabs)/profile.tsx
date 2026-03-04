@@ -3,24 +3,26 @@ import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from "r
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, EvilIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";
+import Modal from "react-native-modal";
+
 
 interface Friend {
   id: number;
   name: string;
   username: string;
   mutualFavorites: number;
-  isOnline: boolean;
 }
 
 const mockFriends: Friend[] = [
-  { id: 1, name: "Sarah Chen", username: "@sarahc", mutualFavorites: 12, isOnline: true },
-  { id: 2, name: "Alex Rivera", username: "@arivera", mutualFavorites: 8, isOnline: false },
-  { id: 3, name: "Jamie Park", username: "@jamiepark", mutualFavorites: 15, isOnline: true },
-  { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6, isOnline: false },
+  { id: 1, name: "Sarah Chen", username: "@sarahc", mutualFavorites: 12 },
+  { id: 2, name: "Alex Rivera", username: "@arivera", mutualFavorites: 8},
+  { id: 3, name: "Jamie Park", username: "@jamiepark", mutualFavorites: 15 },
+  { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6},
 ];
 
 const Profile = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
 
   const filteredFriends = mockFriends.filter(
     (friend) =>
@@ -70,9 +72,13 @@ const Profile = () => {
               <Text style={styles.profileName}>John Doe</Text>
               <Text style={styles.profileUsername}>@johndoe</Text>
 
+              {/* Buttons */}
               <View style={styles.buttonRow}>
-              <TouchableOpacity style={styles.profileButton}>
-              <Text style={styles.profileButtonText}>Edit Profile</Text>
+              <TouchableOpacity
+                style={styles.profileButton}
+                onPress={() => setEditModalVisible(true)}
+                >
+                <Text style={styles.profileButtonText}>Edit Profile</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.profileButton}>
@@ -113,6 +119,41 @@ const Profile = () => {
         }
         contentContainerStyle={{ paddingBottom: 40 }}
       />
+      {/* Edit Profile Modal */}
+      <Modal
+        isVisible={isEditModalVisible}
+        onBackdropPress={() => setEditModalVisible(false)}
+        style={styles.modalContainer}
+        swipeDirection="down"
+        onSwipeComplete={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Edit Profile</Text>
+
+          {/* Profile picture placeholder */}
+          <View style={styles.editAvatar}>
+            <Text style={styles.profileAvatarText}>JD</Text>
+          </View>
+
+          {/* Name Input */}
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Name"
+            placeholderTextColor="#999"
+          />
+
+          {/* Username Input */}
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Username"
+            placeholderTextColor="#999"
+          />
+
+          <TouchableOpacity style={styles.saveButton} onPress={() => setEditModalVisible(false)}>
+            <Text style={styles.saveButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -328,5 +369,40 @@ const styles = StyleSheet.create({
     color: theme.colors.foreground,
     fontWeight: "600",
   },
+
+  modalContainer: { justifyContent: "flex-end", margin: 0 },
+  modalContent: {
+    height: "85%",
+    backgroundColor: theme.colors.card,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 20,
+  },
+  modalTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 20 },
+  editAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#ddd",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  modalInput: {
+    backgroundColor: "#f0f0f0",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 12,
+    marginBottom: 15,
+    color: theme.colors.foreground,
+  },
+  saveButton: {
+    backgroundColor: "#FF6347",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  saveButtonText: { color: "#fff", fontWeight: "bold" },
   
 });
