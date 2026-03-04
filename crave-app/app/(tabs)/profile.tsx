@@ -15,7 +15,7 @@ interface Friend {
 
 const mockFriends: Friend[] = [
   { id: 1, name: "Sarah Chen", username: "@sarahc", mutualFavorites: 12 },
-  { id: 2, name: "Alex Rivera", username: "@arivera", mutualFavorites: 8},
+  { id: 2, name: "Alex Rivera", username: "@arivera", mutualFavorites: 8 },
   { id: 3, name: "Jamie Park", username: "@jamiepark", mutualFavorites: 15 },
   { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6},
 ];
@@ -41,7 +41,6 @@ const Profile = () => {
         {/* Avatar Placeholder */}
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
-          {item.isOnline && <View style={styles.onlineIndicator} />}
         </View>
 
         <View style={styles.friendInfo}>
