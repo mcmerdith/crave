@@ -21,7 +21,7 @@ Get realtime lobby updates
 const { id, ownerId, status, members } = useGroupLobby("lobbyId");
 ```
 
-[Source](./crave-app/lib/hooks/use-group-lobby.ts) |
+[Source](./crave-app/lib/hooks/group-lobby.ts) |
 [Types](./crave-api/src/server/api/types/group-mode.ts)
 
 ### trpc.places.search
@@ -106,7 +106,7 @@ Firebase stores data in nested collections and documents.
 // The firestore client
 import { firestore } from "@/lib/firebase";
 // Methods to create document/collection references and query constraints
-import { collection, doc, where } from "firebase/firestore";
+import { collection, doc, where } from "@firebase/firestore";
 
 // Root collections can be imported
 import { users, restaurants, lobbies } from "@/lib/datastore/collections";

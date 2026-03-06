@@ -16,11 +16,23 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { LobbyParams } from "@/lib/routeParams";
 import CloseButton from "@/components/closeButton";
 import BackButton from "@/components/backButton";
+import { useGroupLobby } from "@/lib/hooks/group-lobby";
 
 export default function Lobby() {
-  const router = useRouter();
+  const { code, started } = useLocalSearchParams<LobbyParams>();
+  const { data } = useGroupLobby(code === "" ? undefined : code);
 
-  const { code, started: startedStr } = useLocalSearchParams<LobbyParams>();
+  if (data === undefined) {
+    return <p>Loading</p>;
+  } else if (data === null) {
+    return <p>Not found</p>;
+  } else {
+    return <LobbyContent code={data.id} started={started} />;
+  }
+}
+
+function LobbyContent({ code, started: startedStr }: LobbyParams) {
+  const router = useRouter();
   const started = !!startedStr && startedStr !== "";
 
   const [allReady, setAllReady] = useState(false);

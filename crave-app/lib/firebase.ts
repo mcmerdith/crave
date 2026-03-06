@@ -25,10 +25,9 @@ const firestore = getFirestore(app);
 let persistence: Persistence;
 try {
   persistence = getReactNativePersistence(ReactNativeAsyncStorage);
-} catch (e) {
+} catch {
   console.warn(
     "React native persistence is not available. Falling back to local storage",
-    e,
   );
   persistence = browserSessionPersistence;
 }
