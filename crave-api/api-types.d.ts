@@ -1,5 +1,5 @@
 import * as _trpc_server from '@trpc/server';
-import { z } from 'zod';
+import z$1, { z } from 'zod';
 
 declare const appRouter: _trpc_server.TRPCBuiltRouter<{
     ctx: {
@@ -91,6 +91,38 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
             meta: object;
         }>;
     }>>;
+    recommender: _trpc_server.TRPCBuiltRouter<{
+        ctx: {
+            user: {
+                id: string;
+            } | null;
+        };
+        meta: object;
+        errorShape: _trpc_server.TRPCDefaultErrorShape;
+        transformer: false;
+    }, _trpc_server.TRPCDecorateCreateRouterOptions<{
+        createLobby: _trpc_server.TRPCQueryProcedure<{
+            input: void;
+            output: {
+                id: string;
+                ownerId: string;
+                status: "open" | "in-progress" | "complete";
+                members: string[];
+            };
+            meta: object;
+        }>;
+        submitSwipes: _trpc_server.TRPCMutationProcedure<{
+            input: {
+                result: {
+                    selectedRestaurantIds: string[];
+                    rejectedRestaurantIds: string[];
+                };
+                lobbyId?: string | undefined;
+            };
+            output: void;
+            meta: object;
+        }>;
+    }>>;
 }>>;
 type AppRouter = typeof appRouter;
 
@@ -134,6 +166,45 @@ declare const PlacesApiAutocompleteResult: z.ZodPipe<z.ZodObject<{
         placeId: string;
     };
 }>>;
+
+declare const Coordinate: z.ZodObject<{
+    latitude: z.ZodNumber;
+    longitude: z.ZodNumber;
+}, z.core.$strip>;
+type Coordinate = z.infer<typeof Coordinate>;
+
+declare const GroupLobbyId: z$1.ZodString;
+type GroupLobbyId = z$1.infer<typeof GroupLobbyId>;
+declare const GroupLobbyStatus: z$1.ZodEnum<{
+    open: "open";
+    "in-progress": "in-progress";
+    complete: "complete";
+}>;
+type GroupLobbyStatus = z$1.infer<typeof GroupLobbyStatus>;
+declare const GroupLobby: z$1.ZodObject<{
+    id: z$1.ZodString;
+    ownerId: z$1.ZodString;
+    status: z$1.ZodEnum<{
+        open: "open";
+        "in-progress": "in-progress";
+        complete: "complete";
+    }>;
+    members: z$1.ZodArray<z$1.ZodString>;
+}, z$1.core.$strip>;
+type GroupLobby = z$1.infer<typeof GroupLobby>;
+declare const SwipeResult: z$1.ZodObject<{
+    selectedRestaurantIds: z$1.ZodArray<z$1.ZodString>;
+    rejectedRestaurantIds: z$1.ZodArray<z$1.ZodString>;
+}, z$1.core.$strip>;
+type SwipeResult = z$1.infer<typeof SwipeResult>;
+declare const SwipeResultSubmission: z$1.ZodObject<{
+    lobbyId: z$1.ZodOptional<z$1.ZodString>;
+    result: z$1.ZodObject<{
+        selectedRestaurantIds: z$1.ZodArray<z$1.ZodString>;
+        rejectedRestaurantIds: z$1.ZodArray<z$1.ZodString>;
+    }, z$1.core.$strip>;
+}, z$1.core.$strip>;
+type SwipeResultSubmission = z$1.infer<typeof SwipeResultSubmission>;
 
 declare const SearchPlacesParams: z.ZodObject<{
     center: z.ZodObject<{
@@ -412,11 +483,7 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
     primaryImage?: string | undefined;
 }>>;
 
-declare const Coordinate: z.ZodObject<{
-    latitude: z.ZodNumber;
-    longitude: z.ZodNumber;
-}, z.core.$strip>;
-type Coordinate = z.infer<typeof Coordinate>;
+declare const UserId: z$1.ZodString;
 
-export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams };
+export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId };
 export type { AppRouter };
