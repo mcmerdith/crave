@@ -1,12 +1,30 @@
+import Button from "@/components/button";
+import { useCurrentUser } from "@/lib/datastore/user-service";
+import { auth } from "@/lib/firebase";
+import { router } from "expo-router";
+import { signOut } from "firebase/auth";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Profile = () => {
+  const user = useCurrentUser();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f9f9f9" }}>
       <View style={styles.container}>
         <Text style={styles.header}>Profile</Text>
+        {!user && (
+          <Button title="Sign In" onPress={() => router.push("/sign-in")} />
+        )}
+        {user && (
+          <div>
+            <Button title="Sign Out" onPress={() => signOut(auth)} />
+            <Text>{user.displayName}</Text>
+            <Text style={styles.label}>Email</Text>
+            <Text>{user.email}</Text>
+          </div>
+        )}
       </View>
     </SafeAreaView>
   );
