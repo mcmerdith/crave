@@ -37,7 +37,7 @@ export default function Matches() {
         </ScrollView>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.heartEmoji}>💚</Text>
+          <Text style={styles.heartEmoji}>🧡</Text>
           <Text style={styles.emptyTitle}>No Recent Matches</Text>
           <Text style={styles.emptySubtitle}>
             Start swiping to save your favorite restaurants
