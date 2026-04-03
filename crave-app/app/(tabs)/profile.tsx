@@ -1,19 +1,25 @@
+import { useCurrentUser } from "@/lib/datastore/user-service";
+import { theme } from "@/theme";
+import {
+  AntDesign,
+  EvilIcons,
+  Feather,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
   FlatList,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, EvilIcons, Feather, MaterialIcons } from "@expo/vector-icons";
-import { theme } from "@/theme";
 import Modal from "react-native-modal";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Friend {
   id: number;
@@ -72,7 +78,9 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
         </View>
 
         {/* Title */}
-        <Text style={styles.authTitle}>{isSignUp ? "Create Account" : "Welcome Back"}</Text>
+        <Text style={styles.authTitle}>
+          {isSignUp ? "Create Account" : "Welcome Back"}
+        </Text>
         <Text style={styles.authSubtitle}>
           {isSignUp
             ? "Sign up to connect with friends"
@@ -84,7 +92,12 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
           {/* Full Name – sign up only */}
           {isSignUp && (
             <View style={styles.inputWrapper}>
-              <Feather name="user" size={18} color="#999" style={styles.inputIcon} />
+              <Feather
+                name="user"
+                size={18}
+                color="#999"
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.authInput}
                 placeholder="Full Name"
@@ -113,7 +126,12 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
 
           {/* Email */}
           <View style={styles.inputWrapper}>
-            <MaterialIcons name="email" size={18} color="#999" style={styles.inputIcon} />
+            <MaterialIcons
+              name="email"
+              size={18}
+              color="#999"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.authInput}
               placeholder="Email"
@@ -127,7 +145,12 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
 
           {/* Password */}
           <View style={styles.inputWrapper}>
-            <Feather name="lock" size={18} color="#999" style={styles.inputIcon} />
+            <Feather
+              name="lock"
+              size={18}
+              color="#999"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={[styles.authInput, { flex: 1 }]}
               placeholder="Password"
@@ -182,6 +205,8 @@ const Profile = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profileName, setProfileName] = useState("John Doe");
   const [profileUsername, setProfileUsername] = useState("@johndoe");
+  const user = useCurrentUser();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalVisible, setEditModalVisible] = useState(false);
 
@@ -200,7 +225,7 @@ const Profile = () => {
   const filteredFriends = mockFriends.filter(
     (friend) =>
       friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.username.toLowerCase().includes(searchQuery.toLowerCase())
+      friend.username.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const renderFriend = ({ item }: { item: Friend }) => {
@@ -235,14 +260,18 @@ const Profile = () => {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
+      <SafeAreaView
+        style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
+      >
         <AuthScreen onAuth={handleAuth} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
+    >
       <FlatList
         ListHeaderComponent={
           <>
@@ -270,15 +299,24 @@ const Profile = () => {
               </View>
 
               {/* Sign Out */}
-              <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-                <Feather name="log-out" size={14} color="#FF6347" style={{ marginRight: 5 }} />
+              <TouchableOpacity
+                style={styles.signOutButton}
+                onPress={handleSignOut}
+              >
+                <Feather
+                  name="log-out"
+                  size={14}
+                  color="#FF6347"
+                  style={{ marginRight: 5 }}
+                />
                 <Text style={styles.signOutText}>Sign Out</Text>
               </TouchableOpacity>
             </View>
 
             {/* Friends Header with count */}
             <Text style={styles.sectionTitle}>
-              {mockFriends.length} {mockFriends.length === 1 ? "friend" : "friends"}
+              {mockFriends.length}{" "}
+              {mockFriends.length === 1 ? "friend" : "friends"}
             </Text>
 
             {/* Search + Add */}
@@ -303,7 +341,9 @@ const Profile = () => {
         data={filteredFriends}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderFriend}
-        ListEmptyComponent={<Text style={styles.emptyText}>No friends found</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No friends found</Text>
+        }
         contentContainerStyle={{ paddingBottom: 40 }}
       />
 
