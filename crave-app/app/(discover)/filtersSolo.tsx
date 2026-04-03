@@ -1,11 +1,16 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Switch } from "react-native";
-import Slider from "@react-native-community/slider";
-import ColorfulButton from "@/components/colorfulButton";
-import { useRouter } from "expo-router";
-import CloseButton from "@/components/closeButton";
 import BackButton from "@/components/backButton";
+import ColorfulButton from "@/components/colorfulButton";
 import { Ionicons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const FiltersSolo = () => {
   //const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
@@ -66,9 +71,7 @@ const FiltersSolo = () => {
             </View>
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.cardTitle}>Distance</Text>
-              <Text style={styles.cardSubtitle}>
-                Up to {distance} miles
-              </Text>
+              <Text style={styles.cardSubtitle}>Up to {distance} miles</Text>
             </View>
           </View>
 
@@ -89,7 +92,7 @@ const FiltersSolo = () => {
           </View>
         </View>
 
-      {/* Apply Button */}
+        {/* Apply Button */}
         <View style={{ marginTop: 30 }}>
           <ColorfulButton
             variant="solo"

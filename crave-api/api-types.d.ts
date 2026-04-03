@@ -36,7 +36,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                 resourceName: string;
                 displayName: string;
                 cuisines: ("afghani" | "african" | "american" | "asian" | "barbecue" | "brazilian" | "chinese" | "french" | "greek" | "indian" | "indonesian" | "italian" | "japanese" | "korean" | "lebanese" | "mediterranean" | "mexican" | "middle_eastern" | "spanish" | "thai" | "turkish" | "vietnamese")[];
-                attributes: ("breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi" | "vegan" | "vegetarian")[];
+                attributes: ("vegetarian" | "vegan" | "breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi")[];
                 types: string[];
                 address: string;
                 coordinates: {
@@ -484,6 +484,17 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
 }>>;
 
 declare const UserId: z$1.ZodString;
+type UserId = z$1.infer<typeof UserId>;
+declare const UserPreferences: z$1.ZodObject<{
+    userId: z$1.ZodString;
+    dietary: z$1.ZodObject<{
+        vegetarian: z$1.ZodBoolean;
+        vegan: z$1.ZodBoolean;
+        glutenFree: z$1.ZodBoolean;
+    }, z$1.core.$strip>;
+    recentMatchIds: z$1.ZodArray<z$1.ZodString>;
+}, z$1.core.$strip>;
+type UserPreferences = z$1.infer<typeof UserPreferences>;
 
-export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId };
+export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId, UserPreferences };
 export type { AppRouter };

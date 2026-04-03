@@ -1,10 +1,17 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign, EvilIcons } from "@expo/vector-icons";
+import { useCurrentUser } from "@/lib/datastore/user-service";
 import { theme } from "@/theme";
+import { AntDesign, EvilIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Modal from "react-native-modal";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Friend {
   id: number;
@@ -17,17 +24,19 @@ const mockFriends: Friend[] = [
   { id: 1, name: "Sarah Chen", username: "@sarahc", mutualFavorites: 12 },
   { id: 2, name: "Alex Rivera", username: "@arivera", mutualFavorites: 8 },
   { id: 3, name: "Jamie Park", username: "@jamiepark", mutualFavorites: 15 },
-  { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6},
+  { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6 },
 ];
 
 const Profile = () => {
+  const user = useCurrentUser();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalVisible, setEditModalVisible] = useState(false);
 
   const filteredFriends = mockFriends.filter(
     (friend) =>
       friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.username.toLowerCase().includes(searchQuery.toLowerCase())
+      friend.username.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const renderFriend = ({ item }: { item: Friend }) => {
@@ -49,16 +58,16 @@ const Profile = () => {
         </View>
 
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>
-            {item.mutualFavorites} mutual
-          </Text>
+          <Text style={styles.badgeText}>{item.mutualFavorites} mutual</Text>
         </View>
       </View>
     );
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
+    >
       <FlatList
         ListHeaderComponent={
           <>
@@ -73,22 +82,23 @@ const Profile = () => {
 
               {/* Buttons */}
               <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={styles.profileButton}
-                onPress={() => setEditModalVisible(true)}
+                <TouchableOpacity
+                  style={styles.profileButton}
+                  onPress={() => setEditModalVisible(true)}
                 >
-                <Text style={styles.profileButtonText}>Edit Profile</Text>
-              </TouchableOpacity>
+                  <Text style={styles.profileButtonText}>Edit Profile</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.profileButton}>
-              <Text style={styles.profileButtonText}>Share Profile</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.profileButton}>
+                  <Text style={styles.profileButtonText}>Share Profile</Text>
+                </TouchableOpacity>
               </View>
             </View>
 
             {/* Friends Header with count */}
             <Text style={styles.sectionTitle}>
-              {mockFriends.length} {mockFriends.length === 1 ? "friend" : "friends"}
+              {mockFriends.length}{" "}
+              {mockFriends.length === 1 ? "friend" : "friends"}
             </Text>
 
             {/* Search + Add */}
@@ -148,7 +158,10 @@ const Profile = () => {
             placeholderTextColor="#999"
           />
 
-          <TouchableOpacity style={styles.saveButton} onPress={() => setEditModalVisible(false)}>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => setEditModalVisible(false)}
+          >
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
@@ -171,11 +184,11 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     //backgroundColor: "#fff",
-    shadowColor: "#000",     // shadow for iOS
+    shadowColor: "#000", // shadow for iOS
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3,            // shadow for Android
+    elevation: 3, // shadow for Android
   },
 
   profileAvatar: {
@@ -403,5 +416,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   saveButtonText: { color: "#fff", fontWeight: "bold" },
-  
 });
