@@ -1,4 +1,5 @@
 import { useCurrentUser } from "@/lib/datastore/user-service";
+import { auth } from "@/lib/firebase";
 import { theme } from "@/theme";
 import {
   AntDesign,
@@ -6,6 +7,12 @@ import {
   Feather,
   MaterialIcons,
 } from "@expo/vector-icons";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -37,11 +44,7 @@ const mockFriends: Friend[] = [
 
 //Auth Screen
 
-interface AuthScreenProps {
-  onAuth: (name: string, username: string) => void;
-}
-
-const AuthScreen = ({ onAuth }: AuthScreenProps) => {
+const AuthScreen = () => {
   const [isSignUp, setIsSignUp] = useState(true);
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
@@ -49,14 +52,19 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const resolvedName = isSignUp ? fullName.trim() || "John Doe" : "John Doe";
     const resolvedUsername = isSignUp
       ? username.trim()
         ? `@${username.replace(/^@/, "")}`
         : "@johndoe"
       : "@johndoe";
-    onAuth(resolvedName, resolvedUsername);
+    if (isSignUp) {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(res.user, { displayName: fullName });
+    } else {
+      signInWithEmailAndPassword(auth, email, password);
+    }
   };
 
   const isDisabled = isSignUp
@@ -202,24 +210,20 @@ const AuthScreen = ({ onAuth }: AuthScreenProps) => {
 // Main Profile Screen
 
 const Profile = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [profileName, setProfileName] = useState("John Doe");
-  const [profileUsername, setProfileUsername] = useState("@johndoe");
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [profileName, setProfileName] = useState("John Doe");
+  // const [profileUsername, setProfileUsername] = useState("@johndoe");
   const user = useCurrentUser();
+  const isAuthenticated = user !== null;
+  const profileName = user?.displayName ?? "User";
+  // TODO: this should be a profile field
+  const profileUsername = "@" + profileName.toLowerCase().replaceAll(" ", "");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalVisible, setEditModalVisible] = useState(false);
 
-  const handleAuth = (name: string, username: string) => {
-    setProfileName(name);
-    setProfileUsername(username);
-    setIsAuthenticated(true);
-  };
-
   const handleSignOut = () => {
-    setIsAuthenticated(false);
-    setProfileName("John Doe");
-    setProfileUsername("@johndoe");
+    signOut(auth); // TODO: should this be wrapped?
   };
 
   const filteredFriends = mockFriends.filter(
@@ -263,7 +267,7 @@ const Profile = () => {
       <SafeAreaView
         style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
       >
-        <AuthScreen onAuth={handleAuth} />
+        <AuthScreen />
       </SafeAreaView>
     );
   }
