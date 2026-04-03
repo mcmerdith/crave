@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
@@ -11,6 +11,7 @@ import { useLocationContext, useMatchContext } from "@/lib/context";
 import { SwipeModeParams } from "@/lib/routeParams";
 import RestaurantCard from "@/components/restaurantCard";
 import CloseButton from "@/components/closeButton";
+import FlippedCardDetails from "@/components/FlippedCardDetails";
 
 const ICON_SIZE = 24;
 
@@ -71,8 +72,8 @@ function SwipeFlow({
 
   const renderFlippedCard = useCallback((item: RestaurantSwipeData) => {
     return (
-      <View style={styles.renderFlippedCardContainer}>
-        <Text>Hello Flipped Card</Text>
+      <View style={styles.renderCardContainer}>
+        <FlippedCardDetails restaurant={item} />
       </View>
     );
   }, []);
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#fff",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
   },
@@ -205,7 +207,7 @@ const styles = StyleSheet.create({
 
   renderFlippedCard: {
     borderRadius: 15,
-    backgroundColor: "#baeee5",
+    backgroundColor: "#ffffff",
     width: "100%",
     height: "100%",
     alignItems: "center",
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
 
   renderFlippedCardContainer: {
     borderRadius: 15,
-    backgroundColor: "#baeee5",
+    backgroundColor: "#fffff",
     width: "100%",
     height: "100%",
     alignItems: "center",

@@ -1,73 +1,107 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Slider from "@react-native-community/slider";
-import ColorfulButton from "@/components/colorfulButton";
-import { useRouter } from "expo-router";
-import CloseButton from "@/components/closeButton";
 import BackButton from "@/components/backButton";
+import ColorfulButton from "@/components/colorfulButton";
+import { Ionicons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const FiltersSolo = () => {
-  const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
-  const [distance, setDistance] = useState(10); // miles
+  //const [priceRange, setPriceRange] = useState(2); // $-$$$$ scale
+  //const [distance, setDistance] = useState(10); // miles
   const router = useRouter();
-  const priceLabels = ["$", "$$", "$$$", "$$$$"];
+  //const priceLabels = ["$", "$$", "$$$", "$$$$"];
+
+  const [distance, setDistance] = useState(5);
+  const [priceRange, setPriceRange] = useState(2);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 60 }}>
         <BackButton />
-        <Text style={styles.header}>Set Your Filters</Text>
-        <Text style={styles.label}>Price Range</Text>
-        <View style={styles.priceLabels}>
-          {priceLabels.map((label, index) => (
-            <Text
-              key={index}
-              style={[
-                styles.priceLabel,
-                index === priceRange - 1 && styles.priceLabelActive,
-              ]}
-            >
-              {label}
-            </Text>
-          ))}
-        </View>
-        <Slider
-          style={{ width: "100%", height: 40 }}
-          minimumValue={1}
-          maximumValue={4}
-          step={1}
-          minimumTrackTintColor="#a542fb"
-          maximumTrackTintColor="#ddd"
-          thumbTintColor="#7b13ca"
-          value={priceRange}
-          onValueChange={setPriceRange}
-        />
 
-        {/* Distance Slider */}
-        <Text style={styles.label}>Max Distance ({distance} mi)</Text>
-        <Slider
-          style={{ width: "100%", height: 40 }}
-          minimumValue={1}
-          maximumValue={50}
-          step={1}
-          minimumTrackTintColor="#f91671ff"
-          maximumTrackTintColor="#ddd"
-          thumbTintColor="#f91671ff"
-          value={distance}
-          onValueChange={setDistance}
-        />
-      </View>
-      {/* Start Swiping Button */}
-      <View style={styles.swipeButtonContainer}>
-        <ColorfulButton
-          variant="solo"
-          text="Start Swiping"
-          enabled={true}
-          onPress={() => {
-            router.replace("/swipe/solo");
-          }}
-        />
-      </View>
+        <Text style={styles.header}>Set Your Filters</Text>
+        <Text style={styles.subHeader}>Customize your preferences</Text>
+
+        {/* Price Range Slider */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="cash-outline" size={18} color="#000" />
+            </View>
+            <Text style={[styles.cardTitle, { marginLeft: 10 }]}>
+              Price Range
+            </Text>
+          </View>
+
+          <View style={styles.priceGrid}>
+            {["$", "$$", "$$$", "$$$$"].map((price, index) => (
+              <TouchableOpacity
+                key={price}
+                onPress={() => setPriceRange(index + 1)}
+                style={[
+                  styles.priceButton,
+                  priceRange === index + 1 && styles.priceButtonActive,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.priceText,
+                    priceRange === index + 1 && styles.priceTextActive,
+                  ]}
+                >
+                  {price}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Distance Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="location-outline" size={18} color="#000" />
+            </View>
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.cardTitle}>Distance</Text>
+              <Text style={styles.cardSubtitle}>Up to {distance} miles</Text>
+            </View>
+          </View>
+
+          <Slider
+            minimumValue={1}
+            maximumValue={25}
+            step={1}
+            value={distance}
+            onValueChange={setDistance}
+            minimumTrackTintColor="#a542fb"
+            maximumTrackTintColor="#ddd"
+            thumbTintColor="#7b13ca"
+          />
+
+          <View style={styles.sliderLabels}>
+            <Text style={styles.smallText}>1 mi</Text>
+            <Text style={styles.smallText}>25 mi</Text>
+          </View>
+        </View>
+
+        {/* Apply Button */}
+        <View style={{ marginTop: 30 }}>
+          <ColorfulButton
+            variant="solo"
+            text="Apply Filters"
+            enabled={true}
+            onPress={() => router.replace("/swipe/solo")}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -75,50 +109,74 @@ const FiltersSolo = () => {
 export default FiltersSolo;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-    paddingTop: 60,
-  },
   header: {
     fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 30,
   },
-  label: {
-    fontSize: 18,
+  subHeader: {
+    color: "#666",
+    marginBottom: 25,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  iconContainer: {
+    backgroundColor: "#eee",
+    padding: 8,
+    borderRadius: 10,
+  },
+  cardTitle: {
+    fontSize: 16,
     fontWeight: "600",
-    marginVertical: 10,
   },
-  priceLabels: {
+  cardSubtitle: {
+    fontSize: 13,
+    color: "#777",
+  },
+  sliderLabels: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 5,
+    marginTop: 5,
   },
-  priceLabel: {
-    fontSize: 16,
-    color: "#999",
+  smallText: {
+    fontSize: 12,
+    color: "#888",
   },
-  priceLabelActive: {
-    color: "#a542fb",
-    fontWeight: "bold",
+  priceGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
-  applyButton: {
-    marginTop: 40,
-    backgroundColor: "#FF6347",
-    paddingVertical: 15,
-    borderRadius: 10,
+  priceButton: {
+    flex: 1,
+    paddingVertical: 12,
+    marginHorizontal: 5,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: "#ddd",
     alignItems: "center",
   },
-  applyText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  priceButtonActive: {
+    borderColor: "#a542fb",
+    backgroundColor: "rgba(165,66,251,0.1)",
   },
-  swipeButtonContainer: {
-    width: "100%",
-    padding: 20,
-    justifyContent: "flex-end",
+  priceText: {
+    fontWeight: "600",
+    color: "#777",
+  },
+  priceTextActive: {
+    color: "#a542fb",
   },
 });
