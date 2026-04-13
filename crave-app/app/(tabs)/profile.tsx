@@ -1,9 +1,24 @@
 import { useCurrentUser } from "@/lib/datastore/user-service";
+import { auth } from "@/lib/firebase";
 import { theme } from "@/theme";
-import { AntDesign, EvilIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  EvilIcons,
+  Feather,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 import React, { useState } from "react";
 import {
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -27,11 +42,189 @@ const mockFriends: Friend[] = [
   { id: 4, name: "Marcus Johnson", username: "@mjohnson", mutualFavorites: 6 },
 ];
 
+//Auth Screen
+
+const AuthScreen = () => {
+  const [isSignUp, setIsSignUp] = useState(true);
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async () => {
+    const resolvedName = isSignUp ? fullName.trim() || "John Doe" : "John Doe";
+    const resolvedUsername = isSignUp
+      ? username.trim()
+        ? `@${username.replace(/^@/, "")}`
+        : "@johndoe"
+      : "@johndoe";
+    if (isSignUp) {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(res.user, { displayName: fullName });
+    } else {
+      signInWithEmailAndPassword(auth, email, password);
+    }
+  };
+
+  const isDisabled = isSignUp
+    ? !fullName.trim() || !email.trim() || !password.trim()
+    : !email.trim() || !password.trim();
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.authFlex}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <ScrollView
+        contentContainerStyle={styles.authScroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Icon */}
+        <View style={styles.authIconCircle}>
+          <Feather name="user" size={44} color={theme.colors.foreground} />
+        </View>
+
+        {/* Title */}
+        <Text style={styles.authTitle}>
+          {isSignUp ? "Create Account" : "Welcome Back"}
+        </Text>
+        <Text style={styles.authSubtitle}>
+          {isSignUp
+            ? "Sign up to connect with friends"
+            : "Sign in to your account"}
+        </Text>
+
+        {/* Card */}
+        <View style={styles.authCard}>
+          {/* Full Name – sign up only */}
+          {isSignUp && (
+            <View style={styles.inputWrapper}>
+              <Feather
+                name="user"
+                size={18}
+                color="#999"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.authInput}
+                placeholder="Full Name"
+                placeholderTextColor="#999"
+                value={fullName}
+                onChangeText={setFullName}
+                autoCapitalize="words"
+              />
+            </View>
+          )}
+
+          {/* Username – sign up only */}
+          {isSignUp && (
+            <View style={styles.inputWrapper}>
+              <Text style={styles.atSign}>@</Text>
+              <TextInput
+                style={styles.authInput}
+                placeholder="Username"
+                placeholderTextColor="#999"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+              />
+            </View>
+          )}
+
+          {/* Email */}
+          <View style={styles.inputWrapper}>
+            <MaterialIcons
+              name="email"
+              size={18}
+              color="#999"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.authInput}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Password */}
+          <View style={styles.inputWrapper}>
+            <Feather
+              name="lock"
+              size={18}
+              color="#999"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={[styles.authInput, { flex: 1 }]}
+              placeholder="Password"
+              placeholderTextColor="#999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword((v) => !v)}
+              style={styles.eyeButton}
+            >
+              <Feather
+                name={showPassword ? "eye-off" : "eye"}
+                size={18}
+                color="#999"
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Submit */}
+          <TouchableOpacity
+            style={[styles.authButton, isDisabled && styles.authButtonDisabled]}
+            onPress={handleSubmit}
+            disabled={isDisabled}
+          >
+            <Text style={styles.authButtonText}>
+              {isSignUp ? "Sign Up" : "Sign In"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Toggle */}
+        <View style={styles.toggleRow}>
+          <Text style={styles.toggleText}>
+            {isSignUp ? "Already have an account? " : "Don't have an account? "}
+          </Text>
+          <TouchableOpacity onPress={() => setIsSignUp((v) => !v)}>
+            <Text style={styles.toggleLink}>
+              {isSignUp ? "Sign In" : "Sign Up"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
+
+// Main Profile Screen
+
 const Profile = () => {
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [profileName, setProfileName] = useState("John Doe");
+  // const [profileUsername, setProfileUsername] = useState("@johndoe");
   const user = useCurrentUser();
+  const isAuthenticated = user !== null;
+  const profileName = user?.displayName ?? "User";
+  // TODO: this should be a profile field
+  const profileUsername = "@" + profileName.toLowerCase().replaceAll(" ", "");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalVisible, setEditModalVisible] = useState(false);
+
+  const handleSignOut = () => {
+    signOut(auth); // TODO: should this be wrapped?
+  };
 
   const filteredFriends = mockFriends.filter(
     (friend) =>
@@ -47,22 +240,37 @@ const Profile = () => {
 
     return (
       <View style={styles.friendRow}>
-        {/* Avatar Placeholder */}
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initials}</Text>
         </View>
-
         <View style={styles.friendInfo}>
           <Text style={styles.friendName}>{item.name}</Text>
           <Text style={styles.friendUsername}>{item.username}</Text>
         </View>
-
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{item.mutualFavorites} mutual</Text>
         </View>
       </View>
     );
   };
+
+  // Derive initials from profileName
+  const profileInitials = profileName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  if (!isAuthenticated) {
+    return (
+      <SafeAreaView
+        style={[styles.safeArea, { backgroundColor: theme.colors.background }]}
+      >
+        <AuthScreen />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -74,11 +282,11 @@ const Profile = () => {
             {/* Profile Header */}
             <View style={styles.profileCard}>
               <View style={styles.profileAvatar}>
-                <Text style={styles.profileAvatarText}>JD</Text>
+                <Text style={styles.profileAvatarText}>{profileInitials}</Text>
               </View>
 
-              <Text style={styles.profileName}>John Doe</Text>
-              <Text style={styles.profileUsername}>@johndoe</Text>
+              <Text style={styles.profileName}>{profileName}</Text>
+              <Text style={styles.profileUsername}>{profileUsername}</Text>
 
               {/* Buttons */}
               <View style={styles.buttonRow}>
@@ -93,6 +301,20 @@ const Profile = () => {
                   <Text style={styles.profileButtonText}>Share Profile</Text>
                 </TouchableOpacity>
               </View>
+
+              {/* Sign Out */}
+              <TouchableOpacity
+                style={styles.signOutButton}
+                onPress={handleSignOut}
+              >
+                <Feather
+                  name="log-out"
+                  size={14}
+                  color="#FF6347"
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={styles.signOutText}>Sign Out</Text>
+              </TouchableOpacity>
             </View>
 
             {/* Friends Header with count */}
@@ -128,6 +350,7 @@ const Profile = () => {
         }
         contentContainerStyle={{ paddingBottom: 40 }}
       />
+
       {/* Edit Profile Modal */}
       <Modal
         isVisible={isEditModalVisible}
@@ -139,19 +362,15 @@ const Profile = () => {
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Edit Profile</Text>
 
-          {/* Profile picture placeholder */}
           <View style={styles.editAvatar}>
-            <Text style={styles.profileAvatarText}>JD</Text>
+            <Text style={styles.profileAvatarText}>{profileInitials}</Text>
           </View>
 
-          {/* Name Input */}
           <TextInput
             style={styles.modalInput}
             placeholder="Name"
             placeholderTextColor="#999"
           />
-
-          {/* Username Input */}
           <TextInput
             style={styles.modalInput}
             placeholder="Username"
@@ -178,19 +397,114 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
 
+  // ── Auth ──────────────────────────────────────────────
+  authFlex: { flex: 1 },
+  authScroll: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+  },
+  authIconCircle: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  authTitle: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: theme.colors.foreground,
+    marginBottom: 6,
+  },
+  authSubtitle: {
+    fontSize: 14,
+    color: theme.colors.mutedForeground,
+    marginBottom: 28,
+  },
+  authCard: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
+    gap: 14,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    height: 48,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  atSign: {
+    fontSize: 16,
+    color: "#999",
+    marginRight: 8,
+    fontWeight: "600",
+  },
+  authInput: {
+    flex: 1,
+    fontSize: 15,
+    color: theme.colors.foreground,
+  },
+  eyeButton: {
+    paddingLeft: 10,
+  },
+  authButton: {
+    backgroundColor: "#FF6347",
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 4,
+  },
+  authButtonDisabled: {
+    opacity: 0.45,
+  },
+  authButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  toggleRow: {
+    flexDirection: "row",
+    marginTop: 24,
+    alignItems: "center",
+  },
+  toggleText: {
+    color: theme.colors.mutedForeground,
+    fontSize: 14,
+  },
+  toggleLink: {
+    color: "#FF6347",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+
+  // ── Profile ───────────────────────────────────────────
   profileCard: {
     margin: 20,
     borderRadius: 16,
     padding: 20,
     alignItems: "center",
-    //backgroundColor: "#fff",
-    shadowColor: "#000", // shadow for iOS
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
-    elevation: 3, // shadow for Android
+    elevation: 3,
   },
-
   profileAvatar: {
     width: 90,
     height: 90,
@@ -200,56 +514,72 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-
   profileAvatarText: {
     fontSize: 28,
     fontWeight: "bold",
   },
-
   profileName: {
     fontSize: 22,
     fontWeight: "bold",
   },
-
   profileUsername: {
     fontSize: 14,
     color: theme.colors.mutedForeground,
     marginBottom: 15,
   },
-
-  statsRow: {
+  buttonRow: {
     flexDirection: "row",
-    gap: 40,
+    marginTop: 10,
+    marginBottom: 10,
+    gap: 10,
   },
-
-  statBlock: {
+  profileButton: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    borderRadius: 10,
     alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
+  },
+  profileButtonText: {
+    color: theme.colors.foreground,
+    fontWeight: "600",
+  },
+  signOutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#FF634730",
+    backgroundColor: "#FF634710",
+  },
+  signOutText: {
+    color: "#FF6347",
+    fontWeight: "600",
+    fontSize: 13,
   },
 
-  statNumber: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-
-  statLabel: {
-    fontSize: 12,
-    color: "#777",
-  },
-
+  // ── Friends ───────────────────────────────────────────
   sectionTitle: {
     fontSize: 20,
     fontWeight: "bold",
     marginHorizontal: 20,
     marginBottom: 10,
   },
-
   searchRow: {
     flexDirection: "row",
     marginHorizontal: 20,
     marginBottom: 15,
     gap: 10,
   },
-
   searchContainer: {
     flex: 1,
     flexDirection: "row",
@@ -263,14 +593,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 1,
   },
-
   searchInput: {
     flex: 1,
     marginLeft: 8,
     height: 40,
     color: theme.colors.foreground,
   },
-
   addButton: {
     width: 40,
     height: 40,
@@ -284,7 +612,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 1,
   },
-
   friendRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -299,7 +626,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 1,
   },
-
   avatar: {
     width: 50,
     height: 50,
@@ -309,79 +635,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
   },
-
-  avatarText: {
-    fontWeight: "bold",
-  },
-
-  onlineIndicator: {
-    position: "absolute",
-    bottom: 2,
-    right: 2,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "green",
-    borderWidth: 2,
-    borderColor: "#fff",
-  },
-
-  friendInfo: {
-    flex: 1,
-  },
-
-  friendName: {
-    fontWeight: "600",
-  },
-
-  friendUsername: {
-    fontSize: 12,
-    color: "#777",
-  },
-
+  avatarText: { fontWeight: "bold" },
+  friendInfo: { flex: 1 },
+  friendName: { fontWeight: "600" },
+  friendUsername: { fontSize: 12, color: "#777" },
   badge: {
     backgroundColor: "#eee",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
   },
+  badgeText: { fontSize: 12 },
+  emptyText: { textAlign: "center", marginTop: 20, color: "#777" },
 
-  badgeText: {
-    fontSize: 12,
-  },
-
-  emptyText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "#777",
-  },
-
-  buttonRow: {
-    flexDirection: "row",
-    marginTop: 10,
-    marginBottom: 15,
-    gap: 10,
-  },
-
-  profileButton: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingVertical: 8,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
-  },
-
-  profileButtonText: {
-    color: theme.colors.foreground,
-    fontWeight: "600",
-  },
-
+  // ── Modal ─────────────────────────────────────────────
   modalContainer: { justifyContent: "flex-end", margin: 0 },
   modalContent: {
     height: "85%",

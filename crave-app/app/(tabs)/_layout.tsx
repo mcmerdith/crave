@@ -6,14 +6,19 @@ import Octicons from "@expo/vector-icons/Octicons";
 
 export default function RootLayout() {
   return (
-    <Tabs>
+    <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: "#FF4747",
+          tabBarInactiveTintColor: "#36454F",
+        }}
+      >
       <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
           title: "Discover",
           tabBarIcon: ({ color, size }) => (
-            <AntDesign name="compass" size={24} color="color" />
+            <AntDesign name="compass" size={24} color={color} />
           ),
         }}
       />
@@ -23,7 +28,7 @@ export default function RootLayout() {
           headerShown: false,
           title: "Matches",
           tabBarIcon: ({ color, size }) => (
-            <Feather name="heart" size={24} color="color" />
+            <Feather name="heart" size={24} color={color}/>
           ),
         }}
       />
@@ -33,7 +38,7 @@ export default function RootLayout() {
           headerShown: false,
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Octicons name="person" size={24} color="color" />
+            <Octicons name="person" size={24} color={color} />
           ),
         }}
       />

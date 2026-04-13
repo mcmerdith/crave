@@ -12,17 +12,18 @@ import { transformPlacesApiData } from "@/lib/places";
 import { useLocationContext } from "@/lib/context";
 import RestaurantDetailModal from "@/components/RestaurantDetailModal";
 import { RestaurantSwipeData } from "@/lib/places";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Index() {
   const { location } = useLocationContext();
-  const { data: places } = useQuery(
-    trpc.places.search.queryOptions({
-      center: location.coordinate ?? undefined,
-    }),
-  );
+  const { data: places, isLoading } = useQuery(
+  trpc.places.search.queryOptions({
+    center: location.coordinate ?? undefined,
+  }),
+);
 
-  const RecentsData = transformPlacesApiData(places);
-  const DiscoverData = RecentsData?.toReversed();
+  const RecentsData = places ? transformPlacesApiData(places) : [];
+  const DiscoverData = RecentsData.toReversed();
 
   // State to track which restaurant is selected
   const [selectedRestaurant, setSelectedRestaurant] =
@@ -71,6 +72,7 @@ export default function Index() {
         restaurant={selectedRestaurant}
         onClose={() => setSelectedRestaurant(null)}
       />
+      {isLoading && <LoadingScreen />}
     </GestureHandlerRootView>
   );
 }
