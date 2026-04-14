@@ -1,3 +1,9 @@
+import StartSwipingButton from "@/components/colorfulButton";
+import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
+import { LinearGradient } from "expo-linear-gradient";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -6,36 +12,33 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
-import { useEffect, useRef, useState } from "react";
-import StartSwipingButton from "@/components/colorfulButton";
-import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { LobbyParams } from "@/lib/routeParams";
-import CloseButton from "@/components/closeButton";
 import BackButton from "@/components/backButton";
+import CloseButton from "@/components/closeButton";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
+import { LobbyParams } from "@/lib/routeParams";
+import { GroupLobby } from "@crave/api";
 
 export default function Lobby() {
-  const { code, started } = useLocalSearchParams<LobbyParams>();
-  const { data } = useGroupLobby(code === "" ? undefined : code);
+  const { code } = useLocalSearchParams<LobbyParams>();
+  const data = useGroupLobby(code === "" ? undefined : code);
 
   if (data === undefined) {
     return <p>Loading</p>;
   } else if (data === null) {
     return <p>Not found</p>;
   } else {
-    return <LobbyContent code={data.id} started={started} />;
+    return <LobbyContent lobby={data} />;
   }
 }
 
-function LobbyContent({ code, started: startedStr }: LobbyParams) {
+function LobbyContent({
+  lobby: { id: code, status, members, ownerId },
+}: {
+  lobby: GroupLobby;
+}) {
   const router = useRouter();
-  const started = !!startedStr && startedStr !== "";
-
-  const [allReady, setAllReady] = useState(false);
+  const started = status !== "open";
 
   const handleStartGroup = () => {
     router.replace("/swipe/group");
@@ -45,42 +48,28 @@ function LobbyContent({ code, started: startedStr }: LobbyParams) {
     router.replace("/swipe/group/complete");
   };
 
-  const people = [
-    { name: "You", emoji: "🧑‍💼", host: true },
-    { name: "Clara", emoji: "👱‍♀️" },
-    { name: "Matt", emoji: "👱‍♂️" },
-    { name: "Ellie", emoji: "👱‍♀️", joined: true },
-  ];
-
   // Animation refs for each item
-  const anims = useRef(people.map(() => new Animated.Value(0))).current;
+  const [anims, setAnims] = useState<Record<string, Animated.Value>>({});
+  if (Object.keys(anims).length !== members.length) {
+    setAnims(
+      Object.fromEntries(
+        members.map((m) => [m.id, anims[m.id] ?? new Animated.Value(0)]),
+      ),
+    );
+  }
+  console.log(anims);
 
   useEffect(() => {
-    let totalDelay = 0;
-
-    const animations = anims.map((anim, i) => {
-      if (i === 0) {
-        // You spawn instantly
-        return Animated.timing(anim, {
-          toValue: 1,
-          duration: 500,
-          delay: 0,
-          useNativeDriver: true,
-        });
-      }
-      const step = Math.random() * 3000 + 800;
-
-      totalDelay += step;
-
+    const animations = Object.values(anims).map((anim, i) => {
       return Animated.timing(anim, {
         toValue: 1,
         duration: 500,
-        delay: totalDelay,
+        delay: 0,
         useNativeDriver: true,
       });
     });
 
-    Animated.stagger(0, animations).start(() => setAllReady(true));
+    Animated.stagger(0, animations).start();
   }, [anims]);
 
   const copyCode = () => {
@@ -126,16 +115,18 @@ function LobbyContent({ code, started: startedStr }: LobbyParams) {
           </LinearGradient>
         </>
       )}
-      <Text style={styles.lobbyTitle}>In Lobby ({people.length})</Text>
+      <Text style={styles.lobbyTitle}>In Lobby ({members.length})</Text>
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        {people.map((member, idx) => {
-          const fade = anims[idx].interpolate({
+        {members.map((member, idx) => {
+          const anim = anims[member.id];
+          if (!anim) return null;
+          const fade = anim.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
           });
 
-          const slide = anims[idx].interpolate({
+          const slide = anim.interpolate({
             inputRange: [0, 1],
             outputRange: [20, 0], // slide upward
           });
@@ -151,18 +142,12 @@ function LobbyContent({ code, started: startedStr }: LobbyParams) {
                 },
               ]}
             >
-              <Text style={styles.emoji}>{member.emoji}</Text>
+              {/* <Text style={styles.emoji}>{member.emoji}</Text> */}
 
               <View>
                 <Text style={styles.name}>{member.name}</Text>
-                {member.host && <Text style={styles.host}>Host</Text>}
+                {member.id === ownerId && <Text style={styles.host}>Host</Text>}
               </View>
-
-              {!started && member.joined && (
-                <View style={styles.joinedBadge}>
-                  <Text style={styles.joinedText}>Just joined</Text>
-                </View>
-              )}
             </Animated.View>
           );
         })}
@@ -170,7 +155,7 @@ function LobbyContent({ code, started: startedStr }: LobbyParams) {
         <View style={{ height: 80 }} />
       </ScrollView>
       <StartSwipingButton
-        enabled={started ? allReady : people.length > 1}
+        enabled={members.length > 1}
         variant="group"
         text={started ? "View Matches" : "Start Swiping"}
         disabledText={
