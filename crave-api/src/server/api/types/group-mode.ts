@@ -10,11 +10,17 @@ export type GroupLobbyId = z.infer<typeof GroupLobbyId>;
 export const GroupLobbyStatus = z.enum(["open", "in-progress", "complete"]);
 export type GroupLobbyStatus = z.infer<typeof GroupLobbyStatus>;
 
+export const GroupUser = z.object({
+  id: UserId,
+  name: z.string(),
+});
+export type GroupUser = z.infer<typeof GroupUser>;
+
 export const GroupLobby = z.object({
   id: GroupLobbyId,
   ownerId: UserId,
   status: GroupLobbyStatus,
-  members: UserId.array(),
+  members: GroupUser.array(),
 });
 export type GroupLobby = z.infer<typeof GroupLobby>;
 

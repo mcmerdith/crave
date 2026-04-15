@@ -36,7 +36,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                 resourceName: string;
                 displayName: string;
                 cuisines: ("afghani" | "african" | "american" | "asian" | "barbecue" | "brazilian" | "chinese" | "french" | "greek" | "indian" | "indonesian" | "italian" | "japanese" | "korean" | "lebanese" | "mediterranean" | "mexican" | "middle_eastern" | "spanish" | "thai" | "turkish" | "vietnamese")[];
-                attributes: ("vegetarian" | "vegan" | "breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi")[];
+                attributes: ("breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi" | "vegan" | "vegetarian")[];
                 types: string[];
                 address: string;
                 coordinates: {
@@ -100,29 +100,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
         meta: object;
         errorShape: _trpc_server.TRPCDefaultErrorShape;
         transformer: false;
-    }, _trpc_server.TRPCDecorateCreateRouterOptions<{
-        createLobby: _trpc_server.TRPCQueryProcedure<{
-            input: void;
-            output: {
-                id: string;
-                ownerId: string;
-                status: "open" | "in-progress" | "complete";
-                members: string[];
-            };
-            meta: object;
-        }>;
-        submitSwipes: _trpc_server.TRPCMutationProcedure<{
-            input: {
-                result: {
-                    selectedRestaurantIds: string[];
-                    rejectedRestaurantIds: string[];
-                };
-                lobbyId?: string | undefined;
-            };
-            output: void;
-            meta: object;
-        }>;
-    }>>;
+    }, _trpc_server.TRPCDecorateCreateRouterOptions<{}>>;
 }>>;
 type AppRouter = typeof appRouter;
 
@@ -181,6 +159,11 @@ declare const GroupLobbyStatus: z$1.ZodEnum<{
     complete: "complete";
 }>;
 type GroupLobbyStatus = z$1.infer<typeof GroupLobbyStatus>;
+declare const GroupUser: z$1.ZodObject<{
+    id: z$1.ZodString;
+    name: z$1.ZodString;
+}, z$1.core.$strip>;
+type GroupUser = z$1.infer<typeof GroupUser>;
 declare const GroupLobby: z$1.ZodObject<{
     id: z$1.ZodString;
     ownerId: z$1.ZodString;
@@ -189,7 +172,10 @@ declare const GroupLobby: z$1.ZodObject<{
         "in-progress": "in-progress";
         complete: "complete";
     }>;
-    members: z$1.ZodArray<z$1.ZodString>;
+    members: z$1.ZodArray<z$1.ZodObject<{
+        id: z$1.ZodString;
+        name: z$1.ZodString;
+    }, z$1.core.$strip>>;
 }, z$1.core.$strip>;
 type GroupLobby = z$1.infer<typeof GroupLobby>;
 declare const SwipeResult: z$1.ZodObject<{
@@ -496,5 +482,5 @@ declare const UserPreferences: z$1.ZodObject<{
 }, z$1.core.$strip>;
 type UserPreferences = z$1.infer<typeof UserPreferences>;
 
-export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId, UserPreferences };
+export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, GroupUser, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId, UserPreferences };
 export type { AppRouter };

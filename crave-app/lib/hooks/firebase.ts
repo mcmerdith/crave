@@ -14,6 +14,13 @@ import {
 } from "@firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 
+export {
+  arrayUnion,
+  arrayRemove,
+  serverTimestamp,
+  increment,
+} from "@firebase/firestore";
+
 /**
  * React wrappers for Firebase queries
  */
