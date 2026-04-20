@@ -22,17 +22,19 @@ export default function Matches() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.headerTitle}>Current Matches</Text>
-          <Text style={styles.sectionSubtitle}>
-            {matches.length} saved restaurants
-          </Text>
+          <View style={styles.contentWrapper}>
+            <Text style={styles.headerTitle}>Current Matches</Text>
+            <Text style={styles.sectionSubtitle}>
+              {matches.length} saved restaurants
+            </Text>
 
-          <View style={styles.cardsGrid}>
-            {matches.map((item) => (
-              <View key={item.id} style={styles.cardWrapper}>
-                <Card {...item} />
-              </View>
-            ))}
+            <View style={styles.cardsGrid}>
+              {matches.map((item) => (
+                <View key={item.id} style={styles.cardWrapper}>
+                  <Card {...item} />
+                </View>
+              ))}
+            </View>
           </View>
         </ScrollView>
       ) : (
@@ -102,6 +104,11 @@ const styles = StyleSheet.create({
     color: theme.colors.mutedForeground,
     marginBottom: 16,
   },
+  contentWrapper: {
+  width: "100%",
+  maxWidth: 600,        // caps width on web
+  alignSelf: "center", // centers it on wide screens
+},
   cardsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
