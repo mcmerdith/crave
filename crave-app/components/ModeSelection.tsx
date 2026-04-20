@@ -132,24 +132,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  buttonWrapper: {
+    buttonWrapper: {
     width: "48%",
     height: 170,
+    borderRadius: 20,       // ← add this so shadow has the right shape
     shadowRadius: 6,
     shadowOpacity: 0.15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },  // consolidate shadows here only
   },
   gradientButton: {
     padding: 24,
     height: "100%",
     borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 4,
-    overflow: "hidden",
+    overflow: "hidden",     // keep this for the overlay gradient clipping
+    // ← remove all shadow props from here
   },
   iconContainer: {
     backgroundColor: "rgba(255,255,255,0.25)",
