@@ -532,9 +532,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     gap: 10,
+    width: "100%",          
+    justifyContent: "center",
   },
   profileButton: {
-    flex: 1,
+    ...(Platform.OS === "web"
+    ? { width: 140 }       // fixed width on web
+    : { flex: 1 }),        // flex on mobile (keeps current behavior)
     backgroundColor: "#fff",
     paddingVertical: 8,
     borderRadius: 10,
