@@ -1,21 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Platform} from "react-native";
 import { RestaurantSwipeData } from "@/lib/places";
+
+function isValidImage(uri?: string) {
+  if (!uri) return false;
+  if (uri.includes("placehold.co")) return false;
+  return true;
+}
+
+const ImageFallback = () => (
+  <View style={styles.fallback}>
+    <Image
+      source={require("@/assets/images/white_burger_transparent.png")}
+      style={styles.fallbackBurger}
+      resizeMode="contain"
+    />
+    <Text style={styles.fallbackText}>image not available</Text>
+  </View>
+);
 
 export default function RestaurantCard({
   restaurant,
 }: {
   restaurant: RestaurantSwipeData;
 }) {
+  const [imgError, setImgError] = useState(false);
+  const useLocal = imgError || !isValidImage(restaurant.image);
+  
   return (
     <View style={styles.card}>
       {/* Top image */}
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: restaurant.image }}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        {useLocal ? (
+          <ImageFallback />
+        ) : (
+          <Image
+            source={{ uri: restaurant.image }}
+            onError={() => setImgError(true)}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        )}
       </View>
 
       {/* Bottom info */}
@@ -51,6 +76,23 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+  },
+  fallback: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#d9d9d9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fallbackBurger: {
+    width: 150,   // bigger since this card is much larger than the carousel card
+    height: 150,
+  },
+  fallbackText: {
+    fontFamily: "Nunito",
+    fontSize: 20,
+    color: "#ffffff",
+    marginTop: 4,
   },
   infoBlock: {
     width: "100%",
