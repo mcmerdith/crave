@@ -159,11 +159,6 @@ declare const GroupLobbyStatus: z$1.ZodEnum<{
     complete: "complete";
 }>;
 type GroupLobbyStatus = z$1.infer<typeof GroupLobbyStatus>;
-declare const GroupUser: z$1.ZodObject<{
-    id: z$1.ZodString;
-    name: z$1.ZodString;
-}, z$1.core.$strip>;
-type GroupUser = z$1.infer<typeof GroupUser>;
 declare const GroupLobby: z$1.ZodObject<{
     id: z$1.ZodString;
     ownerId: z$1.ZodString;
@@ -172,10 +167,6 @@ declare const GroupLobby: z$1.ZodObject<{
         "in-progress": "in-progress";
         complete: "complete";
     }>;
-    members: z$1.ZodArray<z$1.ZodObject<{
-        id: z$1.ZodString;
-        name: z$1.ZodString;
-    }, z$1.core.$strip>>;
 }, z$1.core.$strip>;
 type GroupLobby = z$1.infer<typeof GroupLobby>;
 declare const SwipeResult: z$1.ZodObject<{
@@ -191,6 +182,14 @@ declare const SwipeResultSubmission: z$1.ZodObject<{
     }, z$1.core.$strip>;
 }, z$1.core.$strip>;
 type SwipeResultSubmission = z$1.infer<typeof SwipeResultSubmission>;
+declare const GroupLobbyMember: z$1.ZodObject<{
+    userId: z$1.ZodString;
+    name: z$1.ZodString;
+    complete: z$1.ZodBoolean;
+    likeIds: z$1.ZodArray<z$1.ZodString>;
+    dislikeIds: z$1.ZodArray<z$1.ZodString>;
+}, z$1.core.$strip>;
+type GroupLobbyMember = z$1.infer<typeof GroupLobbyMember>;
 
 declare const SearchPlacesParams: z.ZodObject<{
     center: z.ZodObject<{
@@ -482,5 +481,5 @@ declare const UserPreferences: z$1.ZodObject<{
 }, z$1.core.$strip>;
 type UserPreferences = z$1.infer<typeof UserPreferences>;
 
-export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyStatus, GroupUser, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId, UserPreferences };
+export { AutocompleteParams, AutocompleteResult, Coordinate, GetAutocompleteCoordinatesParams, GroupLobby, GroupLobbyId, GroupLobbyMember, GroupLobbyStatus, Place, PlacesApiAutocompleteResult, PlacesApiPlace, Restaurant, RestaurantAttribute, RestaurantCuisine, RestaurantParser, SearchPlacesParams, SwipeResult, SwipeResultSubmission, UserId, UserPreferences };
 export type { AppRouter };

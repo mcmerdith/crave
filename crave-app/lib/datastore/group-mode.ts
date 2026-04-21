@@ -1,9 +1,14 @@
 import { doc, DocumentReference } from "@firebase/firestore";
 import { lobbies } from "./collections";
-import { GroupLobby } from "@crave/api";
+import { GroupLobby, GroupLobbyMember } from "@crave/api";
 
 export const LobbyDocRef = (id: string) =>
   doc(lobbies, id) as DocumentReference<GroupLobby, GroupLobby>;
+export const LobbyMembersDocRef = (id: string, memberid: string) =>
+  doc(lobbies, id, "members", memberid) as DocumentReference<
+    GroupLobbyMember,
+    GroupLobbyMember
+  >;
 
 /**
  * @returns A "unique" 6 digit code
