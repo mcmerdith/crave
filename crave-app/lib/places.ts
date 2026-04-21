@@ -18,7 +18,10 @@ export type RestaurantSwipeData = {
   distance?: string;
   price?: string;
   image?: string;
+  address?: string;
+  mapsUri?: string;
 };
+
 
 export function transformPlacesApiData(
   restaurants: Restaurant[],
@@ -36,6 +39,8 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
       cuisine: r.cuisines.length ? prettify(r.cuisines[0]) : "American",
       rating: r.rating,
       distance: r.distanceMiles,
+      address: r.address,
+      mapsUri: r.mapsUri,
       image: r.primaryImage,
       price: r.priceRange
         ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
