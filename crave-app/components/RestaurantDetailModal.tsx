@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,22 @@ import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { RestaurantSwipeData } from "@/lib/places";
 
+function isValidImage(uri?: string) {
+  if (!uri) return false;
+  if (uri.includes("placehold.co")) return false;
+  return true;
+}
+
+const ImageFallback = () => (
+  <View style={styles.fallback}>
+    <Image
+      source={require("@/assets/images/white_burger_transparent.png")}
+      style={styles.fallbackBurger}
+      resizeMode="contain"
+    />
+    <Text style={styles.fallbackText}>image not available</Text>
+  </View>
+);
 
 // Mock additional data
 const hours = "11:00 AM - 10:00 PM";
@@ -52,45 +68,9 @@ const RestaurantDetailModal: React.FC<Props> = ({
     restaurant,
     onClose,
   }) => {
-    /*
-    //const translateY = React.useRef(new Animated.Value(0)).current;
-    //const scrollOffset = React.useRef(0);
-
-    React.useEffect(() => {
-      if (visible) {
-        translateY.setValue(0);
-      }
-    }, [visible]);
-    
-    const panResponder = React.useRef(
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_, gestureState) => {
-          return gestureState.dy > 5 && scrollOffset.current <= 0;
-        },
-
-        onPanResponderMove: (_, gestureState) => {
-          if (gestureState.dy > 0) {
-            translateY.setValue(gestureState.dy);
-          }
-        },
-
-        onPanResponderRelease: (_, gestureState) => {
-          if (gestureState.dy > 120 || gestureState.vy > 1.5) {
-            Animated.timing(translateY, {
-              toValue: height,
-              duration: 200,
-              useNativeDriver: true,
-            }).start(() => onClose());
-          } else {
-            Animated.spring(translateY, {
-              toValue: 0,
-              useNativeDriver: true,
-            }).start();
-          }
-        },
-      })
-    ).current;
-  */
+  const [imgError, setImgError] = useState(false);
+  const useLocal = imgError || !isValidImage(restaurant?.image);
+  
   if (!restaurant) return null;
   
   return (
@@ -109,15 +89,16 @@ const RestaurantDetailModal: React.FC<Props> = ({
           </TouchableOpacity>
 
             {/* Image */}
-            <Image
-              source={{
-                uri:
-                  restaurant.image ||
-                  "https://placehold.co/600x600/?text=No+Image",
-              }}
-              style={styles.image}
-              resizeMode="cover"
-            />
+            {useLocal ? (
+              <ImageFallback />
+            ) : (
+              <Image
+                source={{ uri: restaurant.image }}
+                onError={() => setImgError(true)}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            )}
 
             {/* Name & Cuisine */}
             <Text style={styles.name}>{restaurant.name}</Text>
@@ -312,6 +293,25 @@ reviewHeader: {
   alignItems: "center",
   marginBottom: 6,
 },
+  fallback: {
+    width: "100%",
+    height: 200,
+    borderRadius: 16,
+    marginBottom: 16,
+    backgroundColor: "#d9d9d9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fallbackBurger: {
+    width: 110,
+    height: 110,
+  },
+  fallbackText: {
+    fontFamily: "Nunito",
+    fontSize: 23,
+    color: "#ffffff",
+    marginTop: 4,
+  },
 
 reviewName: {
   fontSize: 14,

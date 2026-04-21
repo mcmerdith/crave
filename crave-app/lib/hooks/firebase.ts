@@ -84,6 +84,30 @@ export function useDocument<TData extends DocumentData>(
  * @returns An array of documents or undefined if the data is not yet loaded
  * @see https://firebase.google.com/docs/firestore/query-data/queries
  */
+export function useCollectionRealtime<TData extends DocumentData>(
+  collectionRef: CollectionReference<TData, TData>,
+  ...constraints: QueryFieldFilterConstraint[]
+): TData[] | undefined {
+  const [data, setData] = useState<TData[]>();
+  useEffect(() => {
+    const q = constraints
+      ? query(collectionRef, ...constraints)
+      : collectionRef;
+    return onSnapshot(q, (querySnapshot) =>
+      setData(querySnapshot.docs.map((doc) => doc.data())),
+    );
+  }, [collectionRef, constraints]);
+  return data;
+}
+/**
+ * Retrieve all documents from a collection with (optional) query constraints
+ *
+ * @param collectionRef A firebase collection reference
+ * @param constraints A list of query constraints
+ * @returns An array of documents or undefined if the data is not yet loaded
+ * @see https://firebase.google.com/docs/firestore/query-data/queries
+ * @deprecated prefer useCollectionRealtime
+ */
 export function useCollection<TData extends DocumentData>(
   collectionRef: CollectionReference<TData, TData>,
   ...constraints: QueryFieldFilterConstraint[]
@@ -99,6 +123,7 @@ export function useCollection<TData extends DocumentData>(
   }, [collectionRef, constraints]);
   return data;
 }
+
 function existOrCreate<TData extends DocumentData>(
   defaultValue: ProviderLike<TData>,
 ): (doc: DocumentSnapshot<TData>) => Promise<TData>;

@@ -1,8 +1,8 @@
-import React, { useCallback, useRef } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useRef, useState} from "react";
+import { StyleSheet, TouchableOpacity, View, Platform, Dimensions} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
-import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
+//import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
 import { trpc } from "@/lib/trpc";
@@ -12,8 +12,12 @@ import { SwipeModeParams } from "@/lib/routeParams";
 import RestaurantCard from "@/components/restaurantCard";
 import CloseButton from "@/components/closeButton";
 import FlippedCardDetails from "@/components/FlippedCardDetails";
+import { PanResponder, Animated } from "react-native";
+
 
 const ICON_SIZE = 24;
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 export default function Swipe() {
   const router = useRouter();
@@ -62,87 +66,93 @@ function SwipeFlow({
   onSwipeComplete,
 }: {
   options: RestaurantSwipeData[];
-  onSwipeComplete: (restaurants: RestaurantSwipeData[]) => void;
+  onSwipeComplete: (selected: RestaurantSwipeData[]) => void;
 }) {
   const selected = useRef<RestaurantSwipeData[]>([]);
-  const ref = useRef<SwiperCardRefType>(null);
-  const renderCard = useCallback((item: RestaurantSwipeData) => {
-    return <RestaurantCard restaurant={item} />;
-  }, []);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const pan = useRef(new Animated.ValueXY()).current;
 
-  const renderFlippedCard = useCallback((item: RestaurantSwipeData) => {
-    return (
-      <View style={styles.renderCardContainer}>
-        <FlippedCardDetails restaurant={item} />
-      </View>
-    );
-  }, []);
+  const advance = (liked: boolean) => {
+    if (liked) selected.current.push(options[currentIndex]);
+    const next = currentIndex + 1;
+    if (next >= options.length) {
+      onSwipeComplete(selected.current);
+    } else {
+      pan.setValue({ x: 0, y: 0 }); // reset position
+      setCurrentIndex(next);
+    }
+  };
 
-  const OverlayLabel = (color: string) => (
-    <View style={[styles.overlayLabelContainer, { backgroundColor: color }]} />
-  );
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: Animated.event([null, { dx: pan.x }], {
+      useNativeDriver: false,
+    }),
+    onPanResponderRelease: (_, gesture) => {
+      if (gesture.dx > 80) {
+        Animated.timing(pan, {
+          toValue: { x: 500, y: 0 },
+          duration: 200,
+          useNativeDriver: false,
+        }).start(() => advance(true));
+      } else if (gesture.dx < -80) {
+        Animated.timing(pan, {
+          toValue: { x: -500, y: 0 },
+          duration: 200,
+          useNativeDriver: false,
+        }).start(() => advance(false));
+      } else {
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
+      }
+    },
+  });
+
+  const rotate = pan.x.interpolate({
+    inputRange: [-200, 0, 200],
+    outputRange: ["-15deg", "0deg", "15deg"],
+  });
+
+  const buttons = [
+    { icon: "close", action: () => advance(false) },
+    { icon: "reload", action: () => {
+      pan.setValue({ x: 0, y: 0 });
+      setCurrentIndex(Math.max(0, currentIndex - 1));
+    }},
+    { icon: "heart", action: () => advance(true) },
+  ];
+
+  const currentRestaurant = options[currentIndex];
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View
-        style={{
-          padding: 20,
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          display: "flex",
-        }}
-      >
+      <View style={{ padding: 20, width: "100%", justifyContent: "center", alignItems: "flex-end" }}>
         <CloseButton />
       </View>
+
       <View style={styles.subContainer}>
-        <Swiper
-          ref={ref}
-          data={options}
-          cardStyle={styles.cardStyle}
-          disableTopSwipe={true}
-          swipeVelocityThreshold={300}
-          disableBottomSwipe={true}
-          overlayLabelContainerStyle={styles.overlayLabelContainerStyle}
-          renderCard={renderCard}
-          FlippedContent={renderFlippedCard}
-          OverlayLabelRight={() => OverlayLabel("green")}
-          OverlayLabelLeft={() => OverlayLabel("red")}
-          onSwipeRight={(index) => selected.current.push(options[index])}
-          onSwipedAll={() => onSwipeComplete(selected.current)}
-          onPress={() => ref.current?.flipCard()}
-        />
+        {currentRestaurant ? (
+          <Animated.View
+            style={[
+              styles.cardStyle,
+              { transform: [{ translateX: pan.x }, { rotate }] },
+            ]}
+            {...panResponder.panHandlers}
+          >
+            <RestaurantCard restaurant={currentRestaurant} />
+          </Animated.View>
+        ) : null}
       </View>
 
       <View style={styles.buttonsContainer}>
-        {[
-          {
-            icon: "close",
-            action: () => ref.current?.swipeLeft(),
-          }, //dislike
-          { icon: "reload", action: () => ref.current?.swipeBack() }, //undo
-          { icon: "heart", action: () => ref.current?.swipeRight() }, //like
-        ].map(({ icon, action }, i) => {
-          let bgColor = "white";
-          let iconColor = "white";
-
-          if (icon === "close") bgColor = "red";
-          if (icon === "heart") bgColor = "green";
-          if (icon === "reload") {
-            bgColor = "white";
-            iconColor = "black";
-          }
+        {buttons.map(({ icon, action }, i) => {
+          let bgColor = icon === "close" ? "red" : icon === "heart" ? "green" : "white";
+          let iconColor = icon === "reload" ? "black" : "white";
           return (
-            <TouchableOpacity
-              key={i}
-              style={[styles.button, { backgroundColor: bgColor }]}
-              onPress={action}
-            >
-              <AntDesign
-                name={icon as any}
-                size={ICON_SIZE}
-                color={iconColor}
-              />
+            <TouchableOpacity key={i} style={[styles.button, { backgroundColor: bgColor }]} onPress={action}>
+              <AntDesign name={icon as any} size={ICON_SIZE} color={iconColor} />
             </TouchableOpacity>
           );
         })}
@@ -165,7 +175,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   subContainer: {
-    flex: 1,
+    height: SCREEN_HEIGHT * 0.65,  // explicit height instead of flex: 1
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 70,
@@ -224,7 +235,7 @@ const styles = StyleSheet.create({
   },
   cardStyle: {
     width: "90%",
-    aspectRatio: 1, // square card
+    height: 400, 
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
@@ -245,5 +256,15 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#001a72",
+  },
+  webCardWrapper: {
+    width: "90%",
+    maxWidth: 420,
+    height: 400,
+    borderRadius: 15,
+    overflow: "hidden",
+    alignSelf: "center",
+    display: "flex",
+    flexShrink: 0,
   },
 });

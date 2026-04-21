@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Skeleton from "react-native-reanimated-skeleton";
 import { RestaurantSwipeData } from "@/lib/places";
+
+function isValidImage(uri?: string) {
+  if (!uri) return false;
+  if (uri.includes("placehold.co")) return false;
+  return true;
+}
+
+const ImageFallback = () => (
+  <View style={styles.fallback}>
+    <Image
+      source={require("@/assets/images/white_burger_transparent.png")}
+      style={styles.fallbackBurger}
+      resizeMode="contain"
+    />
+    <Text style={styles.fallbackText}>image not available</Text>
+  </View>
+);
 
 const Card: React.FC<RestaurantSwipeData> = ({
   loading,
@@ -13,17 +30,20 @@ const Card: React.FC<RestaurantSwipeData> = ({
   price,
   image,
 }) => {
+  const [imgError, setImgError] = useState(false);
+  const useLocal = imgError || !isValidImage(image);
+  
   return (
     <Skeleton containerStyle={styles.card} isLoading={loading}>
-      <Image
-        source={{
-          uri: loading
-            ? undefined
-            : (image ??
-              "https://placehold.co/600x600/?text=Image+Not+Available"),
-        }}
-        style={styles.image}
-      />
+              {loading || useLocal ? (
+          <ImageFallback />
+        ) : (
+          <Image
+            source={{ uri: image }}
+            onError={() => setImgError(true)}
+            style={styles.image}
+          />
+        )}
       <Text style={styles.title}>{name}</Text>
       <Text style={styles.subtitle}>{cuisine}</Text>
 
@@ -100,6 +120,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#555",
     marginLeft: "auto",
+  },
+  fallback: {
+    width: "100%",
+    height: 110,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    backgroundColor: "#d9d9d9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fallbackBurger: {
+    width: 60,
+    height: 60,
+  },
+  fallbackText: {
+    fontFamily: "Nunito",  
+    fontSize: 14,
+    color: "#ffffff",
+    marginTop: -2,
   },
 });
 
