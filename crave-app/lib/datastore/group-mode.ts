@@ -1,9 +1,19 @@
-import { doc, DocumentReference } from "@firebase/firestore";
+import {
+  collection,
+  CollectionReference,
+  doc,
+  DocumentReference,
+} from "@firebase/firestore";
 import { lobbies } from "./collections";
 import { GroupLobby, GroupLobbyMember } from "@crave/api";
 
 export const LobbyDocRef = (id: string) =>
   doc(lobbies, id) as DocumentReference<GroupLobby, GroupLobby>;
+export const LobbyMembersColRef = (id: string) =>
+  collection(lobbies, id, "members") as CollectionReference<
+    GroupLobbyMember,
+    GroupLobbyMember
+  >;
 export const LobbyMembersDocRef = (id: string, memberid: string) =>
   doc(lobbies, id, "members", memberid) as DocumentReference<
     GroupLobbyMember,

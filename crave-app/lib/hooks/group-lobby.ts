@@ -2,10 +2,15 @@ import { GroupLobby, UserId } from "@crave/api";
 import {
   CreateLobbyId,
   LobbyDocRef,
+  LobbyMembersColRef,
   LobbyMembersDocRef,
 } from "../datastore/group-mode";
 import { useCurrentUser } from "../datastore/user-service";
-import { useDocumentRealtime } from "./firebase";
+import {
+  useCollectionRealtime,
+  useDocument,
+  useDocumentRealtime,
+} from "./firebase";
 import { useState } from "react";
 
 /**
@@ -16,6 +21,7 @@ import { useState } from "react";
 export const useGroupLobby = (requestLobbyId?: string) => {
   const user = useCurrentUser();
   const [lobbyId, _] = useState(requestLobbyId ?? CreateLobbyId());
+
   const lobby = useDocumentRealtime(
     LobbyDocRef(lobbyId),
     requestLobbyId
@@ -26,11 +32,21 @@ export const useGroupLobby = (requestLobbyId?: string) => {
           status: "open" as const,
         }),
   );
-  const member = useDocumentRealtime(LobbyMembersDocRef(lobbyId, user!.uid), {
+
+  useDocument(LobbyMembersDocRef(lobbyId, user!.uid), {
     userId: user!.uid,
     name: user!.displayName ?? "Anonymous",
     complete: false,
     likeIds: [],
     dislikeIds: [],
   });
+
+  const members = useCollectionRealtime(LobbyMembersColRef(lobbyId));
+
+  if (lobby.data === undefined || members === undefined) return undefined;
+
+  return {
+    lobby: lobby.data,
+    members: members,
+  };
 };
