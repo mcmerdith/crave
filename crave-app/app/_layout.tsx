@@ -1,13 +1,18 @@
-import { Slot } from "expo-router";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/lib/trpc";
+import LoadingScreen from "@/components/LoadingScreen";
+import {
+  LocationContextProvider,
+  MatchContextProvider,
+  UserContextProvider,
+} from "@/lib/context";
+import { useCurrentUser } from "@/lib/datastore/user-service";
 import "@/lib/firebase";
-import { LocationContextProvider, MatchContextProvider } from "@/lib/context";
-import { useEffect, useState } from "react";
 import { GeoLocation, TempLocationData } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
+import { queryClient } from "@/lib/trpc";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import LoadingScreen from "@/components/LoadingScreen";
+import { Slot } from "expo-router";
+import { useEffect, useState } from "react";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -27,6 +32,8 @@ export default function RootLayout() {
   const [location, setLocation] = useState<GeoLocation>(TempLocationData[0]);
   const [match, setMatch] = useState<RestaurantSwipeData | null>(null);
   const [allMatches, setAllMatches] = useState<RestaurantSwipeData[]>([]);
+
+  const user = useCurrentUser();
 
   if (!fontsLoaded) {
     return null;
@@ -49,7 +56,9 @@ export default function RootLayout() {
               allMatches,
             }}
           >
-            <Slot />
+            <UserContextProvider value={{ currentUser: user }}>
+              <Slot />
+            </UserContextProvider>
           </MatchContextProvider>
         </LocationContextProvider>
       </QueryClientProvider>

@@ -3,9 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
 import {
-  Animated,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,11 +15,11 @@ import BackButton from "@/components/backButton";
 import CloseButton from "@/components/closeButton";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { LobbyParams } from "@/lib/routeParams";
-import { GroupLobby } from "@crave/api";
 
 export default function Lobby() {
   const { code } = useLocalSearchParams<LobbyParams>();
-  const data = useGroupLobby(code === "" ? undefined : code);
+  // const data = useGroupLobby(code === "" ? undefined : code);
+  const data = useGroupLobby(undefined);
 
   if (data === undefined) {
     return <p>Loading</p>;
@@ -35,8 +33,9 @@ export default function Lobby() {
 function LobbyContent({
   lobby: { id: code, status, members, ownerId },
 }: {
-  lobby: GroupLobby;
+  lobby: NonNullable<ReturnType<typeof useGroupLobby>>;
 }) {
+  console.log(members.map((m) => m.userId));
   const router = useRouter();
   const started = status !== "open";
 
@@ -47,30 +46,6 @@ function LobbyContent({
   const viewMatches = () => {
     router.replace("/swipe/group/complete");
   };
-
-  // Animation refs for each item
-  const [anims, setAnims] = useState<Record<string, Animated.Value>>({});
-  if (Object.keys(anims).length !== members.length) {
-    setAnims(
-      Object.fromEntries(
-        members.map((m) => [m.id, anims[m.id] ?? new Animated.Value(0)]),
-      ),
-    );
-  }
-  console.log(anims);
-
-  useEffect(() => {
-    const animations = Object.values(anims).map((anim, i) => {
-      return Animated.timing(anim, {
-        toValue: 1,
-        duration: 500,
-        delay: 0,
-        useNativeDriver: true,
-      });
-    });
-
-    Animated.stagger(0, animations).start();
-  }, [anims]);
 
   const copyCode = () => {
     void Clipboard.setStringAsync(code);
@@ -119,36 +94,13 @@ function LobbyContent({
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {members.map((member, idx) => {
-          const anim = anims[member.id];
-          if (!anim) return null;
-          const fade = anim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-          });
-
-          const slide = anim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [20, 0], // slide upward
-          });
-
           return (
-            <Animated.View
-              key={idx}
-              style={[
-                styles.lobbyItem,
-                {
-                  opacity: fade,
-                  transform: [{ translateY: slide }],
-                },
-              ]}
-            >
-              {/* <Text style={styles.emoji}>{member.emoji}</Text> */}
-
-              <View>
-                <Text style={styles.name}>{member.name}</Text>
-                {member.id === ownerId && <Text style={styles.host}>Host</Text>}
-              </View>
-            </Animated.View>
+            <View key={idx} style={styles.lobbyItem}>
+              <Text style={styles.name}>{member.name}</Text>
+              {member.userId === ownerId && (
+                <Text style={styles.host}>Host</Text>
+              )}
+            </View>
           );
         })}
 
@@ -227,8 +179,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f7",
     padding: 18,
     borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     marginBottom: 12,
   },
   emoji: { fontSize: 30, marginRight: 15 },

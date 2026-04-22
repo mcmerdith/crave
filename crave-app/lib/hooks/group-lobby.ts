@@ -1,38 +1,52 @@
-import { GroupLobby } from "@crave/api";
-import { CreateLobbyId, LobbyDocRef } from "../datastore/group-mode";
-import { useCurrentUser } from "../datastore/user-service";
-import { arrayUnion, useDocumentRealtime } from "./firebase";
+import { useState } from "react";
+import { useUserContext } from "../context";
+import {
+  CreateLobbyId,
+  LobbyDocRef,
+  LobbyMembersColRef,
+  LobbyMembersDocRef,
+} from "../datastore/group-mode";
+import {
+  useCollectionRealtime,
+  useDocument,
+  useDocumentRealtime,
+} from "./firebase";
 
 /**
  * Create or join a group lobby.
  * If no lobbyId is provided, creates a new lobby and adds the current user as the owner.
  * If a lobbyId is provided, joins the existing lobby with that ID, or returns null if the lobby does not exist.
  */
-export const useGroupLobby = (
-  lobbyId?: string,
-): GroupLobby | undefined | null => {
-  const user = useCurrentUser();
+export const useGroupLobby = (requestLobbyId?: string) => {
+  const { currentUser: user } = useUserContext();
+  const [lobbyId] = useState(requestLobbyId ?? CreateLobbyId());
+
   const lobby = useDocumentRealtime(
-    LobbyDocRef(lobbyId ?? CreateLobbyId()),
-    lobbyId
+    LobbyDocRef(lobbyId),
+    requestLobbyId
       ? undefined
       : (ref) => ({
           id: ref.id,
-          members: [{ id: user!.uid, name: user!.displayName ?? "Anonymous" }],
           ownerId: user!.uid,
           status: "open" as const,
         }),
   );
-  if (lobby.data == null) return null;
-  if (!lobby.data.members.some((m) => m.id === user!.uid)) {
-    lobby.update({
-      members: arrayUnion({
-        id: user!.uid,
-        name: user!.displayName ?? "Anonymous",
-      }),
-    });
-    return undefined;
-  } else {
-    return lobby.data;
-  }
+
+  useDocument(LobbyMembersDocRef(lobbyId, user!.uid), {
+    userId: user!.uid,
+    name: user!.displayName ?? "Anonymous",
+    complete: false,
+    likeIds: [],
+    dislikeIds: [],
+  });
+
+  const members = useCollectionRealtime(LobbyMembersColRef(lobbyId));
+
+  if (lobby.data === undefined || members === undefined) return undefined;
+  if (lobby.data === null) return null;
+
+  return {
+    ...lobby.data,
+    members: members,
+  };
 };

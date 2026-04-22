@@ -1,6 +1,8 @@
 import { Context, createContext, useContext } from "react";
 import { GeoLocation } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
+import { User } from "@firebase/auth";
+import { UserPreferences } from "@crave/api";
 
 export type Store<T> =
   | {
@@ -69,3 +71,11 @@ export const { context: MatchContext, Provider: MatchContextProvider } =
     allMatches: RestaurantSwipeData[];
   }>("Match");
 export const useMatchContext = () => useWrappedContext(MatchContext);
+
+export const { context: UserContext, Provider: UserContextProvider } =
+  createWrappedContext<{
+    currentUser:
+      | (User & { preferences: UserPreferences | null | undefined })
+      | null;
+  }>("User");
+export const useUserContext = () => useWrappedContext(UserContext);
