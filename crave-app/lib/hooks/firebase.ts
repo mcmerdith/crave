@@ -86,16 +86,20 @@ export function useDocument<TData extends DocumentData>(
  */
 export function useCollectionRealtime<TData extends DocumentData>(
   collectionRef: CollectionReference<TData, TData>,
-  ...constraints: QueryFieldFilterConstraint[]
+  constraints: QueryFieldFilterConstraint[] | undefined = undefined,
 ): TData[] | undefined {
   const [data, setData] = useState<TData[]>();
   useEffect(() => {
+    console.log("we have recreated the useEffect");
     const q = constraints
       ? query(collectionRef, ...constraints)
-      : collectionRef;
-    return onSnapshot(q, (querySnapshot) =>
-      setData(querySnapshot.docs.map((doc) => doc.data())),
-    );
+      : query(collectionRef);
+    return onSnapshot(q, (querySnapshot) => {
+      const changes = querySnapshot.docChanges().length;
+      console.log("new data", changes);
+      if (changes === 0) return;
+      setData(querySnapshot.docs.map((doc) => doc.data()));
+    });
   }, [collectionRef, constraints]);
   return data;
 }
@@ -116,7 +120,7 @@ export function useCollection<TData extends DocumentData>(
   useEffect(() => {
     const q = constraints
       ? query(collectionRef, ...constraints)
-      : collectionRef;
+      : query(collectionRef);
     getDocs(q).then((querySnapshot) => {
       setData(querySnapshot.docs.map((doc) => doc.data()));
     });

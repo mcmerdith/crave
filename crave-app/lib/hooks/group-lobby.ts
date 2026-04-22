@@ -1,17 +1,16 @@
-import { GroupLobby, UserId } from "@crave/api";
+import { useState } from "react";
+import { useUserContext } from "../context";
 import {
   CreateLobbyId,
   LobbyDocRef,
   LobbyMembersColRef,
   LobbyMembersDocRef,
 } from "../datastore/group-mode";
-import { useCurrentUser } from "../datastore/user-service";
 import {
   useCollectionRealtime,
   useDocument,
   useDocumentRealtime,
 } from "./firebase";
-import { useState } from "react";
 
 /**
  * Create or join a group lobby.
@@ -19,8 +18,8 @@ import { useState } from "react";
  * If a lobbyId is provided, joins the existing lobby with that ID, or returns null if the lobby does not exist.
  */
 export const useGroupLobby = (requestLobbyId?: string) => {
-  const user = useCurrentUser();
-  const [lobbyId, _] = useState(requestLobbyId ?? CreateLobbyId());
+  const { currentUser: user } = useUserContext();
+  const [lobbyId] = useState(requestLobbyId ?? CreateLobbyId());
 
   const lobby = useDocumentRealtime(
     LobbyDocRef(lobbyId),
@@ -44,9 +43,10 @@ export const useGroupLobby = (requestLobbyId?: string) => {
   const members = useCollectionRealtime(LobbyMembersColRef(lobbyId));
 
   if (lobby.data === undefined || members === undefined) return undefined;
+  if (lobby.data === null) return null;
 
   return {
-    lobby: lobby.data,
+    ...lobby.data,
     members: members,
   };
 };

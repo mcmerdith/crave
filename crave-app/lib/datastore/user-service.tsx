@@ -24,7 +24,7 @@ export function useCurrentUser() {
   );
 }
 
-function useUserPreferences(userId?: string) {
+export function useUserPreferences(userId?: string) {
   return useDocument(
     doc(users, userId ?? "default"),
     userId
