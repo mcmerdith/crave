@@ -7,6 +7,7 @@ export const env = createEnv({
    * Will throw if you access these variables on the client.
    */
   server: {
+    FIREBASE_ADMIN_PRIVKEY: z.string(),
     GOOGLE_API_KEY: z.string(),
     NODE_ENV: z
       .enum(["development", "production", "test"])
@@ -27,6 +28,7 @@ export const env = createEnv({
    * 💡 You'll get type errors if not all variables from `server` & `client` are included here.
    */
   runtimeEnv: {
+    FIREBASE_ADMIN_PRIVKEY: process.env.FIREBASE_ADMIN_PRIVKEY,
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     NODE_ENV: process.env.NODE_ENV,
   },

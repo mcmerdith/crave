@@ -43,7 +43,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                     latitude: number;
                     longitude: number;
                 };
-                mapsUri: string;
+                detailsUri: string;
                 businessStatus: string;
                 photos: unknown[];
                 rating: number;
@@ -59,6 +59,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                         nanos: number;
                     } | null;
                 } | null;
+                websiteUri?: string | undefined;
                 distanceMiles?: string | undefined;
                 primaryImage?: string | undefined;
             }[] | null;
@@ -261,6 +262,7 @@ declare const PlacesApiPlace: z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
+    websiteUri: z.ZodOptional<z.ZodString>;
     priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
@@ -291,6 +293,7 @@ declare const Place: z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
+    websiteUri: z.ZodOptional<z.ZodString>;
     priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
@@ -356,7 +359,8 @@ declare const Restaurant: z.ZodObject<{
         latitude: z.ZodNumber;
         longitude: z.ZodNumber;
     }, z.core.$strip>;
-    mapsUri: z.ZodString;
+    detailsUri: z.ZodString;
+    websiteUri: z.ZodOptional<z.ZodString>;
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
@@ -392,6 +396,7 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
     businessStatus: z.ZodString;
     photos: z.ZodArray<z.ZodUnknown>;
     rating: z.ZodNumber;
+    websiteUri: z.ZodOptional<z.ZodString>;
     priceRange: z.ZodNullable<z.ZodObject<{
         startPrice: z.ZodObject<{
             currencyCode: z.ZodString;
@@ -418,10 +423,11 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
         latitude: number;
         longitude: number;
     };
-    mapsUri: string;
+    detailsUri: string;
     businessStatus: string;
     photos: unknown[];
     rating: number;
+    websiteUri: string | undefined;
     priceRange: {
         startPrice: {
             currencyCode: string;
@@ -464,6 +470,7 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
             nanos: number;
         } | null;
     } | null;
+    websiteUri?: string | undefined;
     distanceMiles?: string | undefined;
     primaryImage?: string | undefined;
 }>>;
