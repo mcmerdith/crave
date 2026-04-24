@@ -5,7 +5,7 @@ import { env } from "@/env";
 
 const adminConfig = {
   projectId: "crave-ea79a",
-  privateKey: `-----BEGIN PRIVATE KEY-----${env.FIREBASE_ADMIN_PRIVKEY}`,
+  privateKey: env.FIREBASE_ADMIN_PRIVKEY,
   clientEmail: "firebase-adminsdk-fbsvc@crave-ea79a.iam.gserviceaccount.com",
 };
 
@@ -22,6 +22,7 @@ try {
   _app = getApp();
 } catch {
   try {
+    console.debug("using key\n", adminConfig.privateKey)
     _app = initializeApp({
       credential: cert(adminConfig),
     });
