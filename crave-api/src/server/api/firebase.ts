@@ -11,14 +11,19 @@ const adminConfig = {
 
 console.debug("Initializing Firebase");
 
-let _app: App;
+// @ts-expect-error required to get around build-time errors with Next
+let _app: App = undefined;
 
 try {
   _app = getApp();
 } catch {
-  _app = initializeApp({
-    credential: cert(adminConfig),
-  });
+  try {
+    _app = initializeApp({
+      credential: cert(adminConfig),
+    });
+  } catch (e) {
+    console.error("Failed to initialize!", e);
+  }
 }
 export const firebaseApp = _app;
 export const firebaseAuth = getAuth(firebaseApp);
