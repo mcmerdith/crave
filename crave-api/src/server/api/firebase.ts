@@ -43,6 +43,6 @@ try {
 
 export const firebaseApp = _app;
 export const firebaseAuth = _auth;
-export const firestore = _app;
+export const firestore = _firestore;
 
 console.debug("Done!");
