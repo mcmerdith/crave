@@ -26,14 +26,21 @@ try {
       credential: cert(adminConfig),
     });
   } catch (e) {
-    console.error("Failed to initialize!", e);
+    console.error("Failed to initialize Firebase Core!", e);
   }
 }
 
 try {
   _auth = getAuth(_app);
+} catch(e) {
+  console.error("Failed to initialize Firebase Auth!", e);
+}
+
+try {
   _firestore = getFirestore(_app);
-} catch {}
+} catch(e) {
+  console.error("Failed to initialize Firebase Firestore!", e);
+}
 
 try {
   _firestore.settings({
@@ -45,4 +52,4 @@ export const firebaseApp = _app;
 export const firebaseAuth = _auth;
 export const firestore = _firestore;
 
-console.debug("Done!");
+console.debug(`Done! app=${!!_app} auth=${!!_auth} firestore=${!!_firestore}`);
