@@ -12,12 +12,7 @@
     "crave-app"
   ],
   "dependencies": {
-    "@react-native-community/slider": "5.0.1",
-    "@react-spring/native": "^9.5.5",
-    "expo-clipboard": "^8.0.7",
-    "expo-linear-gradient": "^15.0.7",
-    "prettier": "^3.6.2",
-    "react-native-modal": "^14.0.0-rc.1"
+    "prettier": "^3.6.2"
   },
   "devDependencies": {
     "babel-plugin-module-resolver": "^5.0.2"

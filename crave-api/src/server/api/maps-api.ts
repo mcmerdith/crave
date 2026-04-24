@@ -17,6 +17,7 @@ import {
 } from "@/server/api/types/places";
 import { readCache, writeCache } from "@/server/api/cache";
 import { getDistance } from "geolib";
+import z from "zod";
 
 const placesApi = new PlacesClient({
   apiKey: env.GOOGLE_API_KEY,
@@ -38,12 +39,8 @@ export async function autocomplete({
   token,
 }: AutocompleteParams): Promise<AutocompleteResult> {
   token ??= newUUID(); // generate a new token if none is provided
-  const cache = await readCache(
-    "autocomplete",
-    query,
-    PlacesApiAutocompleteResult.array(),
-  );
-  if (cache) return { suggestions: cache, token };
+  const cache = await readCache("autocomplete", query, AutocompleteResult);
+  if (cache) return { suggestions: cache.suggestions, token };
   const [data] = await placesApi.autocompletePlaces(
     {
       input: query,
@@ -61,11 +58,15 @@ export async function autocomplete({
       },
     },
   );
-  await writeCache("autocomplete", query, data.suggestions);
+  const suggestions = data.suggestions
+    ? PlacesApiAutocompleteResult.array().parse(data.suggestions)
+    : [];
+  await writeCache("autocomplete", query, {
+    suggestions,
+    token: "INVALID",
+  } satisfies AutocompleteResult);
   return {
-    suggestions: data.suggestions
-      ? PlacesApiAutocompleteResult.array().parse(data.suggestions)
-      : [],
+    suggestions,
     token,
   };
 }
@@ -91,8 +92,13 @@ export async function getAutocompleteCoordinates({
       },
     },
   );
-  await writeCache("autocomplete_coordinates", resourceName, data.location);
-  return Coordinate.parse(data.location);
+  const result = Coordinate.parse(data.location);
+  await writeCache(
+    "autocomplete_coordinates",
+    resourceName,
+    result satisfies Coordinate,
+  );
+  return result;
 }
 
 /**
@@ -120,16 +126,23 @@ export async function getCoordinates(query: string) {
 }
 
 export async function getPlaceImage(resourceName: string) {
-  console.debug("fetching image");
+  const cache = await readCache(
+    "place_image",
+    resourceName,
+    z.string().optional(),
+  );
+  if (cache) return cache;
   try {
     const [data] = await placesApi.getPhotoMedia({
       name: `${resourceName}/media`,
       maxHeightPx: 600,
     });
     console.debug("image fetched:", !!data.photoUri);
+    await writeCache("place_image", resourceName, data.photoUri ?? undefined);
     return data.photoUri ?? undefined;
   } catch (e) {
     console.error("failed to fetch image", e);
+    await writeCache("place_image", resourceName, undefined);
     return undefined;
   }
 }
@@ -151,7 +164,7 @@ export async function searchPlaces({
   const cache = await readCache(
     "places",
     `${center.latitude}_${center.longitude}`,
-    RestaurantParser.array(),
+    Restaurant.array(),
   );
   if (cache) return cache;
   const [data] = await placesApi.searchText(
@@ -206,7 +219,11 @@ export async function searchPlaces({
         }),
       )
     : undefined;
-  await writeCache("places", `${center.latitude}_${center.longitude}`, places);
-  if (!places) return [];
-  return RestaurantParser.array().parse(places);
+  const result = places ? RestaurantParser.array().parse(places) : [];
+  await writeCache(
+    "places",
+    `${center.latitude}_${center.longitude}`,
+    result satisfies Restaurant[],
+  );
+  return result;
 }
