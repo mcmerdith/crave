@@ -71,7 +71,7 @@ export const PlacesApiPlace = z.object({
   // currentOpeningHours: z.unknown(),
   // regularOpeningHours: z.unknown(), // TODO: make this typed
   rating: z.number(),
-  // websiteUri: z.string().optional(),
+  websiteUri: z.string().optional(),
   // priceLevel: z.string(), // TODO: enum
   priceRange: z
     .object({
@@ -115,7 +115,8 @@ export const Restaurant = z.object({
   types: z.string().array(),
   address: z.string(),
   coordinates: Coordinate,
-  mapsUri: z.string(),
+  detailsUri: z.string(),
+  websiteUri: z.string().optional(),
   businessStatus: z.string(), // TODO: enum
   photos: z.unknown().array(), // TODO: make this typed
   rating: z.number(),
@@ -155,14 +156,13 @@ export const RestaurantParser = Place.transform(
       types: p.types.filter((t) => !t.endsWith("_restaurant")),
       address: p.formattedAddress,
       coordinates: p.location,
-      mapsUri: p.googleMapsUri,
+      detailsUri: p.googleMapsUri,
       businessStatus: p.businessStatus,
       photos: p.photos,
       // currentHours: p.currentOpeningHours,
       // regularHours: p.regularOpeningHours,
       rating: p.rating,
-      // websiteUri: p.websiteUri,
-      // websiteUri: p.websiteUri,
+      websiteUri: p.websiteUri,
       // priceLevel: p.priceLevel,
       priceRange: p.priceRange,
       distanceMiles: p.distanceMiles,
