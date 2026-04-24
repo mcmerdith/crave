@@ -1,6 +1,6 @@
 import { getApp, initializeApp, cert, App } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
+import { Auth, getAuth } from "firebase-admin/auth";
+import { Firestore, getFirestore } from "firebase-admin/firestore";
 import { env } from "@/env";
 
 const adminConfig = {
@@ -13,6 +13,10 @@ console.debug("Initializing Firebase");
 
 // @ts-expect-error required to get around build-time errors with Next
 let _app: App = undefined;
+// @ts-expect-error required to get around build-time errors with Next
+let _auth: Auth = undefined;
+// @ts-expect-error required to get around build-time errors with Next
+let _firestore: Firestore = undefined;
 
 try {
   _app = getApp();
@@ -25,13 +29,20 @@ try {
     console.error("Failed to initialize!", e);
   }
 }
-export const firebaseApp = _app;
-export const firebaseAuth = getAuth(firebaseApp);
-export const firestore = getFirestore(firebaseApp);
+
 try {
-  firestore.settings({
+  _auth = getAuth(_app);
+  _firestore = getFirestore(_app);
+} catch {}
+
+try {
+  _firestore.settings({
     ignoreUndefinedProperties: true,
   });
 } catch {}
+
+export const firebaseApp = _app;
+export const firebaseAuth = _auth;
+export const firestore = _app;
 
 console.debug("Done!");
