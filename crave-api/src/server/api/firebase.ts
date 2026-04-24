@@ -5,7 +5,7 @@ import { env } from "@/env";
 
 const adminConfig = {
   projectId: "crave-ea79a",
-  privateKey: `-----BEGIN PRIVATE KEY-----${env.FIREBASE_ADMIN_PRIVKEY}`,
+  privateKey: env.FIREBASE_ADMIN_PRIVKEY,
   clientEmail: "firebase-adminsdk-fbsvc@crave-ea79a.iam.gserviceaccount.com",
 };
 
@@ -22,18 +22,26 @@ try {
   _app = getApp();
 } catch {
   try {
+    console.debug("using key\n", adminConfig.privateKey)
     _app = initializeApp({
       credential: cert(adminConfig),
     });
   } catch (e) {
-    console.error("Failed to initialize!", e);
+    console.error("Failed to initialize Firebase Core!", e);
   }
 }
 
 try {
   _auth = getAuth(_app);
+} catch(e) {
+  console.error("Failed to initialize Firebase Auth!", e);
+}
+
+try {
   _firestore = getFirestore(_app);
-} catch {}
+} catch(e) {
+  console.error("Failed to initialize Firebase Firestore!", e);
+}
 
 try {
   _firestore.settings({
@@ -45,4 +53,4 @@ export const firebaseApp = _app;
 export const firebaseAuth = _auth;
 export const firestore = _firestore;
 
-console.debug("Done!");
+console.debug(`Done! app=${!!_app} auth=${!!_auth} firestore=${!!_firestore}`);
