@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState }  from "react";
 import {
   View,
   Text,
@@ -7,10 +7,29 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Linking,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { RestaurantSwipeData } from "@/lib/places";
+
+
+function isValidImage(uri?: string) {
+  if (!uri) return false;
+  if (uri.includes("placehold.co")) return false;
+  return true;
+}
+
+const ImageFallback = () => (
+  <View style={styles.fallback}>
+    <Image
+      source={require("@/assets/images/white_burger_transparent.png")}
+      style={styles.fallbackBurger}
+      resizeMode="contain"
+    />
+    <Text style={styles.fallbackText}>image not available</Text>
+  </View>
+);
 
 
 // Mock additional data
@@ -109,15 +128,15 @@ const RestaurantDetailModal: React.FC<Props> = ({
           </TouchableOpacity>
 
             {/* Image */}
-            <Image
-              source={{
-                uri:
-                  restaurant.image ||
-                  "https://placehold.co/600x600/?text=No+Image",
-              }}
-              style={styles.image}
-              resizeMode="cover"
-            />
+            {isValidImage(restaurant.image) ? (
+              <Image
+                source={{ uri: restaurant.image }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            ) : (
+              <ImageFallback />
+            )}
 
             {/* Name & Cuisine */}
             <Text style={styles.name}>{restaurant.name}</Text>
@@ -157,13 +176,29 @@ const RestaurantDetailModal: React.FC<Props> = ({
                 <Text style={styles.infoValue}>{phone}</Text>
               </View>
 
+              {restaurant.websiteUri && (
               <View style={styles.infoRowLarge}>
                 <Ionicons name="globe-outline" size={18} color="#777" />
-                <Text style={[styles.infoValue, { color: "#6C47FF" }]}>
-                  {website}
-                </Text>
+                <TouchableOpacity onPress={() => Linking.openURL(restaurant.websiteUri!)}>
+                  <Text style={[styles.infoValue, { color: "#6C47FF" }]}>
+                    {restaurant.websiteUri
+                      .replace(/^https?:\/\//, "")
+                      .replace(/\/$/, "")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+              <View style={styles.infoRowLarge}>
+                <Ionicons name="location-outline" size={18} color="#777" />
+                <TouchableOpacity onPress={() => Linking.openURL(restaurant.detailsUri!)}>
+                  <Text style={[styles.infoValue, { color: "#6C47FF" }]}>
+                    {restaurant.address ?? "View on Google Maps"}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
+
 
             {/* Reviews */}
             <View style={styles.card}>
@@ -285,7 +320,25 @@ infoRowLarge: {
   marginBottom: 14,
   gap: 10,
 },
-
+  fallback: {
+      width: "100%",
+      height: 200,
+      borderRadius: 16,
+      marginBottom: 16,
+      backgroundColor: "#d9d9d9",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    fallbackBurger: {
+      width: 110,
+      height: 110,
+    },
+    fallbackText: {
+      fontFamily: "Nunito",
+      fontSize: 23,
+      color: "#ffffff",
+      marginTop: 4,
+    },
 infoLabel: {
   fontSize: 14,
   fontWeight: "500",

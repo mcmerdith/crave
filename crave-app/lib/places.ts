@@ -19,7 +19,16 @@ export type RestaurantSwipeData = {
   price?: string;
   image?: string;
   address?: string;
-  mapsUri?: string;
+  detailsUri?: string;
+  websiteUri?: string;
+  phone?: string,
+  reviewSummary?: string,
+  liveMusic?: boolean,
+  delivery?: boolean,
+  takeout?: boolean,
+  allowsDogs?: boolean,
+  goodForWatchingSports?: boolean,
+  outdoorSeating?: boolean,
 };
 
 
@@ -40,11 +49,20 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
       rating: r.rating,
       distance: r.distanceMiles,
       address: r.address,
-      mapsUri: r.mapsUri,
+      detailsUri: r.detailsUri,
+      websiteUri: r.websiteUri,
       image: r.primaryImage,
       price: r.priceRange
         ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
         : undefined,
+        // Placeholders — replace with r.nationalPhoneNumber etc. once API returns them
+      reviewSummary: undefined,
+      liveMusic: undefined,
+      delivery: undefined,
+      takeout: undefined,
+      allowsDogs: undefined,
+      goodForWatchingSports: undefined,
+      outdoorSeating: undefined,
     }),
   );
 }
