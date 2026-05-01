@@ -59,6 +59,13 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                         nanos: number;
                     } | null;
                 } | null;
+                curbsidePickup: boolean;
+                delivery: boolean;
+                goodForGroups: boolean;
+                goodForChildren: boolean;
+                goodForWatchingSports: boolean;
+                outdoorSeating: boolean;
+                liveMusic: boolean;
                 websiteUri?: string | undefined;
                 distanceMiles?: string | undefined;
                 primaryImage?: string | undefined;
@@ -275,6 +282,13 @@ declare const PlacesApiPlace: z.ZodObject<{
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
     }, z.core.$strip>>;
+    curbsidePickup: z.ZodCoercedBoolean<unknown>;
+    delivery: z.ZodCoercedBoolean<unknown>;
+    goodForGroups: z.ZodCoercedBoolean<unknown>;
+    goodForChildren: z.ZodCoercedBoolean<unknown>;
+    goodForWatchingSports: z.ZodCoercedBoolean<unknown>;
+    outdoorSeating: z.ZodCoercedBoolean<unknown>;
+    liveMusic: z.ZodCoercedBoolean<unknown>;
 }, z.core.$strip>;
 type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
 declare const Place: z.ZodObject<{
@@ -306,6 +320,13 @@ declare const Place: z.ZodObject<{
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
     }, z.core.$strip>>;
+    curbsidePickup: z.ZodCoercedBoolean<unknown>;
+    delivery: z.ZodCoercedBoolean<unknown>;
+    goodForGroups: z.ZodCoercedBoolean<unknown>;
+    goodForChildren: z.ZodCoercedBoolean<unknown>;
+    goodForWatchingSports: z.ZodCoercedBoolean<unknown>;
+    outdoorSeating: z.ZodCoercedBoolean<unknown>;
+    liveMusic: z.ZodCoercedBoolean<unknown>;
     distanceMiles: z.ZodOptional<z.ZodString>;
     primaryImage: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
@@ -378,6 +399,13 @@ declare const Restaurant: z.ZodObject<{
     }, z.core.$strip>>;
     distanceMiles: z.ZodOptional<z.ZodString>;
     primaryImage: z.ZodOptional<z.ZodString>;
+    curbsidePickup: z.ZodCoercedBoolean<unknown>;
+    delivery: z.ZodCoercedBoolean<unknown>;
+    goodForGroups: z.ZodCoercedBoolean<unknown>;
+    goodForChildren: z.ZodCoercedBoolean<unknown>;
+    goodForWatchingSports: z.ZodCoercedBoolean<unknown>;
+    outdoorSeating: z.ZodCoercedBoolean<unknown>;
+    liveMusic: z.ZodCoercedBoolean<unknown>;
 }, z.core.$strip>;
 type Restaurant = z.infer<typeof Restaurant>;
 declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
@@ -409,6 +437,13 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
             nanos: z.ZodNumber;
         }, z.core.$strip>>;
     }, z.core.$strip>>;
+    curbsidePickup: z.ZodCoercedBoolean<unknown>;
+    delivery: z.ZodCoercedBoolean<unknown>;
+    goodForGroups: z.ZodCoercedBoolean<unknown>;
+    goodForChildren: z.ZodCoercedBoolean<unknown>;
+    goodForWatchingSports: z.ZodCoercedBoolean<unknown>;
+    outdoorSeating: z.ZodCoercedBoolean<unknown>;
+    liveMusic: z.ZodCoercedBoolean<unknown>;
     distanceMiles: z.ZodOptional<z.ZodString>;
     primaryImage: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>, z.ZodTransform<{
@@ -442,6 +477,13 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
     } | null;
     distanceMiles: string | undefined;
     primaryImage: string | undefined;
+    curbsidePickup: boolean;
+    delivery: boolean;
+    goodForGroups: boolean;
+    goodForChildren: boolean;
+    goodForWatchingSports: boolean;
+    outdoorSeating: boolean;
+    liveMusic: boolean;
 }, {
     id: string;
     name: string;
@@ -470,6 +512,13 @@ declare const RestaurantParser: z.ZodPipe<z.ZodObject<{
             nanos: number;
         } | null;
     } | null;
+    curbsidePickup: boolean;
+    delivery: boolean;
+    goodForGroups: boolean;
+    goodForChildren: boolean;
+    goodForWatchingSports: boolean;
+    outdoorSeating: boolean;
+    liveMusic: boolean;
     websiteUri?: string | undefined;
     distanceMiles?: string | undefined;
     primaryImage?: string | undefined;
