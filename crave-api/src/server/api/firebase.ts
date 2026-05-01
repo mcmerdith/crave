@@ -22,7 +22,6 @@ try {
   _app = getApp();
 } catch {
   try {
-    console.debug("using key\n", adminConfig.privateKey)
     _app = initializeApp({
       credential: cert(adminConfig),
     });
@@ -33,13 +32,13 @@ try {
 
 try {
   _auth = getAuth(_app);
-} catch(e) {
+} catch (e) {
   console.error("Failed to initialize Firebase Auth!", e);
 }
 
 try {
   _firestore = getFirestore(_app);
-} catch(e) {
+} catch (e) {
   console.error("Failed to initialize Firebase Firestore!", e);
 }
 

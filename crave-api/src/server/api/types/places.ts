@@ -90,11 +90,13 @@ export const PlacesApiPlace = z.object({
     })
     .nullable(),
   /* SKU Text Search Enterprise + Atmosphere */
-  // curbsidePickup
-  // delivery
-  // dineIn
-  // goodForGroups
-  // takeout
+  curbsidePickup: z.coerce.boolean(),
+  delivery: z.coerce.boolean(),
+  goodForGroups: z.coerce.boolean(),
+  goodForChildren: z.coerce.boolean(),
+  goodForWatchingSports: z.coerce.boolean(),
+  outdoorSeating: z.coerce.boolean(),
+  liveMusic: z.coerce.boolean(),
   // serves* -> (beer, breakfast, brunch, cocktails, coffee, dessert, dinner, lunch, vegetarian, wine)
 });
 export type PlacesApiPlace = z.infer<typeof PlacesApiPlace>;
@@ -138,6 +140,13 @@ export const Restaurant = z.object({
     .nullable(),
   distanceMiles: z.string().optional(),
   primaryImage: z.string().optional(),
+  curbsidePickup: z.coerce.boolean(),
+  delivery: z.coerce.boolean(),
+  goodForGroups: z.coerce.boolean(),
+  goodForChildren: z.coerce.boolean(),
+  goodForWatchingSports: z.coerce.boolean(),
+  outdoorSeating: z.coerce.boolean(),
+  liveMusic: z.coerce.boolean(),
 });
 export type Restaurant = z.infer<typeof Restaurant>;
 
@@ -167,5 +176,12 @@ export const RestaurantParser = Place.transform(
       priceRange: p.priceRange,
       distanceMiles: p.distanceMiles,
       primaryImage: p.primaryImage,
+      curbsidePickup: p.curbsidePickup,
+      delivery: p.delivery,
+      goodForGroups: p.goodForGroups,
+      goodForChildren: p.goodForChildren,
+      goodForWatchingSports: p.goodForWatchingSports,
+      outdoorSeating: p.outdoorSeating,
+      liveMusic: p.liveMusic,
     }) satisfies Restaurant,
 );
