@@ -29,6 +29,9 @@ export type RestaurantSwipeData = {
   allowsDogs?: boolean,
   goodForWatchingSports?: boolean,
   outdoorSeating?: boolean,
+  curbsidePickup?: boolean,
+  goodForChildren?: boolean,
+  goodForGroups?: boolean,
 };
 
 
@@ -56,13 +59,15 @@ export function transformPlacesApiData(restaurants?: Restaurant[] | null) {
         ? `$${r.priceRange.startPrice.units}${r.priceRange.endPrice ? ` - $${r.priceRange.endPrice.units}` : ""}`
         : undefined,
         // Placeholders — replace with r.nationalPhoneNumber etc. once API returns them
-      reviewSummary: undefined,
-      liveMusic: undefined,
-      delivery: undefined,
       takeout: undefined,
       allowsDogs: undefined,
-      goodForWatchingSports: undefined,
-      outdoorSeating: undefined,
+      curbsidePickup: r.curbsidePickup,
+      delivery: r.delivery,
+      goodForGroups: r.goodForGroups,
+      goodForChildren: r.goodForChildren,
+      goodForWatchingSports: r.goodForWatchingSports,
+      outdoorSeating: r.outdoorSeating,
+      liveMusic: r.liveMusic,
     }),
   );
 }

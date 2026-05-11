@@ -13,6 +13,10 @@ import RestaurantCard from "@/components/restaurantCard";
 import CloseButton from "@/components/closeButton";
 import FlippedCardDetails from "@/components/FlippedCardDetails";
 import { PanResponder, Animated } from "react-native";
+import { updateDoc } from "firebase/firestore";
+import { LobbyMembersDocRef } from "@/lib/datastore/group-mode";
+import { useUserContext } from "@/lib/context";
+import { useGroupLobby } from "@/lib/hooks/group-lobby";
 
 
 const ICON_SIZE = 24;
@@ -22,9 +26,29 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 export default function Swipe() {
   const router = useRouter();
 
-  const { mode } = useLocalSearchParams<SwipeModeParams>();
+  const { mode, code } = useLocalSearchParams<SwipeModeParams>();
 
   const { location } = useLocationContext();
+
+  const { currentUser } = useUserContext();
+
+
+  const groupLobby = useGroupLobby(mode === "group" ? code : undefined);
+
+  React.useEffect(() => {
+    if (mode === "group" && groupLobby && groupLobby !== null) {
+      const currentMember = groupLobby.members.find(
+        (m) => m.userId === currentUser?.uid
+      );
+      
+      if (currentMember?.complete) {
+        router.replace({
+          pathname: "/swipe/group/lobby",
+          params: { code },
+        });
+      }
+    }
+  }, [mode, groupLobby, currentUser, code, router]);
 
   const { data: locations } = useQuery(
     trpc.places.search.queryOptions({
@@ -34,21 +58,31 @@ export default function Swipe() {
 
   const { setMatch, setAllMatches } = useMatchContext();
 
-  const onSwipeComplete = (selected: RestaurantSwipeData[]) => {
-    const selection = selected[Math.floor(Math.random() * selected.length)];
+  const onSwipeComplete = async (selected: RestaurantSwipeData[]) => {
+    const selection =
+      selected[Math.floor(Math.random() * selected.length)];
+
     setMatch(selection);
     setAllMatches(selected);
-    if (mode === "group") {
-      router.replace("/swipe/group/lobby?code=COBRCY&started=true");
+
+    if (mode === "group" && code) {
+      await updateDoc(
+        LobbyMembersDocRef(code, currentUser!.uid),
+        {
+          complete: true,
+          likeIds: selected.map((r) => r.id),
+        }
+      );
+
+      router.replace({
+        pathname: "/swipe/group/lobby",
+        params: { code },
+      });
     } else {
       router.replace("/swipe/solo/complete");
     }
-    console.log(
-      "done swiping",
-      selected.map((s) => s.name),
-    );
   };
-
+  
   if (locations) {
     return (
       <SwipeFlow

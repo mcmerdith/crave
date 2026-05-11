@@ -4,4 +4,5 @@ export type LobbyParams = {
 };
 export type SwipeModeParams = {
   mode: "solo" | "group";
+  code?: string;
 };
