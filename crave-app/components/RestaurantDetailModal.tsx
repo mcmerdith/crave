@@ -12,6 +12,7 @@ import {
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { RestaurantSwipeData } from "@/lib/places";
+import { useUserContext } from "@/lib/context";
 
 
 function isValidImage(uri?: string) {
@@ -111,7 +112,27 @@ const RestaurantDetailModal: React.FC<Props> = ({
     ).current;
   */
   if (!restaurant) return null;
-  
+
+  console.log("restaurant features:", {
+  curbsidePickup: restaurant.curbsidePickup,
+  delivery: restaurant.delivery,
+  goodForGroups: restaurant.goodForGroups,
+  goodForChildren: restaurant.goodForChildren,
+  goodForWatchingSports: restaurant.goodForWatchingSports,
+  outdoorSeating: restaurant.outdoorSeating,
+  liveMusic: restaurant.liveMusic,
+});
+
+  const features = [
+    { label: "Curbside Pickup", value: restaurant.curbsidePickup, icon: "car-outline" },
+    { label: "Delivery", value: restaurant.delivery, icon: "bicycle-outline" },
+    { label: "Good for Groups", value: restaurant.goodForGroups, icon: "people-outline" },
+    { label: "Good for Kids", value: restaurant.goodForChildren, icon: "happy-outline" },
+    { label: "Watch Sports", value: restaurant.goodForWatchingSports, icon: "tv-outline" },
+    { label: "Outdoor Seating", value: restaurant.outdoorSeating, icon: "sunny-outline" },
+    { label: "Live Music", value: restaurant.liveMusic, icon: "musical-notes-outline" },
+  ].filter((f) => f.value === true);
+
   return (
     <Modal
       isVisible={visible}
@@ -158,6 +179,17 @@ const RestaurantDetailModal: React.FC<Props> = ({
               )}
               {restaurant.price && <Text style={styles.price}>{restaurant.price}</Text>}
             </View>
+
+            {features.length > 0 && (
+            <View style={styles.featuresRow}>
+              {features.map((feature, index) => (
+                <View key={index} style={styles.featureBadge}>
+                  <Ionicons name={feature.icon as any} size={14} color="#6C47FF" />
+                  <Text style={styles.featureText}>{feature.label}</Text>
+                </View>
+              ))}
+            </View>
+          )}
 
             {/* Placeholder info */}
             <View style={styles.card}>
@@ -380,6 +412,30 @@ reviewComment: {
 reviewDate: {
   fontSize: 12,
   color: "#999",
+},
+
+featuresRow: {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  marginBottom: 12,
+},
+
+featureBadge: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#F4F1FF",
+  borderRadius: 12,
+  paddingHorizontal: 10,
+  paddingVertical: 6,
+  marginRight: 8,
+  marginBottom: 8,
+},
+
+featureText: {
+  fontSize: 12,
+  color: "#6C47FF",
+  marginLeft: 4,
+  fontWeight: "500",
 },
 });
 
