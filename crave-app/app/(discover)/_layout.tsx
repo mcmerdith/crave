@@ -15,7 +15,7 @@ export default function ProfileStackLayout() {
           flexDirection: "column",
         }}
       >
-        <Suspense fallback={<p>Loading</p>}>
+        <Suspense fallback={<Text>Loading</Text>}>
           <Stack>
             <Stack.Screen
               name="filtersSolo"

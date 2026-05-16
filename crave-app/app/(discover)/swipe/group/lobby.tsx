@@ -23,9 +23,9 @@ export default function Lobby() {
   //const data = useGroupLobby(undefined);
 
   if (data === undefined) {
-    return <p>Loading</p>;
+    return <Text>Loading</Text>;
   } else if (data === null) {
-    return <p>Not found</p>;
+    return <Text>Not found</Text>;
   } else {
     return <LobbyContent lobby={data} />;
   }
@@ -42,9 +42,7 @@ function LobbyContent({
 
   const { currentUser } = useUserContext();
 
-  const currentMember = members.find(
-    (m) => m.userId === currentUser?.uid
-  );
+  const currentMember = members.find((m) => m.userId === currentUser?.uid);
 
   const userFinished = currentMember?.complete ?? false;
 
@@ -73,10 +71,11 @@ function LobbyContent({
       return {
         text: "Go Back to Discover",
         enabled: true,
-        action: () => router.replace({
-          pathname: "/swipe/[mode]",
-          params: { mode: "group", code },
-        }),
+        action: () =>
+          router.replace({
+            pathname: "/swipe/[mode]",
+            params: { mode: "group", code },
+          }),
       };
     } else {
       // Not started yet
@@ -84,10 +83,11 @@ function LobbyContent({
         text: "Start Swiping",
         enabled: members.length > 1,
         disabledText: "Waiting for friends to join...",
-        action: () => router.replace({
-          pathname: "/swipe/[mode]",
-          params: { mode: "group", code },
-        }),
+        action: () =>
+          router.replace({
+            pathname: "/swipe/[mode]",
+            params: { mode: "group", code },
+          }),
       };
     }
   };
@@ -97,7 +97,7 @@ function LobbyContent({
   const copyCode = () => {
     void Clipboard.setStringAsync(code);
   };
-  
+
   return (
     <View style={styles.container}>
       {/* Back */}
@@ -113,10 +113,10 @@ function LobbyContent({
           {!started
             ? "Group Lobby"
             : waitingOnOthers
-            ? "Waiting on others..."
-            : allFinished
-            ? "Group Complete!"
-            : "Swiping in Progress"}
+              ? "Waiting on others..."
+              : allFinished
+                ? "Group Complete!"
+                : "Swiping in Progress"}
         </Text>
         {started && <CloseButton />}
       </View>
@@ -285,14 +285,14 @@ const styles = StyleSheet.create({
   memberInfo: {
     flex: 1,
   },
-  
+
   completeBadge: {
     backgroundColor: "#d8ffdf",
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,
   },
-  
+
   completeText: {
     color: "#2e9c4f",
     fontWeight: "600",
@@ -306,7 +306,4 @@ const styles = StyleSheet.create({
     alignItems: "center", // Changed from flex-start
     marginBottom: 12,
   },
-
 });
-
-
