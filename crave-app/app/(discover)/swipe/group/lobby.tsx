@@ -15,11 +15,12 @@ import BackButton from "@/components/backButton";
 import CloseButton from "@/components/closeButton";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { LobbyParams } from "@/lib/routeParams";
+import { useUserContext } from "@/lib/context";
 
 export default function Lobby() {
   const { code } = useLocalSearchParams<LobbyParams>();
-  // const data = useGroupLobby(code === "" ? undefined : code);
-  const data = useGroupLobby(undefined);
+  const data = useGroupLobby(code === "" ? undefined : code);
+  //const data = useGroupLobby(undefined);
 
   if (data === undefined) {
     return <p>Loading</p>;
@@ -39,18 +40,64 @@ function LobbyContent({
   const router = useRouter();
   const started = status !== "open";
 
-  const handleStartGroup = () => {
-    router.replace("/swipe/group");
+  const { currentUser } = useUserContext();
+
+  const currentMember = members.find(
+    (m) => m.userId === currentUser?.uid
+  );
+
+  const userFinished = currentMember?.complete ?? false;
+
+  const allFinished = members.every((m) => m.complete);
+
+  const iAmDone = currentMember?.complete === true;
+  const waitingOnOthers = iAmDone && !allFinished;
+
+  // Determine button behavior
+  const getButtonConfig = () => {
+    if (allFinished) {
+      return {
+        text: "View Matches",
+        enabled: true,
+        action: () => router.replace("/swipe/group/complete"),
+      };
+    } else if (userFinished) {
+      // User is done, waiting for others
+      return {
+        text: "Go Back to Discover",
+        enabled: true,
+        action: () => router.replace("/(tabs)"),
+      };
+    } else if (started) {
+      // Session started but user hasn't finished
+      return {
+        text: "Go Back to Discover",
+        enabled: true,
+        action: () => router.replace({
+          pathname: "/swipe/[mode]",
+          params: { mode: "group", code },
+        }),
+      };
+    } else {
+      // Not started yet
+      return {
+        text: "Start Swiping",
+        enabled: members.length > 1,
+        disabledText: "Waiting for friends to join...",
+        action: () => router.replace({
+          pathname: "/swipe/[mode]",
+          params: { mode: "group", code },
+        }),
+      };
+    }
   };
 
-  const viewMatches = () => {
-    router.replace("/swipe/group/complete");
-  };
+  const buttonConfig = getButtonConfig();
 
   const copyCode = () => {
     void Clipboard.setStringAsync(code);
   };
-
+  
   return (
     <View style={styles.container}>
       {/* Back */}
@@ -63,7 +110,13 @@ function LobbyContent({
         }}
       >
         <Text style={styles.title}>
-          {started ? "Waiting for your group..." : "Group Lobby"}
+          {!started
+            ? "Group Lobby"
+            : waitingOnOthers
+            ? "Waiting on others..."
+            : allFinished
+            ? "Group Complete!"
+            : "Swiping in Progress"}
         </Text>
         {started && <CloseButton />}
       </View>
@@ -87,18 +140,39 @@ function LobbyContent({
             <Text style={styles.smallText}>
               Friends can join using this code
             </Text>
+
+            {/* Waiting section inside the gradient card */}
+            {waitingOnOthers && (
+              <View style={styles.waitingSection}>
+                <Ionicons name="hourglass-outline" size={28} color="#fff" />
+                <Text style={styles.waitingTitle}>
+                  Waiting on others to finish swiping
+                </Text>
+                <Text style={styles.waitingText}>
+                  Sit tight — we'll show matches soon!
+                </Text>
+              </View>
+            )}
           </LinearGradient>
         </>
       )}
+
       <Text style={styles.lobbyTitle}>In Lobby ({members.length})</Text>
       {/* Scrollable List */}
       <ScrollView showsVerticalScrollIndicator={false}>
         {members.map((member, idx) => {
           return (
             <View key={idx} style={styles.lobbyItem}>
-              <Text style={styles.name}>{member.name}</Text>
-              {member.userId === ownerId && (
-                <Text style={styles.host}>Host</Text>
+              <View style={styles.memberInfo}>
+                <Text style={styles.name}>{member.name}</Text>
+                {member.userId === ownerId && (
+                  <Text style={styles.host}>Host</Text>
+                )}
+              </View>
+              {member.complete && (
+                <View style={styles.completeBadge}>
+                  <Text style={styles.completeText}>✓ Done</Text>
+                </View>
               )}
             </View>
           );
@@ -107,19 +181,11 @@ function LobbyContent({
         <View style={{ height: 80 }} />
       </ScrollView>
       <StartSwipingButton
-        enabled={members.length > 1}
+        enabled={buttonConfig.enabled ?? true}
         variant="group"
-        text={started ? "View Matches" : "Start Swiping"}
-        disabledText={
-          started ? "Waiting for friends..." : "Waiting for friends to join..."
-        }
-        onPress={() => {
-          if (started) {
-            viewMatches();
-          } else {
-            handleStartGroup();
-          }
-        }}
+        text={buttonConfig.text}
+        disabledText={buttonConfig.disabledText}
+        onPress={buttonConfig.action}
       />
     </View>
   );
@@ -174,15 +240,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
   },
-
-  lobbyItem: {
-    backgroundColor: "#f5f5f7",
-    padding: 18,
-    borderRadius: 12,
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginBottom: 12,
-  },
   emoji: { fontSize: 30, marginRight: 15 },
   name: { fontSize: 18, fontWeight: "600" },
   host: { fontSize: 12, color: "#666" },
@@ -199,4 +256,57 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 12,
   },
+  waitingCard: {
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  waitingSection: {
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+  },
+
+  waitingTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 12,
+    textAlign: "center",
+  },
+  waitingText: {
+    color: "#fff",
+    marginTop: 8,
+    textAlign: "center",
+  },
+  memberInfo: {
+    flex: 1,
+  },
+  
+  completeBadge: {
+    backgroundColor: "#d8ffdf",
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  
+  completeText: {
+    color: "#2e9c4f",
+    fontWeight: "600",
+    fontSize: 12,
+  },
+  lobbyItem: {
+    backgroundColor: "#f5f5f7",
+    padding: 18,
+    borderRadius: 12,
+    flexDirection: "row", // Changed from column to row
+    alignItems: "center", // Changed from flex-start
+    marginBottom: 12,
+  },
+
 });
+
+

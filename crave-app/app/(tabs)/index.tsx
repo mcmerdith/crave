@@ -13,8 +13,10 @@ import { useLocationContext } from "@/lib/context";
 import RestaurantDetailModal from "@/components/RestaurantDetailModal";
 import { RestaurantSwipeData } from "@/lib/places";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useUserContext } from "@/lib/context";
 
 export default function Index() {
+  const { currentUser } = useUserContext();
   const { location } = useLocationContext();
   const { data: places, isLoading } = useQuery(
   trpc.places.search.queryOptions({
@@ -42,7 +44,7 @@ export default function Index() {
             alignItems: "flex-start",
           }}
         >
-          <LocationHeader userName="Christian" />
+          <LocationHeader userName={currentUser?.displayName ?? "User"} />
           <ModeSelection />
 
           {/* Pass onItemPress to Carousel */}
@@ -74,5 +76,6 @@ export default function Index() {
       />
       {isLoading && <LoadingScreen />}
     </GestureHandlerRootView>
+    
   );
 }
