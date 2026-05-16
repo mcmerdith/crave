@@ -1,5 +1,5 @@
-import { useCurrentUser } from "@/lib/datastore/user-service";
-import { auth } from "@/lib/firebase";
+import { useUserContext } from "@/lib/context";
+import { LoginOptions } from "@/lib/datastore/user-service";
 import { theme } from "@/theme";
 import {
   AntDesign,
@@ -7,12 +7,6 @@ import {
   Feather,
   MaterialIcons,
 } from "@expo/vector-icons";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -51,19 +45,21 @@ const AuthScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const { signIn, signUp } = useUserContext();
 
   const handleSubmit = async () => {
-    const resolvedName = isSignUp ? fullName.trim() || "John Doe" : "John Doe";
-    const resolvedUsername = isSignUp
-      ? username.trim()
-        ? `@${username.replace(/^@/, "")}`
-        : "@johndoe"
-      : "@johndoe";
+    const options: LoginOptions = {
+      credential: "emailAndPassword",
+      email,
+      password,
+    };
     if (isSignUp) {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(res.user, { displayName: fullName });
+      await signUp({
+        ...options,
+        displayName: fullName.trim(),
+      });
     } else {
-      signInWithEmailAndPassword(auth, email, password);
+      await signIn(options);
     }
   };
 
@@ -210,10 +206,7 @@ const AuthScreen = () => {
 // Main Profile Screen
 
 const Profile = () => {
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // const [profileName, setProfileName] = useState("John Doe");
-  // const [profileUsername, setProfileUsername] = useState("@johndoe");
-  const user = useCurrentUser();
+  const { currentUser: user, signOut } = useUserContext();
   const isAuthenticated = user !== null;
   const profileName = user?.displayName ?? "User";
   // TODO: this should be a profile field
@@ -221,10 +214,6 @@ const Profile = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditModalVisible, setEditModalVisible] = useState(false);
-
-  const handleSignOut = () => {
-    signOut(auth); // TODO: should this be wrapped?
-  };
 
   const filteredFriends = mockFriends.filter(
     (friend) =>
@@ -305,7 +294,7 @@ const Profile = () => {
               {/* Sign Out */}
               <TouchableOpacity
                 style={styles.signOutButton}
-                onPress={handleSignOut}
+                onPress={() => signOut()}
               >
                 <Feather
                   name="log-out"
@@ -532,13 +521,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     gap: 10,
-    width: "100%",          
+    width: "100%",
     justifyContent: "center",
   },
   profileButton: {
     ...(Platform.OS === "web"
-    ? { width: 140 }       // fixed width on web
-    : { flex: 1 }),        // flex on mobile (keeps current behavior)
+      ? { width: 140 } // fixed width on web
+      : { flex: 1 }), // flex on mobile (keeps current behavior)
     backgroundColor: "#fff",
     paddingVertical: 8,
     borderRadius: 10,

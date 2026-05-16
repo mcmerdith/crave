@@ -4,7 +4,10 @@ import {
   MatchContextProvider,
   UserContextProvider,
 } from "@/lib/context";
-import { useCurrentUser } from "@/lib/datastore/user-service";
+import {
+  useCredentialManager,
+  useCurrentUser,
+} from "@/lib/datastore/user-service";
 import "@/lib/firebase";
 import { GeoLocation, TempLocationData } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
@@ -34,6 +37,7 @@ export default function RootLayout() {
   const [allMatches, setAllMatches] = useState<RestaurantSwipeData[]>([]);
 
   const user = useCurrentUser();
+  const credentialManager = useCredentialManager(user);
 
   if (!fontsLoaded) {
     return null;
@@ -56,7 +60,7 @@ export default function RootLayout() {
               allMatches,
             }}
           >
-            <UserContextProvider value={{ currentUser: user }}>
+            <UserContextProvider value={credentialManager}>
               <Slot />
             </UserContextProvider>
           </MatchContextProvider>

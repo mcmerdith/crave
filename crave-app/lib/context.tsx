@@ -1,8 +1,7 @@
-import { Context, createContext, useContext } from "react";
 import { GeoLocation } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
-import { User } from "@firebase/auth";
-import { UserPreferences } from "@crave/api";
+import { Context, createContext, useContext } from "react";
+import { CredentialManager } from "./datastore/user-service";
 
 export type Store<T> =
   | {
@@ -73,9 +72,5 @@ export const { context: MatchContext, Provider: MatchContextProvider } =
 export const useMatchContext = () => useWrappedContext(MatchContext);
 
 export const { context: UserContext, Provider: UserContextProvider } =
-  createWrappedContext<{
-    currentUser:
-      | (User & { preferences: UserPreferences | null | undefined })
-      | null;
-  }>("User");
+  createWrappedContext<CredentialManager>("User");
 export const useUserContext = () => useWrappedContext(UserContext);

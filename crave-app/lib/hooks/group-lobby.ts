@@ -32,30 +32,22 @@ export const useGroupLobby = (requestLobbyId?: string) => {
         }),
   );
 
-  /*useDocument(LobbyMembersDocRef(lobbyId, user!.uid), {
-    userId: user!.uid,
-    name: user!.displayName ?? "Anonymous",
-    complete: false,
-    likeIds: [],
-    dislikeIds: [],
-  });*/
-
   const existingMember = useDocumentRealtime(
-    LobbyMembersDocRef(lobbyId, user!.uid)
-    );
+    LobbyMembersDocRef(lobbyId, user!.uid),
+  );
 
-    useDocument(
-      LobbyMembersDocRef(lobbyId, user!.uid),
-      existingMember.data === null
-        ? {
-            userId: user!.uid,
-            name: user!.displayName ?? "Anonymous",
-            complete: false,
-            likeIds: [],
-            dislikeIds: [],
-          }
-        : undefined
-    );
+  useDocument(
+    LobbyMembersDocRef(lobbyId, user!.uid),
+    existingMember.data === null
+      ? {
+          userId: user!.uid,
+          name: user!.displayName ?? "Anonymous",
+          complete: false,
+          likeIds: [],
+          dislikeIds: [],
+        }
+      : undefined,
+  );
 
   const members = useCollectionRealtime(LobbyMembersColRef(lobbyId));
 
@@ -67,5 +59,3 @@ export const useGroupLobby = (requestLobbyId?: string) => {
     members: members,
   };
 };
-
-
