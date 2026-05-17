@@ -19,6 +19,7 @@ import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { LobbyParams } from "@/lib/routeParams";
 import { MoveLeft } from "lucide-react-native";
 import { useState } from "react";
+import { useConfirm } from "react-native-confirm-dialog";
 
 export default function Lobby() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function Lobby() {
 function LobbyContent({ code, create }: { code: string; create: boolean }) {
   const router = useRouter();
   const data = useGroupLobby(code, create);
+  const confirm = useConfirm();
   const [deleting, setDeleting] = useState(false);
   if (data === undefined || deleting) return <LoadingScreen />;
   else if (data === null)
@@ -59,6 +61,7 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
       />
     );
   const { status, members, self, ownerId } = data;
+  console.log(self.data?.userId, ownerId);
   const started = status !== "open";
 
   const selfFinished = self.data?.complete ?? false;
@@ -114,12 +117,16 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
   };
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this lobby?")) {
-      setDeleting(true);
-      await data.delete();
-      router.replace("/(tabs)");
-      setDeleting(false);
-    }
+    confirm({
+      title: "Delete lobby?",
+      subtitle: "This can't be undone",
+      async onConfirm() {
+        setDeleting(true);
+        await data.delete();
+        router.replace("/(tabs)");
+        setDeleting(false);
+      },
+    });
   };
 
   return (

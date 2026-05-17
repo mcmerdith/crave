@@ -176,15 +176,11 @@ export function useLoggedInUser(): UserWithPreferences {
                 : (newUser.displayName ?? "User")
             } (${newUser?.uid})`
           : undefined,
-        newUser,
       );
       if (!newUser) {
         // create anonymous login
         signInAnonymously(auth).then((credential) => {
-          console.debug(
-            `[auth] created anonymous user ${credential.user.uid}`,
-            credential,
-          );
+          console.debug(`[auth] created anonymous user ${credential.user.uid}`);
         });
       }
       setUser(newUser);

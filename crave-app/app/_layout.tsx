@@ -16,6 +16,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Slot } from "expo-router";
 import { useEffect, useState } from "react";
+import { ConfirmProvider } from "react-native-confirm-dialog";
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -45,27 +46,29 @@ export default function RootLayout() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <LocationContextProvider
-          value={{
-            setNewLocation: (location) => setLocation(location),
-            location,
-          }}
-        >
-          <MatchContextProvider
+      <UserContextProvider value={{ ...user, ...credentialManager }}>
+        <QueryClientProvider client={queryClient}>
+          <LocationContextProvider
             value={{
-              setMatch: (match) => setMatch(match),
-              setAllMatches: (matches) => setAllMatches(matches),
-              match,
-              allMatches,
+              setNewLocation: (location) => setLocation(location),
+              location,
             }}
           >
-            <UserContextProvider value={{ ...user, ...credentialManager }}>
-              <Slot />
-            </UserContextProvider>
-          </MatchContextProvider>
-        </LocationContextProvider>
-      </QueryClientProvider>
+            <MatchContextProvider
+              value={{
+                setMatch: (match) => setMatch(match),
+                setAllMatches: (matches) => setAllMatches(matches),
+                match,
+                allMatches,
+              }}
+            >
+              <ConfirmProvider>
+                <Slot />
+              </ConfirmProvider>
+            </MatchContextProvider>
+          </LocationContextProvider>
+        </QueryClientProvider>
+      </UserContextProvider>
 
       {!ready && <LoadingScreen />}
     </>
