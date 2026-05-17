@@ -18,7 +18,7 @@ import {
  * If a lobbyId is provided, joins the existing lobby with that ID, or returns null if the lobby does not exist.
  */
 export const useGroupLobby = (requestLobbyId?: string) => {
-  const { currentUser: user } = useUserContext();
+  const { user } = useUserContext();
   const [lobbyId] = useState(requestLobbyId ?? CreateLobbyId());
 
   const lobby = useDocumentRealtime(

@@ -1,7 +1,7 @@
 import { GeoLocation } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
 import { Context, createContext, useContext } from "react";
-import { CredentialManager } from "./datastore/user-service";
+import { SessionManager, UserWithPreferences } from "./datastore/user-service";
 
 export type Store<T> =
   | {
@@ -72,5 +72,5 @@ export const { context: MatchContext, Provider: MatchContextProvider } =
 export const useMatchContext = () => useWrappedContext(MatchContext);
 
 export const { context: UserContext, Provider: UserContextProvider } =
-  createWrappedContext<CredentialManager>("User");
+  createWrappedContext<UserWithPreferences & SessionManager>("User");
 export const useUserContext = () => useWrappedContext(UserContext);

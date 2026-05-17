@@ -13,9 +13,9 @@ import {
 
 import BackButton from "@/components/backButton";
 import CloseButton from "@/components/closeButton";
+import { useUserContext } from "@/lib/context";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { LobbyParams } from "@/lib/routeParams";
-import { useUserContext } from "@/lib/context";
 
 export default function Lobby() {
   const { code } = useLocalSearchParams<LobbyParams>();
@@ -40,9 +40,9 @@ function LobbyContent({
   const router = useRouter();
   const started = status !== "open";
 
-  const { currentUser } = useUserContext();
+  const { user } = useUserContext();
 
-  const currentMember = members.find((m) => m.userId === currentUser?.uid);
+  const currentMember = members.find((m) => m.userId === user?.uid);
 
   const userFinished = currentMember?.complete ?? false;
 

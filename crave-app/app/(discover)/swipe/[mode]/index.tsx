@@ -1,23 +1,30 @@
-import React, { useCallback, useRef, useState} from "react";
-import { StyleSheet, TouchableOpacity, View, Platform, Dimensions} from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
+import React, { useRef, useState } from "react";
+import {
+  Animated,
+  Dimensions,
+  PanResponder,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 //import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import CloseButton from "@/components/closeButton";
+import RestaurantCard from "@/components/restaurantCard";
+import {
+  useLocationContext,
+  useMatchContext,
+  useUserContext,
+} from "@/lib/context";
+import { LobbyMembersDocRef } from "@/lib/datastore/group-mode";
+import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
+import { SwipeModeParams } from "@/lib/routeParams";
 import { trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
-import { useLocationContext, useMatchContext } from "@/lib/context";
-import { SwipeModeParams } from "@/lib/routeParams";
-import RestaurantCard from "@/components/restaurantCard";
-import CloseButton from "@/components/closeButton";
-import FlippedCardDetails from "@/components/FlippedCardDetails";
-import { PanResponder, Animated } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { updateDoc } from "firebase/firestore";
-import { LobbyMembersDocRef } from "@/lib/datastore/group-mode";
-import { useUserContext } from "@/lib/context";
-import { useGroupLobby } from "@/lib/hooks/group-lobby";
-
 
 const ICON_SIZE = 24;
 
@@ -30,17 +37,16 @@ export default function Swipe() {
 
   const { location } = useLocationContext();
 
-  const { currentUser } = useUserContext();
-
+  const { user } = useUserContext();
 
   const groupLobby = useGroupLobby(mode === "group" ? code : undefined);
 
   React.useEffect(() => {
     if (mode === "group" && groupLobby && groupLobby !== null) {
       const currentMember = groupLobby.members.find(
-        (m) => m.userId === currentUser?.uid
+        (m) => m.userId === user?.uid,
       );
-      
+
       if (currentMember?.complete) {
         router.replace({
           pathname: "/swipe/group/lobby",
@@ -48,7 +54,7 @@ export default function Swipe() {
         });
       }
     }
-  }, [mode, groupLobby, currentUser, code, router]);
+  }, [mode, groupLobby, user, code, router]);
 
   const { data: locations } = useQuery(
     trpc.places.search.queryOptions({
@@ -59,20 +65,16 @@ export default function Swipe() {
   const { setMatch, setAllMatches } = useMatchContext();
 
   const onSwipeComplete = async (selected: RestaurantSwipeData[]) => {
-    const selection =
-      selected[Math.floor(Math.random() * selected.length)];
+    const selection = selected[Math.floor(Math.random() * selected.length)];
 
     setMatch(selection);
     setAllMatches(selected);
 
     if (mode === "group" && code) {
-      await updateDoc(
-        LobbyMembersDocRef(code, currentUser!.uid),
-        {
-          complete: true,
-          likeIds: selected.map((r) => r.id),
-        }
-      );
+      await updateDoc(LobbyMembersDocRef(code, user!.uid), {
+        complete: true,
+        likeIds: selected.map((r) => r.id),
+      });
 
       router.replace({
         pathname: "/swipe/group/lobby",
@@ -82,7 +84,7 @@ export default function Swipe() {
       router.replace("/swipe/solo/complete");
     }
   };
-  
+
   if (locations) {
     return (
       <SwipeFlow
@@ -151,10 +153,13 @@ function SwipeFlow({
 
   const buttons = [
     { icon: "close", action: () => advance(false) },
-    { icon: "reload", action: () => {
-      pan.setValue({ x: 0, y: 0 });
-      setCurrentIndex(Math.max(0, currentIndex - 1));
-    }},
+    {
+      icon: "reload",
+      action: () => {
+        pan.setValue({ x: 0, y: 0 });
+        setCurrentIndex(Math.max(0, currentIndex - 1));
+      },
+    },
     { icon: "heart", action: () => advance(true) },
   ];
 
@@ -162,7 +167,14 @@ function SwipeFlow({
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={{ padding: 20, width: "100%", justifyContent: "center", alignItems: "flex-end" }}>
+      <View
+        style={{
+          padding: 20,
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "flex-end",
+        }}
+      >
         <CloseButton />
       </View>
 
@@ -182,11 +194,20 @@ function SwipeFlow({
 
       <View style={styles.buttonsContainer}>
         {buttons.map(({ icon, action }, i) => {
-          let bgColor = icon === "close" ? "red" : icon === "heart" ? "green" : "white";
+          let bgColor =
+            icon === "close" ? "red" : icon === "heart" ? "green" : "white";
           let iconColor = icon === "reload" ? "black" : "white";
           return (
-            <TouchableOpacity key={i} style={[styles.button, { backgroundColor: bgColor }]} onPress={action}>
-              <AntDesign name={icon as any} size={ICON_SIZE} color={iconColor} />
+            <TouchableOpacity
+              key={i}
+              style={[styles.button, { backgroundColor: bgColor }]}
+              onPress={action}
+            >
+              <AntDesign
+                name={icon as any}
+                size={ICON_SIZE}
+                color={iconColor}
+              />
             </TouchableOpacity>
           );
         })}
@@ -209,7 +230,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   subContainer: {
-    height: SCREEN_HEIGHT * 0.65,  // explicit height instead of flex: 1
+    height: SCREEN_HEIGHT * 0.65, // explicit height instead of flex: 1
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
@@ -269,7 +290,7 @@ const styles = StyleSheet.create({
   },
   cardStyle: {
     width: "90%",
-    height: 400, 
+    height: 400,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",

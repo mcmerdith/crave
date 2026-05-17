@@ -7,13 +7,14 @@ import {
   signInAnonymously,
   signInWithEmailAndPassword,
   signOut,
+  updateCurrentUser,
   updateProfile,
   UserCredential,
   type User,
 } from "@firebase/auth";
 import { doc } from "@firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { auth } from "../firebase";
+import { auth, getFirebaseErrorMessage } from "../firebase";
 import { useDocument } from "../hooks/firebase";
 import { users } from "./collections";
 
@@ -28,22 +29,31 @@ export type SignUpOptions = LoginOptions & {
   photoUrl?: string;
 };
 
-export type RichUserObject = User & {
+export type UserWithPreferences = {
+  user: User | null;
   preferences: UserPreferences | null | undefined;
 };
 
-export type CredentialManager = {
-  currentUser: RichUserObject | null;
-  signIn(options: LoginOptions): Promise<void>;
-  signUp(options: SignUpOptions): Promise<void>;
-  signOut(): Promise<void>;
+export type SessionChangeResult =
+  | {
+      success: true;
+      errorMessage?: undefined;
+    }
+  | {
+      success: false;
+      errorMessage: string;
+    };
+
+export type SessionManager = {
+  signIn(options: LoginOptions): Promise<SessionChangeResult>;
+  signUp(options: SignUpOptions): Promise<SessionChangeResult>;
+  signOut(): Promise<SessionChangeResult>;
 };
 
-export function useCredentialManager(
-  user: RichUserObject | null,
-): CredentialManager {
+export function useSessionManager(): SessionManager {
   const linkIfAnonymous = useCallback(
     async (options: LoginOptions): Promise<UserCredential | null> => {
+      const user = auth.currentUser;
       if (!user) {
         console.warn(
           "Attempted to link without an anonymous user (this should never happen)",
@@ -67,14 +77,14 @@ export function useCredentialManager(
           );
       }
     },
-    [user],
+    [],
   );
   return {
-    currentUser: user,
     signIn: useCallback(
-      async (options: LoginOptions) => {
+      async (options: LoginOptions): Promise<SessionChangeResult> => {
         try {
-          if (await linkIfAnonymous(options)) return;
+          // this doesn't work. can't link existing user accounts to anonymous accounts
+          // if (await linkIfAnonymous(options)) return;
           switch (options.credential) {
             case "emailAndPassword":
               await signInWithEmailAndPassword(
@@ -84,60 +94,62 @@ export function useCredentialManager(
               );
               break;
           }
+          return {
+            success: true,
+          };
         } catch (e) {
           console.error("Failed to sign in!", e);
-          throw new Error(
-            Error.isError(e)
-              ? e.message
-              : "Something went wrong while signing in",
-            { cause: e },
-          );
+          return {
+            success: false,
+            errorMessage: getFirebaseErrorMessage(e),
+          };
         }
       },
-      [linkIfAnonymous],
+      [],
     ),
     signUp: useCallback(
-      async (options: SignUpOptions) => {
+      async (options: SignUpOptions): Promise<SessionChangeResult> => {
         try {
-          let newUser: UserCredential | null = await linkIfAnonymous(options);
-          if (newUser == null) {
+          let credential: UserCredential | null =
+            await linkIfAnonymous(options);
+          if (credential == null) {
             switch (options.credential) {
               case "emailAndPassword":
-                newUser = await createUserWithEmailAndPassword(
+                credential = await createUserWithEmailAndPassword(
                   auth,
                   options.email,
                   options.password,
                 );
                 break;
             }
+          } else {
+            await updateCurrentUser(auth, credential.user);
           }
-          await updateProfile(newUser.user, {
+          await updateProfile(credential.user, {
             displayName: options.displayName,
             photoURL: options.photoUrl,
           });
+          return { success: true };
         } catch (e) {
           console.error("Failed to sign up!", e);
-          throw new Error(
-            Error.isError(e)
-              ? e.message
-              : "Something went wrong while signing up",
-            { cause: e },
-          );
+          return {
+            success: false,
+            errorMessage: getFirebaseErrorMessage(e),
+          };
         }
       },
       [linkIfAnonymous],
     ),
-    signOut: useCallback(async () => {
+    signOut: useCallback(async (): Promise<SessionChangeResult> => {
       try {
         await signOut(auth);
+        return { success: true };
       } catch (e) {
         console.error("Failed to sign out!", e);
-        throw new Error(
-          Error.isError(e)
-            ? e.message
-            : "Something went wrong while signing out",
-          { cause: e },
-        );
+        return {
+          success: false,
+          errorMessage: getFirebaseErrorMessage(e),
+        };
       }
     }, []),
   };
@@ -149,31 +161,40 @@ export function useCredentialManager(
  *
  * @returns The currently logged in user
  */
-export function useCurrentUser(): RichUserObject | null {
+export function useLoggedInUser(): UserWithPreferences {
   const [user, setUser] = useState<User | null>(null);
   const preferences = useUserPreferences(user?.uid);
 
-  console.debug(
-    user?.isAnonymous ? "Anonymous" : (user?.displayName ?? "User"),
-    "is the current user",
-  );
-
   useEffect(() => {
     return onAuthStateChanged(auth, (newUser) => {
+      console.debug(
+        "[auth] user changed:",
+        newUser
+          ? `${
+              newUser.isAnonymous
+                ? "Anonymous"
+                : (newUser.displayName ?? "User")
+            } (${newUser?.uid})`
+          : undefined,
+        newUser,
+      );
       if (!newUser) {
         // create anonymous login
-        signInAnonymously(auth);
+        signInAnonymously(auth).then((credential) => {
+          console.debug(
+            `[auth] created anonymous user ${credential.user.uid}`,
+            credential,
+          );
+        });
       }
       setUser(newUser);
     });
   }, []);
 
-  return (
-    user && {
-      ...user,
-      preferences: preferences.data,
-    }
-  );
+  return {
+    user: user,
+    preferences: preferences.data,
+  };
 }
 
 export function useUserPreferences(userId?: string) {

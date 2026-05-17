@@ -36,3 +36,30 @@ const auth = initializeAuth(app, {
 });
 
 export { firestore, auth };
+
+export function getFirebaseErrorMessage(e: unknown): string {
+  if (Error.isError(e)) {
+    if (!("code" in e)) return e.message;
+    switch (e.code) {
+      case "auth/invalid-email":
+        return "Invalid email address";
+      case "auth/user-disabled":
+        return "Your user account is currently disabled";
+      case "auth/user-not-found":
+        return "User does not exist";
+      case "auth/wrong-password":
+        return "Invalid password";
+      case "auth/invalid-credential":
+        return "Incorrect login information";
+      case "auth/credential-already-in-use":
+        return "The credential is already in use";
+      case "auth/email-already-in-use":
+        return "The email is already in use";
+      case "auth/weak-password":
+        return "Your password must be at least 6 characters";
+    }
+    return `An unknown error occurred (${e.code}): ${e.message}`;
+  } else {
+    return `Something went wrong: ${e}`;
+  }
+}

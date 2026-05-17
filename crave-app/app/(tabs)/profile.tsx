@@ -1,5 +1,8 @@
 import { useUserContext } from "@/lib/context";
-import { LoginOptions } from "@/lib/datastore/user-service";
+import {
+  LoginOptions,
+  SessionChangeResult,
+} from "@/lib/datastore/user-service";
 import { theme } from "@/theme";
 import {
   AntDesign,
@@ -45,6 +48,7 @@ const AuthScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [lastAuthResult, setLastAuthResult] = useState<SessionChangeResult>();
   const { signIn, signUp } = useUserContext();
 
   const handleSubmit = async () => {
@@ -54,12 +58,14 @@ const AuthScreen = () => {
       password,
     };
     if (isSignUp) {
-      await signUp({
-        ...options,
-        displayName: fullName.trim(),
-      });
+      setLastAuthResult(
+        await signUp({
+          ...options,
+          displayName: fullName.trim(),
+        }),
+      );
     } else {
-      await signIn(options);
+      setLastAuthResult(await signIn(options));
     }
   };
 
@@ -94,6 +100,9 @@ const AuthScreen = () => {
         {/* Card */}
         <View style={styles.authCard}>
           {/* Full Name – sign up only */}
+          {lastAuthResult?.success === false && (
+            <Text style={styles.authError}>{lastAuthResult.errorMessage}</Text>
+          )}
           {isSignUp && (
             <View style={styles.inputWrapper}>
               <Feather
@@ -206,9 +215,11 @@ const AuthScreen = () => {
 // Main Profile Screen
 
 const Profile = () => {
-  const { currentUser: user, signOut } = useUserContext();
-  const isAuthenticated = user !== null;
-  const profileName = user?.displayName ?? "User";
+  const { user, signOut } = useUserContext();
+  const isAuthenticated = user !== null && !user.isAnonymous;
+  const profileName = user?.isAnonymous
+    ? "Anonymous"
+    : (user?.displayName ?? "User");
   // TODO: this should be a profile field
   const profileUsername = "@" + profileName.toLowerCase().replaceAll(" ", "");
 
@@ -414,6 +425,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.mutedForeground,
     marginBottom: 28,
+  },
+  authError: {
+    fontSize: 14,
+    color: theme.colors.destructiveForeground,
+    backgroundColor: theme.colors.destructive,
+    textAlign: "center",
+    padding: 10,
+    borderRadius: 10,
   },
   authCard: {
     width: "100%",
