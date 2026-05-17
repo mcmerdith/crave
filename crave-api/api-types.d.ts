@@ -109,6 +109,24 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
         errorShape: _trpc_server.TRPCDefaultErrorShape;
         transformer: false;
     }, _trpc_server.TRPCDecorateCreateRouterOptions<{}>>;
+    groupLobby: _trpc_server.TRPCBuiltRouter<{
+        ctx: {
+            user: {
+                id: string;
+            } | null;
+        };
+        meta: object;
+        errorShape: _trpc_server.TRPCDefaultErrorShape;
+        transformer: false;
+    }, _trpc_server.TRPCDecorateCreateRouterOptions<{
+        deleteLobby: _trpc_server.TRPCMutationProcedure<{
+            input: {
+                lobbyId: string;
+            };
+            output: void;
+            meta: object;
+        }>;
+    }>>;
 }>>;
 type AppRouter = typeof appRouter;
 

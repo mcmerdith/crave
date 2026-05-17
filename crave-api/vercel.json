@@ -9,7 +9,7 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Authorization"
+          "value": "*"
         }
       ]
     }
