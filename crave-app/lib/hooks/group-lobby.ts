@@ -37,7 +37,7 @@ export const useGroupLobby = (
   );
 
   const self = useDocumentRealtime(
-    user ? LobbyMembersDocRef(lobbyId, user.uid) : null,
+    user && !!lobby.data ? LobbyMembersDocRef(lobbyId, user.uid) : null,
     deleted
       ? undefined
       : () => ({
