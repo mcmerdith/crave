@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flex: 1,
-    minWidth: 350,
+    minWidth: 300,
     maxHeight: 215,
     borderRadius: 20,
     shadowRadius: 6,
