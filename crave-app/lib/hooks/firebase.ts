@@ -41,18 +41,29 @@ export function useDocumentRealtime<TData extends DocumentData>(
   docRef: DocumentReference<TData, TData> | null,
   defaultValue?: ProviderLike<TData>,
 ): DocumentHandle<TData> {
+  const [snapshot, setSnapshot] = useState<DocumentSnapshot<TData, TData>>();
+  const [processed, setProcessed] = useState(false);
   const [data, setData] = useState<TData | null>();
   const mutators = useDocMutators(docRef);
 
-  /* eslint-disable react-hooks/exhaustive-deps */
-  // don't refetch if just changing the default value. only the reference
   useEffect(() => {
+    // only fetch if we have a document reference
     if (!docRef) return;
-    return onSnapshot(docRef, (doc) =>
-      existOrCreate(defaultValue)(doc).then(setData),
-    );
+    return onSnapshot(docRef, (doc) => {
+      setSnapshot(doc);
+      setProcessed(false);
+    });
   }, [docRef]);
-  /* eslint-enable react-hooks/exhaustive-deps */
+
+  useEffect(() => {
+    if (!snapshot || processed) return;
+    existOrCreate(data === undefined ? defaultValue : undefined)(snapshot).then(
+      (data) => {
+        setData(data);
+        setProcessed(true);
+      },
+    );
+  }, [snapshot, processed, data, defaultValue]);
   return { ref: docRef, data, ...mutators };
 }
 
@@ -69,15 +80,20 @@ export function useDocument<TData extends DocumentData>(
   defaultValue?: ProviderLike<TData>,
 ): DocumentHandle<TData> {
   const [data, setData] = useState<TData | null>();
+  const [fetchedRef, setFetchedRef] =
+    useState<DocumentReference<TData, TData>>();
   const mutators = useDocMutators(docRef);
 
-  /* eslint-disable react-hooks/exhaustive-deps */
-  // don't refetch if just changing the default value. only the reference
   useEffect(() => {
-    if (!docRef) return;
-    getDoc(docRef).then(existOrCreate(defaultValue)).then(setData);
-  }, [docRef]);
-  /* eslint-enable react-hooks/exhaustive-deps */
+    // only fetch if we have a document reference that isn't already fetched
+    if (!docRef || docRef === fetchedRef) return;
+    getDoc(docRef)
+      .then(existOrCreate(defaultValue))
+      .then((data) => {
+        setData(data);
+        setFetchedRef(docRef);
+      });
+  }, [docRef, fetchedRef, defaultValue]);
 
   return { ref: docRef, data, ...mutators };
 }

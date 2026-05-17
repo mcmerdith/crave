@@ -61,7 +61,6 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
       />
     );
   const { status, members, self, ownerId } = data;
-  console.log(self.data?.userId, ownerId);
   const started = status !== "open";
 
   const selfFinished = self.data?.complete ?? false;
