@@ -88,5 +88,7 @@ export const useUserLobbies = (): LobbyInfo[] | undefined => {
 
   // const res = use(Promise.all(lobbyInfo));
 
-  return lobbyCol?.filter((l) => l !== undefined);
+  // sometimes the index on the query doesn't immediately update
+  // but if the member count is 0, it's safe to assume it doesn't exist
+  return lobbyCol?.filter((l) => l.memberCount > 0);
 };
