@@ -162,7 +162,7 @@ export function useSessionManager(): SessionManager {
  * @returns The currently logged in user
  */
 export function useLoggedInUser(): UserWithPreferences {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(auth.currentUser);
   const preferences = useUserPreferences(user?.uid);
 
   useEffect(() => {

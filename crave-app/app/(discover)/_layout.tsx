@@ -1,7 +1,7 @@
-import { Slot, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { Suspense } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileStackLayout() {
   return (
@@ -32,6 +32,10 @@ export default function ProfileStackLayout() {
             <Stack.Screen
               name="swipe/group/lobby"
               options={{ title: "Group Lobby", headerShown: false }}
+            />
+            <Stack.Screen
+              name="swipe/group/interstitial"
+              options={{ title: "Group Lobby Select", headerShown: false }}
             />
           </Stack>
         </Suspense>

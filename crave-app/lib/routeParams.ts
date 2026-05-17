@@ -1,6 +1,6 @@
 export type LobbyParams = {
   code: string;
-  started?: string;
+  create: string;
 };
 export type SwipeModeParams = {
   mode: "solo" | "group";

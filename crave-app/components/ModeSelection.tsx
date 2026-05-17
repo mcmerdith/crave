@@ -1,3 +1,7 @@
+import { theme } from "@/theme";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { User, Users } from "lucide-react-native";
 import React from "react";
 import {
   StatusBar,
@@ -6,10 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { User, Users } from "lucide-react-native";
-import { theme } from "@/theme";
-import { useRouter } from "expo-router";
 
 export default function ModeSelection() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function ModeSelection() {
   };
 
   const handleStartGroup = () => {
-    router.push("/swipe/group/lobby?code=COBRCY");
+    router.push("/swipe/group/interstitial");
   };
 
   return (
@@ -132,20 +132,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-    buttonWrapper: {
+  buttonWrapper: {
     width: "48%",
     height: 170,
-    borderRadius: 20,       // ← add this so shadow has the right shape
+    borderRadius: 20, // ← add this so shadow has the right shape
     shadowRadius: 6,
     shadowOpacity: 0.15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },  // consolidate shadows here only
+    shadowOffset: { width: 0, height: 4 }, // consolidate shadows here only
   },
   gradientButton: {
     padding: 24,
     height: "100%",
     borderRadius: 20,
-    overflow: "hidden",     // keep this for the overlay gradient clipping
+    overflow: "hidden", // keep this for the overlay gradient clipping
     // ← remove all shadow props from here
   },
   iconContainer: {

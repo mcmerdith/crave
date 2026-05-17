@@ -1,3 +1,4 @@
+import { GroupLobby, GroupLobbyMember } from "@crave/api";
 import {
   collection,
   CollectionReference,
@@ -5,7 +6,6 @@ import {
   DocumentReference,
 } from "@firebase/firestore";
 import { lobbies } from "./collections";
-import { GroupLobby, GroupLobbyMember } from "@crave/api";
 
 export const LobbyDocRef = (id: string) =>
   doc(lobbies, id) as DocumentReference<GroupLobby, GroupLobby>;
@@ -25,7 +25,6 @@ export const LobbyMembersDocRef = (id: string, memberid: string) =>
  * @deprecated This is bad - will not be necessary when the backend handles creating lobbies
  */
 export const CreateLobbyId = () => {
-  return "COBRCY";
   // possible reduced character set?
   const chars = "ETANSHRDCU0123456789";
   // 50-50 numbers/letters

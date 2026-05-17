@@ -13,43 +13,58 @@ import {
 
 import BackButton from "@/components/backButton";
 import CloseButton from "@/components/closeButton";
-import { useUserContext } from "@/lib/context";
+import FullPageMessage from "@/components/FullPageMessage";
+import LoadingScreen from "@/components/LoadingScreen";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { LobbyParams } from "@/lib/routeParams";
+import { MoveLeft } from "lucide-react-native";
+import { useState } from "react";
 
 export default function Lobby() {
-  const { code } = useLocalSearchParams<LobbyParams>();
-  const data = useGroupLobby(code === "" ? undefined : code);
-  //const data = useGroupLobby(undefined);
+  const router = useRouter();
+  const { code, create } = useLocalSearchParams<LobbyParams>();
 
-  if (data === undefined) {
-    return <Text>Loading</Text>;
-  } else if (data === null) {
-    return <Text>Not found</Text>;
+  if (!code) {
+    return (
+      <FullPageMessage
+        title="Something went wrong"
+        message="Check the code and try again"
+        CloseIcon={MoveLeft}
+        closeText="Go Back"
+        onClose={() => {
+          router.replace("/(discover)/swipe/group/interstitial");
+        }}
+      />
+    );
   } else {
-    return <LobbyContent lobby={data} />;
+    return <LobbyContent code={code} create={!!create} />;
   }
 }
 
-function LobbyContent({
-  lobby: { id: code, status, members, ownerId },
-}: {
-  lobby: NonNullable<ReturnType<typeof useGroupLobby>>;
-}) {
-  console.log(members.map((m) => m.userId));
+function LobbyContent({ code, create }: { code: string; create: boolean }) {
   const router = useRouter();
+  const data = useGroupLobby(code, create);
+  const [deleting, setDeleting] = useState(false);
+  if (data === undefined || deleting) return <LoadingScreen />;
+  else if (data === null)
+    return (
+      <FullPageMessage
+        title="Lobby not found"
+        message="Check the code and try again"
+        CloseIcon={MoveLeft}
+        closeText="Go Back"
+        onClose={() => {
+          router.replace("/(discover)/swipe/group/interstitial");
+        }}
+      />
+    );
+  const { status, members, self, ownerId } = data;
   const started = status !== "open";
 
-  const { user } = useUserContext();
-
-  const currentMember = members.find((m) => m.userId === user?.uid);
-
-  const userFinished = currentMember?.complete ?? false;
-
+  const selfFinished = self.data?.complete ?? false;
   const allFinished = members.every((m) => m.complete);
 
-  const iAmDone = currentMember?.complete === true;
-  const waitingOnOthers = iAmDone && !allFinished;
+  const waitingOnOthers = selfFinished && !allFinished;
 
   // Determine button behavior
   const getButtonConfig = () => {
@@ -59,7 +74,7 @@ function LobbyContent({
         enabled: true,
         action: () => router.replace("/swipe/group/complete"),
       };
-    } else if (userFinished) {
+    } else if (selfFinished) {
       // User is done, waiting for others
       return {
         text: "Go Back to Discover",
@@ -98,6 +113,15 @@ function LobbyContent({
     void Clipboard.setStringAsync(code);
   };
 
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this lobby?")) {
+      setDeleting(true);
+      await data.delete();
+      router.replace("/(tabs)");
+      setDeleting(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Back */}
@@ -132,9 +156,16 @@ function LobbyContent({
 
             <View style={styles.codeRow}>
               <Text style={styles.sessionCode}>{code}</Text>
-              <TouchableOpacity onPress={copyCode}>
-                <Ionicons name="copy-outline" size={28} color="#fff" />
-              </TouchableOpacity>
+              <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+                <TouchableOpacity onPress={copyCode}>
+                  <Ionicons name="copy-outline" size={28} color="#fff" />
+                </TouchableOpacity>
+                {self.data?.userId === ownerId && (
+                  <TouchableOpacity onPress={handleDelete}>
+                    <Ionicons name="trash-outline" size={28} color="#fff" />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
 
             <Text style={styles.smallText}>
@@ -149,7 +180,7 @@ function LobbyContent({
                   Waiting on others to finish swiping
                 </Text>
                 <Text style={styles.waitingText}>
-                  Sit tight — we'll show matches soon!
+                  Sit tight — we&apos;ll show matches soon!
                 </Text>
               </View>
             )}

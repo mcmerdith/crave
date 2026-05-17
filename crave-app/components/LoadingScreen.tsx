@@ -1,11 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  Animated,
-  Dimensions,
-  Text,
-} from "react-native";
+import { Animated, Dimensions, StyleSheet, Text, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -71,7 +65,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "Fredoka",
     fontSize: 50,
-    color: "#FF4747", 
+    color: "#FF4747",
     marginTop: -35,
   },
   subtitle: {
