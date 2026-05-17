@@ -26,8 +26,6 @@ async function handler(req: Request) {
     response.headers.set(k, v);
   });
 
-  console.log("responding with", response.headers);
-
   return response;
 }
 export { handler as GET, handler as POST };

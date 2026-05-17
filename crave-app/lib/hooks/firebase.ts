@@ -108,7 +108,6 @@ export function useCollectionRealtime<
     const q = constraints
       ? query(queryOrRef, ...constraints)
       : query(queryOrRef);
-    console.log("new snapshot listener");
     return onSnapshot(q, async (querySnapshot) => {
       if (querySnapshot.empty) {
         setData([]);
@@ -116,7 +115,6 @@ export function useCollectionRealtime<
       }
       const changes = querySnapshot.docChanges().length;
       if (changes === 0) return;
-      console.log("applying changes");
       const snap = querySnapshot.docs.map(
         documentMapFn ?? ((doc) => doc.data() as unknown as OData),
       );
@@ -232,7 +230,6 @@ export function useColMutators<TData extends DocumentData>(
   const _delete = useCallback(async () => {
     if (!colRef) return;
     for (const doc of (await getDocs(colRef)).docs) {
-      console.log("deleting", doc.ref);
       await deleteDoc(doc.ref);
     }
   }, [colRef]);
