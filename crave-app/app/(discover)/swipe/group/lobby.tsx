@@ -122,7 +122,7 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
       async onConfirm() {
         setDeleting(true);
         await data.delete();
-        router.replace("/(tabs)");
+        router.replace("/swipe/group/interstitial");
         setDeleting(false);
       },
     });
@@ -131,7 +131,7 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
   return (
     <View style={styles.container}>
       {/* Back */}
-      {!started && <BackButton />}
+      {!started && <BackButton href="/swipe/group/interstitial" />}
       <View
         style={{
           display: "flex",
