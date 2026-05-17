@@ -1,3 +1,4 @@
+import LoadingScreen from "@/components/LoadingScreen";
 import { Stack } from "expo-router";
 import { Suspense } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -15,7 +16,7 @@ export default function ProfileStackLayout() {
           flexDirection: "column",
         }}
       >
-        <Suspense fallback={<Text>Loading</Text>}>
+        <Suspense fallback={<LoadingScreen />}>
           <Stack>
             <Stack.Screen
               name="filtersSolo"
