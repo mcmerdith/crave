@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     fontFamily: "Fredoka",
     fontSize: 50,
     color: "#FF4747",
+    textAlign: "center",
   },
   subtitle: {
     fontFamily: "Nunito",
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
     color: "#FF9F1C",
     marginTop: 4,
     letterSpacing: 1,
+    textAlign: "center",
   },
   apptitle: {
     fontFamily: "Fredoka",
