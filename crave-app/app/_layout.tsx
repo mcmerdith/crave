@@ -1,14 +1,16 @@
 import LoadingScreen from "@/components/LoadingScreen";
 import {
+  LobbyContextProvider,
   LocationContextProvider,
-  MatchContextProvider,
+  SwipeContextProvider,
   UserContextProvider,
 } from "@/lib/context";
 import {
-  useSessionManager,
   useLoggedInUser,
+  useSessionManager,
 } from "@/lib/datastore/user-service";
 import "@/lib/firebase";
+import { useStoredState } from "@/lib/hooks/state-storage";
 import { GeoLocation, TempLocationData } from "@/lib/locationShim";
 import { RestaurantSwipeData } from "@/lib/places";
 import { queryClient } from "@/lib/trpc";
@@ -34,8 +36,28 @@ export default function RootLayout() {
   }, [fontsLoaded]);
 
   const [location, setLocation] = useState<GeoLocation>(TempLocationData[0]);
-  const [match, setMatch] = useState<RestaurantSwipeData | null>(null);
-  const [allMatches, setAllMatches] = useState<RestaurantSwipeData[]>([]);
+
+  const [match, setMatch] = useStoredState<RestaurantSwipeData | null>(
+    null,
+    "swipe-match",
+  );
+  const [allMatches, setAllMatches] = useStoredState<RestaurantSwipeData[]>(
+    [],
+    "swipe-all-matches",
+  );
+  const [allOptions, setAllOptions] = useStoredState<RestaurantSwipeData[]>(
+    [],
+    "swipe-all-options",
+  );
+
+  const [lobbyId, setLobbyId] = useStoredState<string | null>(
+    null,
+    "group-lobby-id",
+  );
+  const [createLobby, setCreateLobby] = useStoredState<boolean>(
+    false,
+    "create-group-lobby",
+  );
 
   const user = useLoggedInUser();
   const credentialManager = useSessionManager();
@@ -54,18 +76,31 @@ export default function RootLayout() {
               location,
             }}
           >
-            <MatchContextProvider
+            <SwipeContextProvider
               value={{
                 setMatch: (match) => setMatch(match),
                 setAllMatches: (matches) => setAllMatches(matches),
+                setAllOptions: (options) => setAllOptions(options),
                 match,
                 allMatches,
+                allOptions,
               }}
             >
-              <ConfirmProvider>
-                <Slot />
-              </ConfirmProvider>
-            </MatchContextProvider>
+              <LobbyContextProvider
+                value={{
+                  lobbyId,
+                  create: createLobby,
+                  setCurrentLobby: (lobbyId, create) => {
+                    setLobbyId(lobbyId);
+                    setCreateLobby(create);
+                  },
+                }}
+              >
+                <ConfirmProvider>
+                  <Slot />
+                </ConfirmProvider>
+              </LobbyContextProvider>
+            </SwipeContextProvider>
           </LocationContextProvider>
         </QueryClientProvider>
       </UserContextProvider>
