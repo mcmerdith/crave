@@ -137,7 +137,6 @@ export async function getPlaceImage(resourceName: string) {
       name: `${resourceName}/media`,
       maxHeightPx: 600,
     });
-    console.debug("image fetched:", !!data.photoUri);
     await writeCache("place_image", resourceName, data.photoUri ?? undefined);
     return data.photoUri ?? undefined;
   } catch (e) {
@@ -213,7 +212,7 @@ export async function searchPlaces({
             ...p,
             distanceMiles: `${distanceMiles?.toFixed(distanceMiles >= 5 ? 0 : 1)}mi`,
             primaryImage: primaryImage
-              ? "https://placehold.co/600/png/?text=Coming+Soon" // await getPlaceImage(primaryImage)
+              ? await getPlaceImage(primaryImage)
               : undefined,
           };
         }),
