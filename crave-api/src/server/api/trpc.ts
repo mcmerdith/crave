@@ -1,5 +1,5 @@
-import { initTRPC, TRPCError } from "@trpc/server";
 import { firebaseAuth } from "@/server/api/firebase";
+import { initTRPC } from "@trpc/server";
 
 type Context = {
   user: { id: string } | null;

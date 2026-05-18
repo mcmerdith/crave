@@ -36,7 +36,7 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
                 resourceName: string;
                 displayName: string;
                 cuisines: ("afghani" | "african" | "american" | "asian" | "barbecue" | "brazilian" | "chinese" | "french" | "greek" | "indian" | "indonesian" | "italian" | "japanese" | "korean" | "lebanese" | "mediterranean" | "mexican" | "middle_eastern" | "spanish" | "thai" | "turkish" | "vietnamese")[];
-                attributes: ("breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi" | "vegan" | "vegetarian")[];
+                attributes: ("vegetarian" | "vegan" | "breakfast" | "brunch" | "buffet" | "dessert" | "fast_food" | "fine_dining" | "hamburger" | "pizza" | "ramen" | "seafood" | "sushi")[];
                 types: string[];
                 address: string;
                 coordinates: {
@@ -126,6 +126,13 @@ declare const appRouter: _trpc_server.TRPCBuiltRouter<{
             output: void;
             meta: object;
         }>;
+        userComplete: _trpc_server.TRPCMutationProcedure<{
+            input: {
+                lobbyId: string;
+            };
+            output: void;
+            meta: object;
+        }>;
     }>>;
 }>>;
 type AppRouter = typeof appRouter;
@@ -193,6 +200,7 @@ declare const GroupLobby: z$1.ZodObject<{
         "in-progress": "in-progress";
         complete: "complete";
     }>;
+    bestMatchId: z$1.ZodNullable<z$1.ZodString>;
 }, z$1.core.$strip>;
 type GroupLobby = z$1.infer<typeof GroupLobby>;
 declare const SwipeResult: z$1.ZodObject<{
@@ -256,6 +264,8 @@ declare const RestaurantCuisine: z.ZodEnum<{
 }>;
 type RestaurantCuisine = z.infer<typeof RestaurantCuisine>;
 declare const RestaurantAttribute: z.ZodEnum<{
+    vegetarian: "vegetarian";
+    vegan: "vegan";
     breakfast: "breakfast";
     brunch: "brunch";
     buffet: "buffet";
@@ -267,8 +277,6 @@ declare const RestaurantAttribute: z.ZodEnum<{
     ramen: "ramen";
     seafood: "seafood";
     sushi: "sushi";
-    vegan: "vegan";
-    vegetarian: "vegetarian";
 }>;
 type RestaurantAttribute = z.infer<typeof RestaurantAttribute>;
 declare const PlacesApiPlace: z.ZodObject<{
@@ -378,6 +386,8 @@ declare const Restaurant: z.ZodObject<{
         vietnamese: "vietnamese";
     }>>;
     attributes: z.ZodArray<z.ZodEnum<{
+        vegetarian: "vegetarian";
+        vegan: "vegan";
         breakfast: "breakfast";
         brunch: "brunch";
         buffet: "buffet";
@@ -389,8 +399,6 @@ declare const Restaurant: z.ZodObject<{
         ramen: "ramen";
         seafood: "seafood";
         sushi: "sushi";
-        vegan: "vegan";
-        vegetarian: "vegetarian";
     }>>;
     types: z.ZodArray<z.ZodString>;
     address: z.ZodString;

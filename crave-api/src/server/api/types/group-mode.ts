@@ -14,6 +14,7 @@ export const GroupLobby = z.object({
   id: GroupLobbyId,
   ownerId: UserId,
   status: GroupLobbyStatus,
+  bestMatchId: z.string().nullable(),
 });
 export type GroupLobby = z.infer<typeof GroupLobby>;
 
