@@ -1,13 +1,13 @@
+import Card from "@/components/Card";
+import { useSwipeContext } from "@/lib/context";
+import { theme } from "@/theme";
+import { Stack } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
-import Card from "@/components/Card";
-import { theme } from "@/theme";
-import { useMatchContext } from "@/lib/context";
 
 export default function Matches() {
-  const { allMatches: matches } = useMatchContext();
+  const { allMatches: matches } = useSwipeContext();
   const hasMatches = matches.length > 0;
 
   return (
@@ -105,10 +105,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   contentWrapper: {
-  width: "100%",
-  maxWidth: 600,        // caps width on web
-  alignSelf: "center", // centers it on wide screens
-},
+    width: "100%",
+    maxWidth: 600, // caps width on web
+    alignSelf: "center", // centers it on wide screens
+  },
   cardsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",

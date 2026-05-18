@@ -62,14 +62,24 @@ export const { context: LocationContext, Provider: LocationContextProvider } =
   }>("Location");
 export const useLocationContext = () => useWrappedContext(LocationContext);
 
-export const { context: MatchContext, Provider: MatchContextProvider } =
+export const { context: SwipeContext, Provider: SwipeContextProvider } =
   createWrappedContext<{
     setMatch: (match: RestaurantSwipeData) => void;
     setAllMatches: (matches: RestaurantSwipeData[]) => void;
+    setAllOptions: (options: RestaurantSwipeData[]) => void;
     match: RestaurantSwipeData | null;
     allMatches: RestaurantSwipeData[];
-  }>("Match");
-export const useMatchContext = () => useWrappedContext(MatchContext);
+    allOptions: RestaurantSwipeData[];
+  }>("Swipe");
+export const useSwipeContext = () => useWrappedContext(SwipeContext);
+
+export const { context: LobbyContext, Provider: LobbyContextProvider } =
+  createWrappedContext<{
+    lobbyId: string | null;
+    create: boolean;
+    setCurrentLobby: (lobbyId: string, create: boolean) => void;
+  }>("Lobby");
+export const useLobbyContext = () => useWrappedContext(LobbyContext);
 
 export const { context: UserContext, Provider: UserContextProvider } =
   createWrappedContext<UserWithPreferences & SessionManager>("User");
