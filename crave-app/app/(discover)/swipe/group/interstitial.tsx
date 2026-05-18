@@ -28,25 +28,44 @@ export default function Lobby() {
     router.push(`/swipe/group/lobby`);
   };
 
-  const renderLobbyRow = ({ item }: { item: LobbyInfo }) => (
-    <View style={styles.lobbyRow}>
-      <View style={styles.lobbyInfo}>
-        <Text style={styles.lobbyCode}>{item.lobbyId}</Text>
-        <View style={styles.lobbyMeta}>
-          <Users size={12} color={theme.colors.mutedForeground} />
-          <Text style={styles.lobbyMetaText}>
-            {item.memberCount} {item.memberCount === 1 ? "member" : "members"}
-          </Text>
+  const statusBadge: Record<
+    string,
+    { label: string; bg: string; color: string }
+  > = {
+    open: { label: "Open", bg: "#e6f9ee", color: "#1a7a3f" },
+    "in-progress": { label: "In Progress", bg: "#fff3e0", color: "#b85c00" },
+    complete: { label: "Complete", bg: "#f0f0f0", color: "#666" },
+  };
+
+  const renderLobbyRow = ({ item }: { item: LobbyInfo }) => {
+    const badge = statusBadge[item.lobby.status] ?? statusBadge.open;
+    return (
+      <View style={styles.lobbyRow}>
+        <View style={styles.lobbyInfo}>
+          <View style={styles.lobbyCodeRow}>
+            <Text style={styles.lobbyCode}>{item.lobby.id}</Text>
+            <View style={[styles.badge, { backgroundColor: badge.bg }]}>
+              <Text style={[styles.badgeText, { color: badge.color }]}>
+                {badge.label}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.lobbyMeta}>
+            <Users size={12} color={theme.colors.mutedForeground} />
+            <Text style={styles.lobbyMetaText}>
+              {item.memberCount} {item.memberCount === 1 ? "member" : "members"}
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity
+          style={styles.reopenButton}
+          onPress={() => openLobby(item.lobby.id)}
+        >
+          <Text style={styles.reopenButtonText}>Reopen</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.reopenButton}
-        onPress={() => openLobby(item.lobbyId)}
-      >
-        <Text style={styles.reopenButtonText}>Reopen</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <FlatList
@@ -110,8 +129,8 @@ export default function Lobby() {
           <Text style={styles.sectionTitle}>Your Lobbies</Text>
         </>
       }
-      data={lobbies ?? []}
-      keyExtractor={(item) => item.lobbyId}
+      data={lobbies?.filter((l) => l.lobby.status !== "complete") ?? []}
+      keyExtractor={(item) => item.lobby.id}
       renderItem={renderLobbyRow}
       ListEmptyComponent={
         <Text style={styles.emptyText}>
@@ -210,11 +229,25 @@ const styles = StyleSheet.create({
   lobbyInfo: {
     flex: 1,
   },
+  lobbyCodeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   lobbyCode: {
     fontSize: 16,
     fontWeight: "700",
     letterSpacing: 2,
     color: theme.colors.foreground,
+  },
+  badge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 99,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: "600",
   },
   lobbyMeta: {
     flexDirection: "row",

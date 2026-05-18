@@ -1,4 +1,4 @@
-import { getDocs, where } from "@firebase/firestore";
+import { DocumentReference, getDoc, getDocs, where } from "@firebase/firestore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useUserContext } from "../context";
@@ -10,6 +10,7 @@ import {
 } from "../datastore/group-mode";
 import { trpc } from "../trpc";
 import { useCollectionRealtime, useDocumentRealtime } from "./firebase";
+import { GroupLobby } from "@crave/api";
 
 /**
  * Create or join a group lobby.
@@ -75,7 +76,7 @@ export const useGroupLobby = (
   };
 };
 
-export type LobbyInfo = { lobbyId: string; memberCount: number };
+export type LobbyInfo = { lobby: GroupLobby; memberCount: number };
 
 export const useUserLobbies = (): LobbyInfo[] | undefined => {
   const { user } = useUserContext();
@@ -86,9 +87,17 @@ export const useUserLobbies = (): LobbyInfo[] | undefined => {
     user ? lobbyMembers : null,
     user ? [where("userId", "==", user.uid)] : undefined,
     async (doc) => {
-      const lobbyId = doc.ref.parent.parent!.id;
-      const memberCount = (await getDocs(doc.ref.parent)).size;
-      return { lobbyId, memberCount: memberCount };
+      const lobbyRef = doc.ref.parent.parent as DocumentReference<
+        GroupLobby,
+        GroupLobby
+      >;
+      const lobby = await getDoc(lobbyRef);
+      // orphaned members from stale data or incorrect deletion
+      if (!lobby.exists()) return undefined;
+      return {
+        lobby: lobby.data(),
+        memberCount: (await getDocs(doc.ref.parent)).size,
+      };
     },
   );
 
@@ -96,5 +105,5 @@ export const useUserLobbies = (): LobbyInfo[] | undefined => {
 
   // sometimes the index on the query doesn't immediately update
   // but if the member count is 0, it's safe to assume it doesn't exist
-  return lobbyCol?.filter((l) => l.memberCount > 0);
+  return lobbyCol?.filter((l) => l !== undefined);
 };
