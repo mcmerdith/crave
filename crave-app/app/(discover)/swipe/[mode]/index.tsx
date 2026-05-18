@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -11,20 +11,20 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 //import { Swiper, type SwiperCardRefType } from "rn-swiper-list";
 import CloseButton from "@/components/closeButton";
+import FullPageMessage from "@/components/FullPageMessage";
+import LoadingScreen from "@/components/LoadingScreen";
 import RestaurantCard from "@/components/restaurantCard";
 import {
+  useLobbyContext,
   useLocationContext,
-  useMatchContext,
-  useUserContext,
+  useSwipeContext,
 } from "@/lib/context";
-import { LobbyMembersDocRef } from "@/lib/datastore/group-mode";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
 import { RestaurantSwipeData, transformPlacesApiData } from "@/lib/places";
 import { SwipeModeParams } from "@/lib/routeParams";
 import { trpc } from "@/lib/trpc";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { updateDoc } from "firebase/firestore";
 
 const ICON_SIZE = 24;
 
@@ -33,28 +33,23 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 export default function Swipe() {
   const router = useRouter();
 
-  const { mode, code } = useLocalSearchParams<SwipeModeParams>();
+  const { mode } = useLocalSearchParams<SwipeModeParams>();
+  const { lobbyId } = useLobbyContext();
 
   const { location } = useLocationContext();
 
-  const { user } = useUserContext();
+  const groupLobby = useGroupLobby(mode === "group" ? lobbyId : null);
+  const userFinished = useMutation(
+    trpc.groupLobby.userComplete.mutationOptions(),
+  );
 
-  const groupLobby = useGroupLobby(mode === "group" ? code : undefined);
-
-  React.useEffect(() => {
-    if (mode === "group" && groupLobby && groupLobby !== null) {
-      const currentMember = groupLobby.members.find(
-        (m) => m.userId === user?.uid,
-      );
-
-      if (currentMember?.complete) {
-        router.replace({
-          pathname: "/swipe/group/lobby",
-          params: { code },
-        });
-      }
+  useEffect(() => {
+    if (mode === "group" && groupLobby?.self.data?.complete) {
+      router.replace({
+        pathname: "/swipe/group/lobby",
+      });
     }
-  }, [mode, groupLobby, user, code, router]);
+  }, [mode, groupLobby, router]);
 
   const { data: locations } = useQuery(
     trpc.places.search.queryOptions({
@@ -62,25 +57,34 @@ export default function Swipe() {
     }),
   );
 
-  const { setMatch, setAllMatches } = useMatchContext();
+  const { setMatch, setAllMatches, setAllOptions } = useSwipeContext();
 
-  const onSwipeComplete = async (selected: RestaurantSwipeData[]) => {
-    const selection = selected[Math.floor(Math.random() * selected.length)];
+  const onSwipeComplete = async (
+    liked: RestaurantSwipeData[],
+    disliked: RestaurantSwipeData[],
+  ) => {
+    setAllOptions([...liked, ...disliked]);
+    setAllMatches(liked);
 
-    setMatch(selection);
-    setAllMatches(selected);
-
-    if (mode === "group" && code) {
-      await updateDoc(LobbyMembersDocRef(code, user!.uid), {
-        complete: true,
-        likeIds: selected.map((r) => r.id),
-      });
+    if (mode === "group") {
+      if (groupLobby) {
+        await groupLobby.self.update({
+          complete: true,
+          likeIds: liked.map((like) => like.id),
+          dislikeIds: disliked.map((dislike) => dislike.id),
+        });
+        await userFinished.mutateAsync({ lobbyId: groupLobby.id });
+      } else {
+        console.error("Failed to update group lobby (does not exist?)");
+      }
 
       router.replace({
         pathname: "/swipe/group/lobby",
-        params: { code },
       });
     } else {
+      const selection = liked[Math.floor(Math.random() * liked.length)];
+      setMatch(selection);
+
       router.replace("/swipe/solo/complete");
     }
   };
@@ -92,8 +96,15 @@ export default function Swipe() {
         onSwipeComplete={onSwipeComplete}
       />
     );
+  } else if (locations === null) {
+    return (
+      <FullPageMessage
+        title="Something went wrong"
+        message="We couldn't find anything near you"
+      />
+    );
   } else {
-    return <></>;
+    return <LoadingScreen />;
   }
 }
 
@@ -102,17 +113,24 @@ function SwipeFlow({
   onSwipeComplete,
 }: {
   options: RestaurantSwipeData[];
-  onSwipeComplete: (selected: RestaurantSwipeData[]) => void;
+  onSwipeComplete: (
+    liked: RestaurantSwipeData[],
+    disliked: RestaurantSwipeData[],
+  ) => void;
 }) {
-  const selected = useRef<RestaurantSwipeData[]>([]);
+  const likedRestaurants = useRef<RestaurantSwipeData[]>([]);
+  const dislikedRestaurants = useRef<RestaurantSwipeData[]>([]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const pan = useRef(new Animated.ValueXY()).current;
 
   const advance = (liked: boolean) => {
-    if (liked) selected.current.push(options[currentIndex]);
+    if (liked) likedRestaurants.current.push(options[currentIndex]);
+    else dislikedRestaurants.current.push(options[currentIndex]);
+
     const next = currentIndex + 1;
     if (next >= options.length) {
-      onSwipeComplete(selected.current);
+      onSwipeComplete(likedRestaurants.current, dislikedRestaurants.current);
     } else {
       pan.setValue({ x: 0, y: 0 }); // reset position
       setCurrentIndex(next);
