@@ -3,27 +3,35 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { theme } from "@/theme";
 import RestaurantCard from "@/components/restaurantCard";
 import ColorfulButton from "@/components/colorfulButton";
-import { useMatchContext } from "@/lib/context";
+import { useLobbyContext, useSwipeContext } from "@/lib/context";
 import { SwipeModeParams } from "@/lib/routeParams";
+import FullPageMessage from "@/components/FullPageMessage";
+import { useGroupLobby } from "@/lib/hooks/group-lobby";
+import { Home } from "lucide-react-native";
 
 export default function Complete() {
   const router = useRouter();
 
   const { mode } = useLocalSearchParams<SwipeModeParams>();
 
-  const { match } = useMatchContext();
+  const { match: soloMatch, allOptions } = useSwipeContext();
+  const { lobbyId } = useLobbyContext();
+  const lobby = useGroupLobby(lobbyId);
+
+  const match =
+    mode === "solo"
+      ? soloMatch
+      : allOptions.find((option) => option.id === lobby?.bestMatchId);
 
   if (!match) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>Something went wrong...</Text>
-        <ColorfulButton
-          variant="other"
-          onPress={() => router.replace("/")}
-          enabled={true}
-          text="Return to Home"
-        />
-      </View>
+      <FullPageMessage
+        title="Something went wrong"
+        message="We couldn't find a match"
+        CloseIcon={Home}
+        closeText="Return to Home"
+        onClose={() => router.replace("/")}
+      />
     );
   }
 
@@ -53,7 +61,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   message: {
-    fontSize: 18,
+    fontFamily: "Fredoka",
+    fontSize: 42,
+    color: "#FF4747",
+    textAlign: "center",
     marginBottom: 20,
   },
   linkButton: {
