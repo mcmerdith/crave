@@ -35,7 +35,10 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  const [location, setLocation] = useState<GeoLocation>(TempLocationData[0]);
+  const [location, setLocation] = useStoredState<GeoLocation>(
+    TempLocationData[0],
+    "user-location",
+  );
 
   const [match, setMatch] = useStoredState<RestaurantSwipeData | null>(
     null,
