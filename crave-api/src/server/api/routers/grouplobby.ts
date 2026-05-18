@@ -53,11 +53,12 @@ export const groupLobbyRouter = router({
         }
       }
 
-      const highestValue = -Infinity;
+      let highestValue = -Infinity;
       let matchCandidates: string[] = [];
 
       for (const [id, value] of Object.entries(allMatches)) {
         if (value > highestValue) {
+          highestValue = value;
           matchCandidates = [id];
         } else if (value === highestValue) {
           matchCandidates.push(id);
@@ -65,6 +66,7 @@ export const groupLobbyRouter = router({
       }
 
       await lobbyRef.update({
+        status: "complete",
         bestMatchId:
           matchCandidates[Math.floor(Math.random() * matchCandidates.length)],
       });
