@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import BackButton from "@/components/backButton";
+import { useLobbyContext } from "@/lib/context";
 import { CreateLobbyId } from "@/lib/datastore/group-mode";
 import { LobbyInfo, useUserLobbies } from "@/lib/hooks/group-lobby";
 import { theme } from "@/theme";
@@ -20,14 +21,11 @@ export default function Lobby() {
   const router = useRouter();
   const [joinCode, setJoinCode] = useState("");
   const lobbies = useUserLobbies();
+  const { setCurrentLobby } = useLobbyContext();
 
-  const handleJoinLobby = () => {
-    router.push(`/swipe/group/lobby?code=${joinCode}`);
-  };
-
-  const handleNewLobby = () => {
-    const id = CreateLobbyId();
-    router.push(`/swipe/group/lobby?code=${id}&create=true`);
+  const openLobby = (lobbyId: string | undefined) => {
+    setCurrentLobby(lobbyId ?? CreateLobbyId(), lobbyId === undefined);
+    router.push(`/swipe/group/lobby`);
   };
 
   const renderLobbyRow = ({ item }: { item: LobbyInfo }) => (
@@ -43,7 +41,7 @@ export default function Lobby() {
       </View>
       <TouchableOpacity
         style={styles.reopenButton}
-        onPress={() => router.push(`/swipe/group/lobby?code=${item.lobbyId}`)}
+        onPress={() => openLobby(item.lobbyId)}
       >
         <Text style={styles.reopenButtonText}>Reopen</Text>
       </TouchableOpacity>
@@ -80,7 +78,7 @@ export default function Lobby() {
 
                 <TouchableOpacity
                   style={styles.iconContainer}
-                  onPress={handleJoinLobby}
+                  onPress={() => openLobby(joinCode)}
                 >
                   <UserPlus color="#fff" size={28} />
                   <Text style={styles.buttonTitle}>Join</Text>
@@ -91,7 +89,7 @@ export default function Lobby() {
             {/* CREATE BUTTON */}
             <TouchableOpacity
               style={styles.buttonWrapper}
-              onPress={handleNewLobby}
+              onPress={() => openLobby(undefined)}
             >
               <LinearGradient
                 colors={[theme.colors.orangeStart, theme.colors.orangeEnd]}
