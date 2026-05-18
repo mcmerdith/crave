@@ -176,48 +176,48 @@ function LobbyContent({
         {started && <CloseButton />}
       </View>
       {/* Code Card */}
-      {!started && (
-        <>
-          <Text style={styles.subtitle}>Share the code with your friends</Text>
-          <LinearGradient
-            colors={["#FF8A00", "#E92E7F"]}
-            style={styles.codeCard}
-          >
-            <Text style={styles.sessionLabel}>Session Code</Text>
 
-            <View style={styles.codeRow}>
-              <Text style={styles.sessionCode}>{lobbyId}</Text>
-              <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
-                <TouchableOpacity onPress={copyCode}>
-                  <Ionicons name="copy-outline" size={28} color="#fff" />
-                </TouchableOpacity>
-                {isHost && (
-                  <TouchableOpacity onPress={handleDelete}>
-                    <Ionicons name="trash-outline" size={28} color="#fff" />
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
+      <Text style={styles.subtitle}>
+        {started
+          ? "Good things are on the way!"
+          : "Share the code with your friends"}
+      </Text>
+      <LinearGradient colors={["#FF8A00", "#E92E7F"]} style={styles.codeCard}>
+        <Text style={styles.sessionLabel}>Session Code</Text>
 
-            <Text style={styles.smallText}>
-              Friends can join using this code
-            </Text>
-
-            {/* Waiting section inside the gradient card */}
-            {waitingOnOthers && (
-              <View style={styles.waitingSection}>
-                <Ionicons name="hourglass-outline" size={28} color="#fff" />
-                <Text style={styles.waitingTitle}>
-                  Waiting on others to finish swiping
-                </Text>
-                <Text style={styles.waitingText}>
-                  Sit tight — we&apos;ll show matches soon!
-                </Text>
-              </View>
+        <View style={styles.codeRow}>
+          <Text style={styles.sessionCode}>{lobbyId}</Text>
+          <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+            {!started && (
+              <TouchableOpacity onPress={copyCode}>
+                <Ionicons name="copy-outline" size={28} color="#fff" />
+              </TouchableOpacity>
             )}
-          </LinearGradient>
-        </>
-      )}
+            {isHost && (
+              <TouchableOpacity onPress={handleDelete}>
+                <Ionicons name="trash-outline" size={28} color="#fff" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        {!started && (
+          <Text style={styles.smallText}>Friends can join using this code</Text>
+        )}
+
+        {/* Waiting section inside the gradient card */}
+        {waitingOnOthers && (
+          <View style={styles.waitingSection}>
+            <Ionicons name="hourglass-outline" size={28} color="#fff" />
+            <Text style={styles.waitingTitle}>
+              Waiting on others to finish swiping
+            </Text>
+            <Text style={styles.waitingText}>
+              Sit tight — we&apos;ll show matches soon!
+            </Text>
+          </View>
+        )}
+      </LinearGradient>
 
       <Text style={styles.lobbyTitle}>In Lobby ({members.length})</Text>
       {/* Scrollable List */}
