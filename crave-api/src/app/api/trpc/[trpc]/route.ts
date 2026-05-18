@@ -1,9 +1,11 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "@/server/api/routers";
 import { createContext } from "@/server/api/trpc";
+import { env } from "@/env";
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "http://localhost:8081",
+  "Access-Control-Allow-Origin":
+    env.NODE_ENV === "development" ? "*" : "http://localhost:8081",
   "Access-Control-Allow-Headers": "*",
 };
 
