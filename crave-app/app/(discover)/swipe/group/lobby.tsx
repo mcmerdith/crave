@@ -2,7 +2,7 @@ import StartSwipingButton from "@/components/colorfulButton";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import {
   ScrollView,
   StyleSheet,
@@ -15,17 +15,17 @@ import BackButton from "@/components/backButton";
 import CloseButton from "@/components/closeButton";
 import FullPageMessage from "@/components/FullPageMessage";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useLobbyContext } from "@/lib/context";
 import { useGroupLobby } from "@/lib/hooks/group-lobby";
-import { LobbyParams } from "@/lib/routeParams";
 import { MoveLeft } from "lucide-react-native";
-import { useState } from "react";
+import { ComponentPropsWithoutRef, useEffect, useState } from "react";
 import { useConfirm } from "react-native-confirm-dialog";
 
 export default function Lobby() {
   const router = useRouter();
-  const { code, create } = useLocalSearchParams<LobbyParams>();
+  const { lobbyId, create } = useLobbyContext();
 
-  if (!code) {
+  if (!lobbyId) {
     return (
       <FullPageMessage
         title="Something went wrong"
@@ -38,17 +38,33 @@ export default function Lobby() {
       />
     );
   } else {
-    return <LobbyContent code={code} create={!!create} />;
+    return <LobbyContent lobbyId={lobbyId} create={create} />;
   }
 }
 
-function LobbyContent({ code, create }: { code: string; create: boolean }) {
+function LobbyContent({
+  lobbyId,
+  create,
+}: {
+  lobbyId: string;
+  create: boolean;
+}) {
   const router = useRouter();
-  const data = useGroupLobby(code, create);
+  const lobby = useGroupLobby(lobbyId, create);
   const confirm = useConfirm();
   const [deleting, setDeleting] = useState(false);
-  if (data === undefined || deleting) return <LoadingScreen />;
-  else if (data === null)
+  useEffect(() => {
+    if (
+      !!lobby &&
+      !!lobby.self.data &&
+      lobby.status === "in-progress" &&
+      !lobby.self.data.complete
+    ) {
+      router.replace("/swipe/group");
+    }
+  }, [lobby, router]);
+  if (lobby === undefined || deleting) return <LoadingScreen />;
+  else if (lobby === null)
     return (
       <FullPageMessage
         title="Lobby not found"
@@ -60,51 +76,60 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
         }}
       />
     );
-  const { status, members, self, ownerId } = data;
+  const { status, members, self, ownerId, bestMatchId } = lobby;
   const started = status !== "open";
 
+  const isHost = self.data?.userId === ownerId;
   const selfFinished = self.data?.complete ?? false;
   const allFinished = members.every((m) => m.complete);
 
   const waitingOnOthers = selfFinished && !allFinished;
 
   // Determine button behavior
-  const getButtonConfig = () => {
+  const getButtonConfig = (): Partial<
+    ComponentPropsWithoutRef<typeof StartSwipingButton>
+  > => {
     if (allFinished) {
       return {
-        text: "View Matches",
-        enabled: true,
-        action: () => router.replace("/swipe/group/complete"),
+        text: "View Results",
+        enabled: bestMatchId !== null,
+        disabledText: "We're crunching the numbers... check back soon!",
+        onPress: () => router.replace("/swipe/group/complete"),
       };
     } else if (selfFinished) {
       // User is done, waiting for others
       return {
         text: "Go Back to Discover",
         enabled: true,
-        action: () => router.replace("/(tabs)"),
+        onPress: () => router.replace("/(tabs)"),
       };
     } else if (started) {
       // Session started but user hasn't finished
       return {
-        text: "Go Back to Discover",
+        text: "Start Swiping",
         enabled: true,
-        action: () =>
+        onPress: () =>
           router.replace({
             pathname: "/swipe/[mode]",
-            params: { mode: "group", code },
+            params: { mode: "group", code: lobbyId },
           }),
       };
     } else {
       // Not started yet
       return {
         text: "Start Swiping",
-        enabled: members.length > 1,
-        disabledText: "Waiting for friends to join...",
-        action: () =>
+        enabled: members.length > 1 && isHost,
+        disabledText:
+          members.length > 1 && !isHost
+            ? "Only the host can start the lobby"
+            : "Waiting for friends to join...",
+        onPress: () => {
+          if (isHost) lobby.handle.update({ status: "in-progress" });
           router.replace({
             pathname: "/swipe/[mode]",
-            params: { mode: "group", code },
-          }),
+            params: { mode: "group", code: lobbyId },
+          });
+        },
       };
     }
   };
@@ -112,7 +137,7 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
   const buttonConfig = getButtonConfig();
 
   const copyCode = () => {
-    void Clipboard.setStringAsync(code);
+    void Clipboard.setStringAsync(lobbyId);
   };
 
   const handleDelete = async () => {
@@ -121,7 +146,7 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
       subtitle: "This can't be undone",
       async onConfirm() {
         setDeleting(true);
-        await data.delete();
+        await lobby.delete();
         router.replace("/swipe/group/interstitial");
         setDeleting(false);
       },
@@ -161,12 +186,12 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
             <Text style={styles.sessionLabel}>Session Code</Text>
 
             <View style={styles.codeRow}>
-              <Text style={styles.sessionCode}>{code}</Text>
+              <Text style={styles.sessionCode}>{lobbyId}</Text>
               <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
                 <TouchableOpacity onPress={copyCode}>
                   <Ionicons name="copy-outline" size={28} color="#fff" />
                 </TouchableOpacity>
-                {self.data?.userId === ownerId && (
+                {isHost && (
                   <TouchableOpacity onPress={handleDelete}>
                     <Ionicons name="trash-outline" size={28} color="#fff" />
                   </TouchableOpacity>
@@ -222,7 +247,10 @@ function LobbyContent({ code, create }: { code: string; create: boolean }) {
         variant="group"
         text={buttonConfig.text}
         disabledText={buttonConfig.disabledText}
-        onPress={buttonConfig.action}
+        onPress={
+          buttonConfig.onPress ??
+          (() => console.error("Start swiping initialized incorrectly!"))
+        }
       />
     </View>
   );
