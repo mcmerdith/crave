@@ -61,7 +61,9 @@ export default function Lobby() {
           style={styles.reopenButton}
           onPress={() => openLobby(item.lobby.id)}
         >
-          <Text style={styles.reopenButtonText}>Reopen</Text>
+          <Text style={styles.reopenButtonText}>
+            {item.lobby.status === "complete" ? "View" : "Open"}
+          </Text>
         </TouchableOpacity>
       </View>
     );
