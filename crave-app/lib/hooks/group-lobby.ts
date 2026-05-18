@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useUserContext } from "../context";
 import { lobbyMembers } from "../datastore/collections";
 import {
-  CreateLobbyId,
   LobbyDocRef,
   LobbyMembersColRef,
   LobbyMembersDocRef,
@@ -14,30 +13,34 @@ import { useCollectionRealtime, useDocumentRealtime } from "./firebase";
 
 /**
  * Create or join a group lobby.
- * If no lobbyId is provided, creates a new lobby and adds the current user as the owner.
- * If a lobbyId is provided, joins the existing lobby with that ID, or returns null if the lobby does not exist.
+ *
+ * If the lobby does not exist, it will be created if the `create` parameter is true.
+ *
+ * @returns `undefined` if a lobby ID of `null` is provided, or a lobby (if one exists, or `create` is provided), or undefined
  */
 export const useGroupLobby = (
-  requestLobbyId?: string,
+  lobbyId: string | null,
   create: boolean = false,
 ) => {
   const { user } = useUserContext();
-  const [lobbyId] = useState(requestLobbyId ?? CreateLobbyId());
   const [deleted, setDeleted] = useState(false);
 
   const lobby = useDocumentRealtime(
-    user ? LobbyDocRef(lobbyId) : null,
+    user && lobbyId ? LobbyDocRef(lobbyId) : null,
     create
       ? (ref) => ({
           id: ref.id,
           ownerId: user?.uid ?? "",
           status: "open" as const,
+          bestMatchId: null,
         })
       : undefined,
   );
 
   const self = useDocumentRealtime(
-    user && !!lobby.data ? LobbyMembersDocRef(lobbyId, user.uid) : null,
+    user && lobbyId && !!lobby.data
+      ? LobbyMembersDocRef(lobbyId, user.uid)
+      : null,
     deleted
       ? undefined
       : () => ({
@@ -49,7 +52,9 @@ export const useGroupLobby = (
         }),
   );
 
-  const members = useCollectionRealtime(LobbyMembersColRef(lobbyId));
+  const members = useCollectionRealtime(
+    lobbyId ? LobbyMembersColRef(lobbyId) : null,
+  );
   const deleteLobby = useMutation(
     trpc.groupLobby.deleteLobby.mutationOptions(),
   );
@@ -63,6 +68,7 @@ export const useGroupLobby = (
     self: self,
     handle: lobby,
     async delete() {
+      if (!lobbyId) return;
       setDeleted(true);
       await deleteLobby.mutateAsync({ lobbyId });
     },
