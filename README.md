@@ -2,6 +2,12 @@
 
 Monorepo for the Crave app
 
+## License
+
+This project is source-available under the PolyForm Noncommercial License 1.0.0.
+
+Commercial use is prohibited without explicit permission from the authors.
+
 ## Architecture
 
 `crave-app` A React Native mobile app
